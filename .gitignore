@@ -45,3 +45,6 @@ yarn-error.log*
 # idea files
 .idea
 /app/generated/prisma
+
+# dev / ai
+repomix-output.*
