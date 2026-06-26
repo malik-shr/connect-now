@@ -22,7 +22,7 @@ export default function HomePage() {
               My Projects
             </Link>
             <Link
-              href="/register"
+              href="/register-project"
               className="rounded-lg bg-blue-600 px-4 py-2 text-sm font-semibold text-white shadow-sm transition hover:bg-blue-700"
             >
               New Grid Connection
@@ -51,7 +51,7 @@ export default function HomePage() {
 
           <div className="flex flex-col items-center justify-center gap-4 pt-4 sm:flex-row">
             <Link
-              href="/register"
+              href="/register-project"
               className="w-full transform rounded-xl bg-blue-600 px-8 py-4 text-base font-bold text-white shadow-md transition-all hover:-translate-y-0.5 hover:bg-blue-700 sm:w-auto"
             >
               Register Project
