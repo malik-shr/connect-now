@@ -57,6 +57,20 @@ export default function RegisterPage() {
         </div>
 
         <div>
+          <label htmlFor="contact" className="mb-1 block text-sm font-medium text-gray-700">
+            Contact Number
+          </label>
+          <input
+            id="contact"
+            name="contact"
+            type="tel"
+            required
+            className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm shadow-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+            placeholder="+1 234 567 890"
+          />
+        </div>
+        
+        <div>
           <label htmlFor="password" className="mb-1 block text-sm font-medium text-gray-700">
             Password
           </label>
