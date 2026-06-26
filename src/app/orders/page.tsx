@@ -3,8 +3,7 @@ export default function HomePage() {
     <div>
       <ul>
         <li>
-          <a href="orders">Orders</a>
-          <a href="register">Register</a>
+          <a href="/orders/123">123</a>
         </li>
       </ul>
     </div>
