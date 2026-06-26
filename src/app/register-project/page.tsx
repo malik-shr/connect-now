@@ -1,5 +1,4 @@
 import { redirect } from "next/navigation";
-import Link from "next/link";
 
 async function createProject(formData: FormData) {
   "use server";
@@ -21,27 +20,7 @@ async function createProject(formData: FormData) {
 
 export default function Register() {
   return (
-    <div className="flex min-h-screen flex-col justify-between bg-slate-50 font-sans text-slate-900 antialiased selection:bg-blue-500 selection:text-white">
-      {/* Top Header Navigation */}
-      <nav className="border-b border-slate-200 bg-white px-4 sm:px-6 lg:px-8">
-        <div className="mx-auto flex h-16 max-w-7xl items-center justify-between">
-          <Link href="/" className="flex items-center space-x-2">
-            <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-blue-600 text-base font-black text-white">
-              ⚡
-            </div>
-            <span className="text-xl font-black tracking-tight text-slate-900">
-              connect<span className="text-blue-600">now</span>
-            </span>
-          </Link>
-          <Link
-            href="/orders"
-            className="text-sm font-semibold text-slate-600 transition hover:text-slate-900"
-          >
-            Back to Orders
-          </Link>
-        </div>
-      </nav>
-
+    <div className="flex min-h-[calc(100vh-4rem)] flex-col justify-between">
       {/* Main Container */}
       <main className="flex flex-grow items-center justify-center px-4 py-12">
         <div className="w-full max-w-md space-y-8 rounded-2xl border border-slate-200 bg-white p-8 shadow-xl">

@@ -113,7 +113,7 @@ export default async function StatusPage({
   const missingDocs = DOCUMENTS.filter((d) => d.status === "missing");
 
   return (
-    <div className="min-h-screen bg-slate-50 px-4 py-10 font-sans text-slate-900 antialiased">
+    <div className="min-h-[calc(100vh-4rem)] px-4 py-10">
       <div className="mx-auto max-w-4xl space-y-6">
         {/* Context Header */}
         <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-xl sm:p-10">

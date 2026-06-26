@@ -1,11 +1,116 @@
-export default function HomePage() {
+import Link from "next/link";
+
+// Mock-Daten — später aus der DB (Prisma) laden.
+interface Order {
+  id: string;
+  asset: string;
+  power: string;
+  status: "Eingereicht" | "In Prüfung" | "Genehmigt" | "Entwurf";
+  updated: string;
+}
+
+const ORDERS: Order[] = [
+  {
+    id: "123",
+    asset: "PV-Aufdachanlage",
+    power: "9,8 kWp",
+    status: "In Prüfung",
+    updated: "26.06.2026",
+  },
+  {
+    id: "PV-Solar-2026",
+    asset: "PV mit Speicher",
+    power: "12,4 kWp",
+    status: "Eingereicht",
+    updated: "24.06.2026",
+  },
+  {
+    id: "Hof-Nord-WP",
+    asset: "PV + Wärmepumpe",
+    power: "15,0 kWp",
+    status: "Entwurf",
+    updated: "20.06.2026",
+  },
+];
+
+const STATUS_STYLE: Record<Order["status"], string> = {
+  Eingereicht: "bg-blue-50 text-blue-700 border-blue-200",
+  "In Prüfung": "bg-amber-50 text-amber-700 border-amber-200",
+  Genehmigt: "bg-emerald-50 text-emerald-700 border-emerald-200",
+  Entwurf: "bg-slate-100 text-slate-600 border-slate-200",
+};
+
+export default function OrdersPage() {
   return (
-    <div>
-      <ul>
-        <li>
-          <a href="/orders/123">123</a>
-        </li>
-      </ul>
+    <div className="min-h-[calc(100vh-4rem)] px-4 py-10">
+      <div className="mx-auto max-w-4xl space-y-6">
+        {/* Header */}
+        <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
+          <div>
+            <span className="text-xs font-bold tracking-wider text-blue-600 uppercase">
+              ConnectNow · Übersicht
+            </span>
+            <h1 className="mt-1 text-2xl font-extrabold tracking-tight text-slate-900 sm:text-3xl">
+              Meine Vorgänge
+            </h1>
+            <p className="mt-2 text-sm text-slate-500">
+              Alle Netzanschluss-Anträge auf einen Blick.
+            </p>
+          </div>
+          <Link
+            href="/register-project"
+            className="inline-flex items-center justify-center rounded-lg bg-blue-600 px-5 py-3 text-sm font-semibold text-white shadow transition-all hover:-translate-y-0.5 hover:bg-blue-700"
+          >
+            + Neuer Vorgang
+          </Link>
+        </div>
+
+        {/* Order cards */}
+        <div className="grid grid-cols-1 gap-4">
+          {ORDERS.map((order) => (
+            <Link
+              key={order.id}
+              href={`/orders/${order.id}`}
+              className="group flex flex-col gap-4 rounded-2xl border border-slate-200 bg-white p-5 shadow-sm transition-all hover:-translate-y-0.5 hover:border-blue-500 hover:shadow-lg sm:flex-row sm:items-center sm:justify-between sm:p-6"
+            >
+              <div className="flex items-center gap-4">
+                <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-blue-50 text-2xl">
+                  ☀️
+                </div>
+                <div>
+                  <div className="flex items-center gap-2">
+                    <h2 className="text-base font-bold text-slate-800 group-hover:text-blue-700">
+                      {order.asset}
+                    </h2>
+                    <span className="rounded bg-slate-100 px-1.5 py-0.5 font-mono text-xs font-bold text-slate-500">
+                      #{order.id}
+                    </span>
+                  </div>
+                  <p className="mt-0.5 text-sm text-slate-500">
+                    {order.power} · zuletzt aktualisiert {order.updated}
+                  </p>
+                </div>
+              </div>
+
+              <div className="flex items-center justify-between gap-4 sm:justify-end">
+                <span
+                  className={`rounded-full border px-3 py-1 text-xs font-bold ${STATUS_STYLE[order.status]}`}
+                >
+                  {order.status}
+                </span>
+                <span className="text-sm font-semibold text-blue-600 opacity-0 transition group-hover:opacity-100">
+                  Öffnen →
+                </span>
+              </div>
+            </Link>
+          ))}
+        </div>
+
+        {/* Empty-state hint */}
+        <p className="pt-2 text-center text-xs text-slate-400">
+          Mock-Daten · Vorgänge werden später aus der Datenbank geladen.
+        </p>
+      </div>
     </div>
   );
 }

@@ -2,37 +2,9 @@ import Link from "next/link";
 
 export default function HomePage() {
   return (
-    <div className="min-h-screen bg-slate-50 font-sans text-slate-900 antialiased selection:bg-blue-500 selection:text-white">
-      {/* Navigation Header */}
-      <nav className="sticky top-0 z-50 mx-auto max-w-7xl border-b border-slate-200 bg-white/80 px-4 backdrop-blur sm:px-6 lg:px-8">
-        <div className="flex h-16 items-center justify-between">
-          <div className="flex items-center space-x-2">
-            <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-blue-600 text-base font-black tracking-tighter text-white">
-              ⚡
-            </div>
-            <span className="text-xl font-black tracking-tight text-slate-900">
-              connect<span className="text-blue-600">now</span>
-            </span>
-          </div>
-          <div className="flex items-center space-x-4">
-            <Link
-              href="/orders"
-              className="text-sm font-semibold text-slate-600 transition hover:text-slate-900"
-            >
-              My Projects
-            </Link>
-            <Link
-              href="/register-project"
-              className="rounded-lg bg-blue-600 px-4 py-2 text-sm font-semibold text-white shadow-sm transition hover:bg-blue-700"
-            >
-              New Grid Connection
-            </Link>
-          </div>
-        </div>
-      </nav>
-
+    <div>
       {/* Hero Section */}
-      <main className="mx-auto max-w-7xl px-4 pt-16 pb-24 sm:px-6 lg:px-8">
+      <section className="mx-auto max-w-7xl px-4 pt-16 pb-24 sm:px-6 lg:px-8">
         <div className="mx-auto max-w-3xl space-y-6 text-center">
           <div className="inline-flex items-center gap-2 rounded-full bg-blue-50 px-3 py-1 text-xs font-semibold text-blue-700 ring-1 ring-blue-700/10 ring-inset">
             Digital Grid Connection • VDE Data Set 3.0 Standard
@@ -109,7 +81,7 @@ export default function HomePage() {
             </p>
           </div>
         </section>
-      </main>
+      </section>
 
       {/* Footer */}
       <footer className="mt-12 border-t border-slate-200 bg-white">

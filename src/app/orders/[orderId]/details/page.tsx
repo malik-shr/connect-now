@@ -55,7 +55,7 @@ export default async function Details({
 
   // --- FRONTEND LOGIC: Safe Semantic UI Construction ---
   return (
-    <div className="min-h-screen bg-slate-50 px-4 py-10 font-sans text-slate-900 antialiased">
+    <div className="min-h-[calc(100vh-4rem)] px-4 py-10">
       <div className="mx-auto max-w-4xl rounded-2xl border border-slate-200 bg-white p-6 shadow-xl sm:p-10">
         {/* Context Header */}
         <header className="mb-8 border-b border-slate-200 pb-5">
