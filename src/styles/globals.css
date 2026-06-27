@@ -3,6 +3,18 @@
 @theme {
   --font-sans: var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif,
     "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+
+  --color-blue-50: #fff5f5;
+  --color-blue-100: #ffe3e3;
+  --color-blue-200: #ffd1d1;
+  --color-blue-300: #ffb3b3;
+  --color-blue-400: #ff8080;
+  --color-blue-500: #ff3333;
+  --color-blue-600: #E40000;
+  --color-blue-700: #c40000;
+  --color-blue-800: #9e0000;
+  --color-blue-900: #7a0000;
+  --color-blue-950: #4a0000;
 }
 
 /* Yazio-style step transition */
