@@ -50,6 +50,10 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       firstName = "Max";
       lastName = "Weber";
       role = "installer";
+    } else if (email.includes("admin") || email.includes("vnb")) {
+      firstName = "Dr. Andrea";
+      lastName = "Kraft";
+      role = "admin";
     }
 
     const newUser: User = {

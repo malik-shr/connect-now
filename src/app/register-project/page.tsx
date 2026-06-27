@@ -1,24 +1,26 @@
-import { redirect } from "next/navigation";
+"use client";
 
-async function createProject(formData: FormData) {
-  "use server";
-
-  const projectName = formData.get("project_name");
-
-  // Basic validation fallback for empty entries
-  if (
-    !projectName ||
-    typeof projectName !== "string" ||
-    projectName.trim() === ""
-  ) {
-    redirect("/register?error=invalid_name");
-  }
-
-  // Redirect cleanly to our dynamic dataset wizard form
-  redirect(`/orders/${encodeURIComponent(projectName.trim())}`);
-}
+import { useRouter } from "next/navigation";
+import { useState } from "react";
+import { useProjects } from "~/app/_context/ProjectContext";
 
 export default function Register() {
+  const { createOrder } = useProjects();
+  const router = useRouter();
+  
+  const [projectName, setProjectName] = useState("");
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!projectName.trim()) return;
+
+    const slug = encodeURIComponent(projectName.trim().replace(/\s+/g, "-"));
+    createOrder(slug, projectName.trim(), "10,0 kWp");
+    
+    // Redirect cleanly to the newly created project workspace
+    router.push(`/orders/${slug}`);
+  };
+
   return (
     <div className="flex min-h-[calc(100vh-4rem)] flex-col justify-between">
       {/* Main Container */}
@@ -36,7 +38,7 @@ export default function Register() {
           </div>
 
           {/* Registration Form */}
-          <form action={createProject} className="space-y-6">
+          <form onSubmit={handleSubmit} className="space-y-6">
             <div className="space-y-1.5">
               <label
                 htmlFor="project_name"
@@ -53,6 +55,8 @@ export default function Register() {
                   name="project_name"
                   id="project_name"
                   required
+                  value={projectName}
+                  onChange={(e) => setProjectName(e.target.value)}
                   placeholder="e.g., PV-Solar-2026"
                   className="w-full rounded-lg border border-slate-300 bg-white py-3 pr-3 pl-8 font-mono text-sm font-bold transition placeholder:text-slate-400 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 focus:outline-none"
                 />

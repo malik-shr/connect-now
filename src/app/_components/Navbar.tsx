@@ -18,13 +18,29 @@ export default function Navbar() {
           </span>
         </Link>
         <div className="flex items-center gap-1 sm:gap-2">
-          {isLoggedIn && (
+          {isLoggedIn && user?.role === "admin" && (
             <Link
-              href="/orders"
+              href="/admin"
               className="rounded-lg px-3 py-2 text-sm font-semibold text-slate-600 transition hover:bg-slate-100 hover:text-slate-900"
             >
-              My Projects
+              VNB Portal
             </Link>
+          )}
+          {isLoggedIn && (
+            <>
+              <Link
+                href="/orders"
+                className="rounded-lg px-3 py-2 text-sm font-semibold text-slate-600 transition hover:bg-slate-100 hover:text-slate-900"
+              >
+                My Projects
+              </Link>
+              <Link
+                href="/account"
+                className="rounded-lg px-3 py-2 text-sm font-semibold text-slate-600 transition hover:bg-slate-100 hover:text-slate-900"
+              >
+                Mein Konto
+              </Link>
+            </>
           )}
 
           {!isLoggedIn ? (

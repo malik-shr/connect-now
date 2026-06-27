@@ -3,6 +3,7 @@
 import { use, useState, useEffect, useRef } from "react";
 import Link from "next/link";
 import BackButton from "~/app/_components/BackButton";
+import { useProjects } from "~/app/_context/ProjectContext";
 
 interface Message {
   id: string;
@@ -61,9 +62,22 @@ export default function SupportPage({
   params: Promise<{ orderId: string }>;
 }) {
   const { orderId } = use(params);
+  
+  // Connect to Project Context
+  const { 
+    orders, 
+    installers, 
+    updateOrderStatus, 
+    assignInstaller, 
+    updateOrderDocumentStatus 
+  } = useProjects();
+
+  const order = orders.find((o) => o.id === orderId);
 
   // States
-  const [viewState, setViewState] = useState<"intake" | "matching" | "chat">("intake");
+  const [viewState, setViewState] = useState<"intake" | "matching" | "chat">(
+    order?.assignedInstallerId ? "chat" : "intake"
+  );
   const [selectedTopic, setSelectedTopic] = useState("docs");
   const [description, setDescription] = useState(TOPICS[0]!.defaultText);
   const [matchingIndex, setMatchingIndex] = useState(0);
@@ -81,6 +95,34 @@ export default function SupportPage({
   useEffect(() => {
     chatEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages, isTyping]);
+
+  // Load existing chat messages if installer already assigned
+  useEffect(() => {
+    if (order?.assignedInstallerId && messages.length === 0) {
+      const topicObj = TOPICS[0];
+      const initialMsgs: Message[] = [
+        {
+          id: "sys-1",
+          sender: "system",
+          text: `Support-Ticket #SR-8492 geladen. Kategorie: ${topicObj?.title}.`,
+          timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+        },
+        {
+          id: "sys-2",
+          sender: "system",
+          text: "Installateur Max Weber ist im Chat aktiv.",
+          timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+        },
+        {
+          id: "msg-reply-1",
+          sender: "installer",
+          text: "Hallo! Ich sehe, Ihr Vorgang wurde mir zugeordnet. Wie kann ich Ihnen bei Ihren Unterlagen helfen?",
+          timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+        }
+      ];
+      setMessages(initialMsgs);
+    }
+  }, [order, messages.length]);
 
   // Handle Topic Change
   const handleTopicSelect = (topicId: string) => {
@@ -108,6 +150,9 @@ export default function SupportPage({
       }, 700);
       return () => clearTimeout(timer);
     } else {
+      // Save assignment to ProjectContext
+      assignInstaller(orderId, "inst-1");
+
       // Initialize Chat
       const topicObj = TOPICS.find((t) => t.id === selectedTopic);
       const initialMsgs: Message[] = [
@@ -163,7 +208,7 @@ export default function SupportPage({
 
       return () => clearTimeout(timer);
     }
-  }, [viewState, matchingIndex]);
+  }, [viewState, matchingIndex, assignInstaller, orderId, selectedTopic, description]);
 
   // Send Message
   const handleSendMessage = (textToSend?: string, attachedFile?: Message["file"]) => {
@@ -192,7 +237,9 @@ export default function SupportPage({
       let replyText = "";
 
       if (attachedFile) {
-        // User uploaded a document!
+        // Update document status in global project store!
+        updateOrderDocumentStatus(orderId, "vollmacht", "complete");
+
         replyText = "Hervorragend, vielen Dank! Das Dokument 'Vollmacht_unterschrieben.pdf' sieht absolut vollständig aus: Name, Adresse und Unterschrift passen.";
         setMessages((prev) => [
           ...prev,
@@ -204,11 +251,15 @@ export default function SupportPage({
           }
         ]);
 
-        // Trigger double-response: submission confirmation!
+        // Trigger double-response: submission confirmation and status change!
         setTimeout(() => {
           setIsTyping(true);
           setTimeout(() => {
             setIsTyping(false);
+
+            // Update order status in global project store!
+            updateOrderStatus(orderId, "In Prüfung");
+
             setMessages((prev) => [
               ...prev,
               {
@@ -274,6 +325,9 @@ export default function SupportPage({
       type: "application/pdf",
     });
   };
+
+  // Get assigned installer details
+  const activeInstaller = installers.find(i => i.id === order?.assignedInstallerId) || installers[0]!;
 
   return (
     <div className="min-h-[calc(100vh-4rem)] px-4 py-10">
@@ -447,10 +501,10 @@ export default function SupportPage({
                     </span>
                   </div>
                   <div>
-                    <h3 className="text-base font-bold text-slate-800">Max Weber</h3>
+                    <h3 className="text-base font-bold text-slate-800">{activeInstaller.name}</h3>
                     <p className="text-xs text-slate-400">Zertifizierter Partner</p>
                     <div className="flex items-center gap-1 mt-0.5">
-                      <span className="text-xs text-slate-600">Weber Solartechnik</span>
+                      <span className="text-xs text-slate-600">{activeInstaller.company}</span>
                     </div>
                   </div>
                 </div>
@@ -458,7 +512,7 @@ export default function SupportPage({
                 <div className="space-y-3">
                   <div className="flex justify-between items-center text-xs">
                     <span className="text-slate-400">Bewertung:</span>
-                    <span className="font-bold text-slate-700">⭐️ 4.9 (142)</span>
+                    <span className="font-bold text-slate-700">{activeInstaller.rating}</span>
                   </div>
                   <div className="flex justify-between items-center text-xs">
                     <span className="text-slate-400">Erfahrungsgrad:</span>
@@ -491,7 +545,7 @@ export default function SupportPage({
                   <div className="flex justify-between items-center">
                     <span className="text-slate-400">Kategorie:</span>
                     <span className="font-semibold text-slate-800">
-                      {TOPICS.find((t) => t.id === selectedTopic)?.title}
+                      {TOPICS.find((t) => t.id === selectedTopic)?.title || "Unterlagen & Vollmachten"}
                     </span>
                   </div>
                   <div className="flex justify-between items-center">
@@ -501,7 +555,7 @@ export default function SupportPage({
                 </div>
 
                 {/* Helper actions box for Hackathon demo */}
-                {selectedTopic === "docs" && ticketStatus === "Aktiv" && (
+                {ticketStatus === "Aktiv" && (
                   <div className="mt-4 p-3 bg-blue-50/50 rounded-xl border border-blue-100">
                     <span className="text-[11px] font-bold text-blue-700 block mb-1">
                       💡 Hackathon Demo Helfer
@@ -528,7 +582,7 @@ export default function SupportPage({
               <div className="bg-slate-50 border-b border-slate-200 px-6 py-4 flex items-center justify-between">
                 <div>
                   <h3 className="text-sm font-bold text-slate-800 flex items-center gap-1.5">
-                    Live-Chat mit Max Weber
+                    Live-Chat mit {activeInstaller.name}
                   </h3>
                   <p className="text-[11px] text-slate-500">
                     Ihr Vorgang wird direkt bearbeitet.
