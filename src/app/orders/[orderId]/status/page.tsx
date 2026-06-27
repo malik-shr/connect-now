@@ -13,14 +13,14 @@ interface ProcessStep {
   description: string;
   state: StepState;
   date?: string;
-  actor: "Kunde" | "Installateur" | "Netzbetreiber";
+  actor: "Customer" | "Installer" | "Grid operator";
 }
 
 // Style helpers
 const actorBadge: Record<ProcessStep["actor"], string> = {
-  Kunde: "bg-emerald-100 text-emerald-700",
-  Installateur: "bg-amber-100 text-amber-700",
-  Netzbetreiber: "bg-blue-100 text-blue-700",
+  Customer: "bg-emerald-100 text-emerald-700",
+  Installer: "bg-amber-100 text-amber-700",
+  "Grid operator": "bg-blue-100 text-blue-700",
 };
 
 const docStatusMeta: Record<
@@ -28,17 +28,17 @@ const docStatusMeta: Record<
   { label: string; className: string; icon: string }
 > = {
   complete: {
-    label: "Vollständig",
+    label: "Complete",
     className: "bg-emerald-50 text-emerald-700 border-emerald-200",
     icon: "✓",
   },
   review: {
-    label: "In Prüfung",
+    label: "Under review",
     className: "bg-blue-50 text-blue-700 border-blue-200",
     icon: "⏳",
   },
   missing: {
-    label: "Fehlt",
+    label: "Missing",
     className: "bg-red-50 text-red-700 border-red-200",
     icon: "!",
   },
@@ -58,9 +58,9 @@ export default function StatusPage({
     return (
       <div className="min-h-screen flex items-center justify-center">
         <div className="text-center space-y-3">
-          <p className="text-sm font-bold text-slate-500">Vorgang nicht gefunden.</p>
+          <p className="text-sm font-bold text-slate-500">Case not found.</p>
           <Link href="/orders" className="text-xs text-blue-600 font-bold underline">
-            Zurück zur Übersicht
+            Back to overview
           </Link>
         </div>
       </div>
@@ -69,49 +69,49 @@ export default function StatusPage({
 
   // Dynamically compute the process steps state based on the current database order status
   const getSteps = (status: Order["status"]): ProcessStep[] => {
-    const isEntwurf = status === "Entwurf";
-    const isEingereicht = status === "Eingereicht";
-    const isInPruefung = status === "In Prüfung";
-    const isGenehmigt = status === "Genehmigt";
+    const isEntwurf = status === "Draft";
+    const isEingereicht = status === "Submitted";
+    const isInPruefung = status === "Under review";
+    const isGenehmigt = status === "Approved";
 
     return [
       {
         id: "submitted",
-        title: "Anmeldung eingereicht",
-        description: "Der Installateur hat das Netzanschlussbegehren für Ihre PV-Anlage digital übermittelt.",
+        title: "Application submitted",
+        description: "The installer has digitally submitted the grid connection request for your PV system.",
         state: isEntwurf ? "pending" : (isEingereicht ? "current" : "done"),
-        date: isEntwurf ? undefined : "12.06.2026",
-        actor: "Installateur",
+        date: isEntwurf ? undefined : "12/06/2026",
+        actor: "Installer",
       },
       {
         id: "completeness",
-        title: "Vollständigkeitsprüfung",
-        description: "Die Unterlagen wurden automatisch (KI-gestützt) auf Vollständigkeit und Plausibilität geprüft.",
+        title: "Completeness check",
+        description: "The documents were automatically checked (AI-assisted) for completeness and plausibility.",
         state: isEntwurf || isEingereicht ? "pending" : (isInPruefung ? "current" : "done"),
-        date: isEntwurf || isEingereicht ? undefined : "13.06.2026",
-        actor: "Netzbetreiber",
+        date: isEntwurf || isEingereicht ? undefined : "13/06/2026",
+        actor: "Grid operator",
       },
       {
         id: "review",
-        title: "Fachliche Prüfung durch Netzbetreiber",
-        description: "Der Netzbetreiber prüft aktuell die technischen Angaben Ihres Anschlussbegehrens.",
+        title: "Technical review by grid operator",
+        description: "The grid operator is currently reviewing the technical details of your connection request.",
         state: isGenehmigt ? "done" : (isInPruefung ? "current" : "pending"),
-        date: isInPruefung ? "seit heute" : isGenehmigt ? "18.06.2026" : undefined,
-        actor: "Netzbetreiber",
+        date: isInPruefung ? "today" : isGenehmigt ? "18/06/2026" : undefined,
+        actor: "Grid operator",
       },
       {
         id: "approval",
-        title: "Netzanschlusszusage",
-        description: "Nach erfolgreicher Prüfung erhalten Sie die offizielle Zusage zum Netzanschluss.",
+        title: "Grid connection approval",
+        description: "After a successful review, you will receive the official approval for the grid connection.",
         state: isGenehmigt ? "current" : "pending",
-        actor: "Netzbetreiber",
+        actor: "Grid operator",
       },
       {
         id: "completion",
-        title: "Fertigmeldung & Inbetriebnahme",
-        description: "Der Installateur reicht die Fertigmeldung ein, anschließend erfolgt die Inbetriebnahme.",
+        title: "Completion notice & commissioning",
+        description: "The installer submits the completion notice, after which commissioning takes place.",
         state: "pending",
-        actor: "Installateur",
+        actor: "Installer",
       },
     ];
   };
@@ -138,13 +138,13 @@ export default function StatusPage({
               <BackButton href={`/orders/${orderId}`} />
             </div>
             <span className="text-xs font-bold tracking-wider text-blue-600 uppercase">
-              Status-Portal · Netzanschluss
+              Status portal · Grid connection
             </span>
             <h1 className="mt-1 text-2xl font-extrabold tracking-tight text-slate-900 sm:text-3xl">
-              Wo steht meine Anfrage?
+              Where does my request stand?
             </h1>
             <p className="mt-2 text-sm text-slate-500">
-              Vorgangsnummer / Order-ID:{" "}
+              Case number / Order ID:{" "}
               <span className="rounded bg-slate-100 px-2 py-0.5 font-mono font-bold text-slate-800">
                 {order.id}
               </span>
@@ -155,13 +155,13 @@ export default function StatusPage({
           <div className="mt-6 flex flex-col gap-4 rounded-xl bg-blue-50/60 p-5 sm:flex-row sm:items-center sm:justify-between">
             <div>
               <p className="text-xs font-semibold tracking-wide text-blue-600 uppercase">
-                Aktueller Status
+                Current status
               </p>
               <p className="mt-1 text-lg font-bold text-slate-800">
-                {currentStep?.title ?? "Abgeschlossen"}
+                {currentStep?.title ?? "Completed"}
               </p>
               <p className="mt-0.5 text-sm text-slate-500">
-                {currentStep?.description ?? "Ihr Vorgang ist vollständig bearbeitet."}
+                {currentStep?.description ?? "Your case has been fully processed."}
               </p>
             </div>
             <div className="shrink-0 text-center">
@@ -169,7 +169,7 @@ export default function StatusPage({
                 {progress}%
               </div>
               <p className="text-[11px] font-medium text-slate-400">
-                {doneCount} von {steps.length} Schritten
+                {doneCount} of {steps.length} steps
               </p>
             </div>
           </div>
@@ -190,10 +190,10 @@ export default function StatusPage({
               </span>
               <div className="text-sm">
                 <p className="font-semibold text-red-800">
-                  {missingDocs.length} Dokument{missingDocs.length > 1 ? "e" : ""} fehlt noch
+                  {missingDocs.length} document{missingDocs.length > 1 ? "s" : ""} still missing
                 </p>
                 <p className="mt-0.5 text-red-700">
-                  Bitte reichen Sie die fehlenden Unterlagen digital nach, damit die Bearbeitung fortgesetzt werden kann.
+                  Please submit the missing documents digitally so that processing can continue.
                 </p>
               </div>
             </div>
@@ -202,7 +202,7 @@ export default function StatusPage({
 
         {/* Process Timeline */}
         <section className="rounded-2xl border border-slate-200 bg-white p-6 shadow-xl sm:p-10">
-          <h2 className="mb-6 text-lg font-bold text-slate-800">Bearbeitungsverlauf</h2>
+          <h2 className="mb-6 text-lg font-bold text-slate-800">Processing history</h2>
 
           <ol className="relative">
             {steps.map((step, index) => {
@@ -246,7 +246,7 @@ export default function StatusPage({
                       </span>
                       {step.state === "current" && (
                         <span className="rounded-full bg-blue-600 px-2 py-0.5 text-[10px] font-bold text-white">
-                          Aktuell
+                          Current
                         </span>
                       )}
                     </div>
@@ -263,9 +263,9 @@ export default function StatusPage({
 
         {/* Documents Overview */}
         <section className="rounded-2xl border border-slate-200 bg-white p-6 shadow-xl sm:p-10">
-          <h2 className="mb-1 text-lg font-bold text-slate-800">Unterlagen</h2>
+          <h2 className="mb-1 text-lg font-bold text-slate-800">Documents</h2>
           <p className="mb-6 text-sm text-slate-500 font-medium">
-            Übersicht aller für den Netzanschluss erforderlichen Dokumente.
+            Overview of all documents required for the grid connection.
           </p>
 
           <ul className="space-y-3">
@@ -290,7 +290,7 @@ export default function StatusPage({
                         onClick={() => handleUploadDoc(doc.id)}
                         className="cursor-pointer rounded-lg bg-blue-600 px-3 py-1.5 text-xs font-semibold text-white shadow transition-all hover:bg-blue-700 focus:ring-2 focus:ring-blue-500/50 focus:outline-none"
                       >
-                        Hochladen
+                        Upload
                       </button>
                     )}
                   </div>
@@ -306,13 +306,13 @@ export default function StatusPage({
             href={`/orders/${orderId}`}
             className="text-sm font-medium text-slate-500 transition hover:text-slate-800"
           >
-            ← Zurück zum Vorgang
+            ← Back to case
           </Link>
           <Link
             href={`/orders/${orderId}/details`}
             className="text-sm font-semibold text-blue-600 transition hover:text-blue-700"
           >
-            Daten bearbeiten →
+            Edit data →
           </Link>
         </div>
       </div>

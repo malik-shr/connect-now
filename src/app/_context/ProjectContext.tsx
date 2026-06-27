@@ -12,7 +12,7 @@ export interface Order {
   id: string;
   asset: string;
   power: string;
-  status: "Entwurf" | "Eingereicht" | "In Prüfung" | "Genehmigt";
+  status: "Draft" | "Submitted" | "Under review" | "Approved";
   updated: string;
   assignedInstallerId: string | null;
   ownerEmail: string;
@@ -44,62 +44,62 @@ const ProjectContext = createContext<ProjectContextType | undefined>(undefined);
 const INITIAL_ORDERS: Order[] = [
   {
     id: "pv-halle-nord",
-    asset: "PV-Aufdachanlage (Nord)",
-    power: "9,8 kWp",
-    status: "In Prüfung",
-    updated: "26.06.2026",
+    asset: "PV rooftop system (North)",
+    power: "9.8 kWp",
+    status: "Under review",
+    updated: "26/06/2026",
     assignedInstallerId: "inst-1",
     ownerEmail: "user1@connect-now.io",
     documents: [
-      { id: "e8", label: "Datenblatt Wechselrichter (E.8)", status: "complete" },
-      { id: "lageplan", label: "Lageplan / Übersichtsschaltplan", status: "complete" },
-      { id: "messkonzept", label: "Messkonzept", status: "review" },
-      { id: "vollmacht", label: "Vollmacht des Anlagenbetreibers", status: "missing" },
+      { id: "e8", label: "Inverter data sheet (E.8)", status: "complete" },
+      { id: "lageplan", label: "Site plan / single-line diagram", status: "complete" },
+      { id: "messkonzept", label: "Metering concept", status: "review" },
+      { id: "vollmacht", label: "Power of attorney of the system operator", status: "missing" },
     ],
   },
   {
     id: "solar-speicher-sued",
-    asset: "PV mit Speicher (Süd)",
-    power: "12,4 kWp",
-    status: "Eingereicht",
-    updated: "24.06.2026",
+    asset: "PV with battery storage (South)",
+    power: "12.4 kWp",
+    status: "Submitted",
+    updated: "24/06/2026",
     assignedInstallerId: "inst-3",
     ownerEmail: "user1@connect-now.io",
     documents: [
-      { id: "e8", label: "Datenblatt Wechselrichter (E.8)", status: "review" },
-      { id: "lageplan", label: "Lageplan / Übersichtsschaltplan", status: "complete" },
-      { id: "messkonzept", label: "Messkonzept", status: "complete" },
-      { id: "vollmacht", label: "Vollmacht des Anlagenbetreibers", status: "complete" },
+      { id: "e8", label: "Inverter data sheet (E.8)", status: "review" },
+      { id: "lageplan", label: "Site plan / single-line diagram", status: "complete" },
+      { id: "messkonzept", label: "Metering concept", status: "complete" },
+      { id: "vollmacht", label: "Power of attorney of the system operator", status: "complete" },
     ],
   },
   {
     id: "wp-hof-sued",
-    asset: "PV + Wärmepumpe",
-    power: "15,0 kWp",
-    status: "Entwurf",
-    updated: "20.06.2026",
+    asset: "PV + heat pump",
+    power: "15.0 kWp",
+    status: "Draft",
+    updated: "20/06/2026",
     assignedInstallerId: "inst-1",
     ownerEmail: "user2@connect-now.io",
     documents: [
-      { id: "e8", label: "Datenblatt Wechselrichter (E.8)", status: "missing" },
-      { id: "lageplan", label: "Lageplan / Übersichtsschaltplan", status: "missing" },
-      { id: "messkonzept", label: "Messkonzept", status: "complete" },
-      { id: "vollmacht", label: "Vollmacht des Anlagenbetreibers", status: "missing" },
+      { id: "e8", label: "Inverter data sheet (E.8)", status: "missing" },
+      { id: "lageplan", label: "Site plan / single-line diagram", status: "missing" },
+      { id: "messkonzept", label: "Metering concept", status: "complete" },
+      { id: "vollmacht", label: "Power of attorney of the system operator", status: "missing" },
     ],
   },
   {
     id: "pv-schulstrasse",
-    asset: "Dachanlage Grundschule",
-    power: "29,5 kWp",
-    status: "Entwurf",
-    updated: "22.06.2026",
+    asset: "Rooftop system primary school",
+    power: "29.5 kWp",
+    status: "Draft",
+    updated: "22/06/2026",
     assignedInstallerId: null,
     ownerEmail: "user2@connect-now.io",
     documents: [
-      { id: "e8", label: "Datenblatt Wechselrichter (E.8)", status: "missing" },
-      { id: "lageplan", label: "Lageplan / Übersichtsschaltplan", status: "complete" },
-      { id: "messkonzept", label: "Messkonzept", status: "missing" },
-      { id: "vollmacht", label: "Vollmacht des Anlagenbetreibers", status: "missing" },
+      { id: "e8", label: "Inverter data sheet (E.8)", status: "missing" },
+      { id: "lageplan", label: "Site plan / single-line diagram", status: "complete" },
+      { id: "messkonzept", label: "Metering concept", status: "missing" },
+      { id: "vollmacht", label: "Power of attorney of the system operator", status: "missing" },
     ],
   },
 ];
@@ -119,7 +119,7 @@ const INITIAL_INSTALLERS: Installer[] = [
     company: "Solar Ost GmbH",
     certified: false,
     region: "10115 Berlin",
-    rating: "Neu",
+    rating: "New",
   },
   {
     id: "inst-3",
@@ -137,8 +137,8 @@ export function ProjectProvider({ children }: { children: React.ReactNode }) {
 
   useEffect(() => {
     try {
-      const storedOrders = localStorage.getItem("connectNowOrders");
-      const storedInstallers = localStorage.getItem("connectNowInstallers");
+      const storedOrders = localStorage.getItem("connectNowOrders_v2");
+      const storedInstallers = localStorage.getItem("connectNowInstallers_v2");
 
       if (storedOrders) {
         // Migration safeguard: check if stored order objects have ownerEmail
@@ -147,20 +147,20 @@ export function ProjectProvider({ children }: { children: React.ReactNode }) {
         
         if (needsMigration) {
           // Overwrite with initial seeded ones to avoid bugs
-          localStorage.setItem("connectNowOrders", JSON.stringify(INITIAL_ORDERS));
+          localStorage.setItem("connectNowOrders_v2", JSON.stringify(INITIAL_ORDERS));
           setOrders(INITIAL_ORDERS);
         } else {
           setOrders(parsed);
         }
       } else {
-        localStorage.setItem("connectNowOrders", JSON.stringify(INITIAL_ORDERS));
+        localStorage.setItem("connectNowOrders_v2", JSON.stringify(INITIAL_ORDERS));
         setOrders(INITIAL_ORDERS);
       }
 
       if (storedInstallers) {
         setInstallers(JSON.parse(storedInstallers) as Installer[]);
       } else {
-        localStorage.setItem("connectNowInstallers", JSON.stringify(INITIAL_INSTALLERS));
+        localStorage.setItem("connectNowInstallers_v2", JSON.stringify(INITIAL_INSTALLERS));
         setInstallers(INITIAL_INSTALLERS);
       }
     } catch (e) {
@@ -173,20 +173,20 @@ export function ProjectProvider({ children }: { children: React.ReactNode }) {
       id: id,
       asset: asset,
       power: power,
-      status: "Entwurf",
-      updated: new Date().toLocaleDateString("de-DE"),
+      status: "Draft",
+      updated: new Date().toLocaleDateString("en-GB"),
       assignedInstallerId: null,
       ownerEmail: ownerEmail,
       documents: [
-        { id: "e8", label: "Datenblatt Wechselrichter (E.8)", status: "missing" },
-        { id: "lageplan", label: "Lageplan / Übersichtsschaltplan", status: "missing" },
-        { id: "messkonzept", label: "Messkonzept", status: "missing" },
-        { id: "vollmacht", label: "Vollmacht des Anlagenbetreibers", status: "missing" },
+        { id: "e8", label: "Inverter data sheet (E.8)", status: "missing" },
+        { id: "lageplan", label: "Site plan / single-line diagram", status: "missing" },
+        { id: "messkonzept", label: "Metering concept", status: "missing" },
+        { id: "vollmacht", label: "Power of attorney of the system operator", status: "missing" },
       ],
     };
 
     const updated = [newOrder, ...orders];
-    localStorage.setItem("connectNowOrders", JSON.stringify(updated));
+    localStorage.setItem("connectNowOrders_v2", JSON.stringify(updated));
     setOrders(updated);
   };
 
@@ -196,12 +196,12 @@ export function ProjectProvider({ children }: { children: React.ReactNode }) {
         return {
           ...o,
           status: status,
-          updated: new Date().toLocaleDateString("de-DE"),
+          updated: new Date().toLocaleDateString("en-GB"),
         };
       }
       return o;
     });
-    localStorage.setItem("connectNowOrders", JSON.stringify(updated));
+    localStorage.setItem("connectNowOrders_v2", JSON.stringify(updated));
     setOrders(updated);
   };
 
@@ -211,12 +211,12 @@ export function ProjectProvider({ children }: { children: React.ReactNode }) {
         return {
           ...o,
           assignedInstallerId: installerId,
-          updated: new Date().toLocaleDateString("de-DE"),
+          updated: new Date().toLocaleDateString("en-GB"),
         };
       }
       return o;
     });
-    localStorage.setItem("connectNowOrders", JSON.stringify(updated));
+    localStorage.setItem("connectNowOrders_v2", JSON.stringify(updated));
     setOrders(updated);
   };
 
@@ -232,12 +232,12 @@ export function ProjectProvider({ children }: { children: React.ReactNode }) {
         return {
           ...o,
           documents: updatedDocs,
-          updated: new Date().toLocaleDateString("de-DE"),
+          updated: new Date().toLocaleDateString("en-GB"),
         };
       }
       return o;
     });
-    localStorage.setItem("connectNowOrders", JSON.stringify(updated));
+    localStorage.setItem("connectNowOrders_v2", JSON.stringify(updated));
     setOrders(updated);
   };
 
@@ -248,7 +248,7 @@ export function ProjectProvider({ children }: { children: React.ReactNode }) {
       }
       return i;
     });
-    localStorage.setItem("connectNowInstallers", JSON.stringify(updated));
+    localStorage.setItem("connectNowInstallers_v2", JSON.stringify(updated));
     setInstallers(updated);
   };
 
@@ -259,7 +259,7 @@ export function ProjectProvider({ children }: { children: React.ReactNode }) {
       }
       return i;
     });
-    localStorage.setItem("connectNowInstallers", JSON.stringify(updated));
+    localStorage.setItem("connectNowInstallers_v2", JSON.stringify(updated));
     setInstallers(updated);
   };
 

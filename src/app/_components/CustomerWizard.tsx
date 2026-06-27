@@ -6,27 +6,27 @@ import { useMemo, useState } from "react";
 import DetailTabs from "./DetailTabs";
 import BackButton from "./BackButton";
 
-// Kurzlabels für die anklickbare Schrittnavigation
+// Short labels for the clickable step navigation
 const STEP_LABELS: Record<string, string> = {
-  scan: "Ausweis",
+  scan: "ID card",
   name: "Name",
-  standort: "Standort",
-  sameHome: "Wohnort",
-  home: "Wohnadresse",
-  contact: "Kontakt",
-  verguetung: "Vergütung",
-  zaehler: "Zähler",
+  standort: "Location",
+  sameHome: "Residence",
+  home: "Home address",
+  contact: "Contact",
+  verguetung: "Compensation",
+  zaehler: "Meter",
   iban: "IBAN",
-  uis: "Bestätigung",
-  review: "Übersicht",
+  uis: "Confirmation",
+  review: "Summary",
 };
 
 // ============================================================================
-// CUSTOMER WIZARD — Yazio-Style, eine Frage pro Screen.
-// Ersetzt das Formular auf /details/customer. Adressen werden über ein
-// Autocomplete-Feld zusammengesetzt (Straße + Nr + PLZ + Stadt automatisch).
-// Die Antworten werden am Ende auf die Schema-Feld-IDs gemappt, damit sie zum
-// selben Datensatz wie die Installateur-Seite passen.
+// CUSTOMER WIZARD — Yazio-style, one question per screen.
+// Replaces the form on /details/customer. Addresses are assembled via an
+// autocomplete field (street + number + postal code + city automatically).
+// At the end, the answers are mapped onto the schema field IDs so they match
+// the same data set as the installer page.
 // ============================================================================
 
 interface Address {
@@ -60,7 +60,7 @@ const EMPTY: Answers = {
   iban: "",
 };
 
-// --- Mock-Adressdatenbank (später: Google Places / OSM Nominatim) ----------
+// --- Mock address database (later: Google Places / OSM Nominatim) ----------
 const ADDRESS_DB: Address[] = [
   { street: "Sonnenallee", number: "100", plz: "12059", city: "Berlin" },
   { street: "Musterstraße", number: "12", plz: "10115", city: "Berlin" },
@@ -80,21 +80,21 @@ function fmt(a: Address) {
 
 const VERGUETUNG_OPTIONS = [
   {
-    value: "Einspeisevergütung nach § 21 Abs. 1 EEG",
-    label: "Feste Einspeisevergütung",
-    desc: "Sie bekommen pro eingespeiste Kilowattstunde einen festen Betrag. Einfach & verlässlich.",
+    value: "Feed-in tariff pursuant to § 21 Abs. 1 EEG",
+    label: "Fixed feed-in tariff",
+    desc: "You receive a fixed amount per kilowatt-hour fed in. Simple & reliable.",
     icon: "💶",
   },
   {
-    value: "Geförderte Direktvermarktung (Marktprämie) nach § 20 EEG",
-    label: "Direktvermarktung",
-    desc: "Ihr Strom wird an der Börse vermarktet – lohnt sich eher bei größeren Anlagen.",
+    value: "Subsidized direct marketing (market premium) pursuant to § 20 EEG",
+    label: "Direct marketing",
+    desc: "Your electricity is sold on the exchange – more worthwhile for larger systems.",
     icon: "📈",
   },
   {
-    value: "Unentgeltliche Abnahme",
-    label: "Keine Vergütung",
-    desc: "Sie verzichten auf eine Vergütung für den eingespeisten Strom.",
+    value: "Free of charge offtake",
+    label: "No compensation",
+    desc: "You waive any compensation for the electricity fed in.",
     icon: "🤝",
   },
 ];
@@ -143,7 +143,7 @@ function AddressPicker({
           }}
           className="shrink-0 text-sm font-semibold text-emerald-700 hover:text-emerald-900"
         >
-          Ändern
+          Change
         </button>
       </div>
     );
@@ -163,7 +163,7 @@ function AddressPicker({
             setQuery(e.target.value);
             setOpen(true);
           }}
-          placeholder="Adresse eingeben, z. B. Sonnenallee…"
+          placeholder="Enter address, e.g. Sonnenallee…"
           className="w-full rounded-2xl border-2 border-slate-200 bg-white py-4 pr-4 pl-12 text-lg transition placeholder:text-slate-400 focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 focus:outline-none"
         />
       </div>
@@ -190,7 +190,7 @@ function AddressPicker({
 
       {open && query.trim().length >= 2 && matches.length === 0 && (
         <p className="mt-3 text-sm text-slate-400">
-          Keine Treffer – versuchen Sie z. B. „Musterstraße" oder „Berlin".
+          No matches – try e.g. &bdquo;Musterstraße&ldquo; or &bdquo;Berlin&ldquo;.
         </p>
       )}
     </div>
@@ -204,9 +204,9 @@ export default function CustomerWizard({ orderId }: { orderId: string }) {
   const [maxStep, setMaxStep] = useState(0);
   const [done, setDone] = useState(false);
 
-  // Dynamische Schrittliste:
-  // - "scan"-Schritt nur im Ausweis-Modus
-  // - "home"-Schritt entfällt, wenn Wohn- = Anlagenadresse
+  // Dynamic step list:
+  // - "scan" step only in ID card mode
+  // - "home" step is omitted when residence = system address
   const stepKeys = useMemo(() => {
     const keys = ["intro", "start"];
     if (a.mode === "upload") keys.push("scan");
@@ -217,7 +217,7 @@ export default function CustomerWizard({ orderId }: { orderId: string }) {
   }, [a.mode, a.sameHome]);
 
   const key = stepKeys[stepIdx]!;
-  const total = stepKeys.length - 1; // intro zählt nicht zum Fortschritt
+  const total = stepKeys.length - 1; // intro does not count toward progress
   const progress = Math.round((Math.min(stepIdx, total) / total) * 100);
 
   function set<K extends keyof Answers>(k: K, v: Answers[K]) {
@@ -232,12 +232,12 @@ export default function CustomerWizard({ orderId }: { orderId: string }) {
   function back() {
     setStepIdx((i) => Math.max(0, i - 1));
   }
-  // Sprung zu einem bereits besuchten Schritt (anklickbare Navigation)
+  // Jump to an already visited step (clickable navigation)
   function goto(i: number) {
     if (i <= maxStep) setStepIdx(Math.max(0, i));
   }
 
-  // Ausweis erkannt → Name + Anlagenadresse übernehmen, weiter zur Wohnadresse
+  // ID card recognized → apply name + system address, continue to home address
   function applyScan(d: {
     vorname: string;
     nachname: string;
@@ -254,12 +254,12 @@ export default function CustomerWizard({ orderId }: { orderId: string }) {
     setMaxStep((m) => Math.max(m, target));
   }
 
-  // Vom Ausweis-Schritt doch manuell: aktueller Index zeigt danach auf "name"
+  // Switching to manual from the ID card step: current index then points to "name"
   function switchToManual() {
     set("mode", "manual");
   }
 
-  // Validierung pro Schritt → steuert den "Weiter"-Button
+  // Per-step validation → controls the "Next" button
   const canProceed = (() => {
     switch (key) {
       case "name":
@@ -273,7 +273,7 @@ export default function CustomerWizard({ orderId }: { orderId: string }) {
       case "zaehler":
         return a.zaehler.trim() !== "";
       default:
-        return true; // intro, choice-Schritte (auto-advance), iban (optional), review
+        return true; // intro, choice steps (auto-advance), iban (optional), review
     }
   })();
 
@@ -282,8 +282,8 @@ export default function CustomerWizard({ orderId }: { orderId: string }) {
     const payload = {
       orderId,
       filledBy: "customer",
-      // Mapping auf die Schema-Feld-IDs (ui_schema_pv.json)
-      "1001": "postalische Adresse",
+      // Mapping onto the schema field IDs (ui_schema_pv.json)
+      "1001": "Postal address",
       "1002": a.standort?.street,
       "1003": a.standort?.number,
       "1007": a.standort?.plz,
@@ -297,8 +297,8 @@ export default function CustomerWizard({ orderId }: { orderId: string }) {
       "1109": a.phone,
       "1110": a.email,
       "1111": a.iban,
-      "1112": a.uisOk ? "Beides nicht zutreffend" : "",
-      // Anschlussnehmer = Anlagenbetreiber (Standardfall "Sie selbst")
+      "1112": a.uisOk ? "Neither applies" : "",
+      // Connecting party = system operator (default case "yourself")
       "1201": a.nachname,
       "1202": a.vorname,
       "2018": a.verguetung,
@@ -317,17 +317,17 @@ export default function CustomerWizard({ orderId }: { orderId: string }) {
             🎉
           </div>
           <h1 className="mt-6 text-3xl font-extrabold tracking-tight text-slate-900">
-            Geschafft!
+            All done!
           </h1>
           <p className="mt-3 max-w-md text-slate-500">
-            Ihre Angaben sind übermittelt. Ihr Installateur ergänzt jetzt die
-            technischen Daten – Sie können den Fortschritt jederzeit verfolgen.
+            Your details have been submitted. Your installer will now add the
+            technical data – you can track the progress at any time.
           </p>
           <Link
             href={`/orders/${orderId}/status`}
             className="mt-8 rounded-xl bg-blue-600 px-8 py-4 text-base font-bold text-white shadow transition-all hover:-translate-y-0.5 hover:bg-blue-700"
           >
-            Status ansehen →
+            View status →
           </Link>
         </div>
       </Shell>
@@ -355,33 +355,33 @@ export default function CustomerWizard({ orderId }: { orderId: string }) {
           <Center>
             <div className="text-5xl">☀️</div>
             <h1 className="mt-6 text-3xl font-extrabold tracking-tight text-slate-900 sm:text-4xl">
-              Lassen Sie uns Ihre Solaranlage anmelden
+              Let&apos;s register your solar system
             </h1>
             <p className="mt-3 max-w-md text-lg text-slate-500">
-              Wir stellen Ihnen ein paar einfache Fragen. Dauert nur 2 Minuten –
-              den technischen Teil übernimmt Ihr Installateur.
+              We&apos;ll ask you a few simple questions. It only takes 2 minutes –
+              your installer handles the technical part.
             </p>
-            <PrimaryButton onClick={next}>Los geht&apos;s</PrimaryButton>
+            <PrimaryButton onClick={next}>Let&apos;s go</PrimaryButton>
           </Center>
         )}
 
         {key === "start" && (
           <Question
-            title="Wie möchten Sie beginnen?"
-            subtitle="Sparen Sie sich das Tippen – oder geben Sie alles selbst ein."
+            title="How would you like to start?"
+            subtitle="Save yourself the typing – or enter everything yourself."
           >
             <ChoiceCards
               options={[
                 {
                   value: "upload",
-                  label: "Ausweis hochladen",
-                  desc: "Wir lesen Name und Adresse automatisch aus. Geht in Sekunden.",
+                  label: "Upload ID card",
+                  desc: "We read your name and address automatically. Takes seconds.",
                   icon: "📷",
                 },
                 {
                   value: "manual",
-                  label: "Manuell eingeben",
-                  desc: "Sie tippen Ihre Daten Schritt für Schritt selbst ein.",
+                  label: "Enter manually",
+                  desc: "You type in your data yourself, step by step.",
                   icon: "✍️",
                 },
               ]}
@@ -396,8 +396,8 @@ export default function CustomerWizard({ orderId }: { orderId: string }) {
 
         {key === "scan" && (
           <Question
-            title="Ausweis hochladen"
-            subtitle="Foto oder Scan Ihres Personalausweises. Wir lesen Name und Adresse automatisch aus."
+            title="Upload ID card"
+            subtitle="A photo or scan of your ID card. We read your name and address automatically."
           >
             <IdScanStep onComplete={applyScan} onManual={switchToManual} />
           </Question>
@@ -405,21 +405,21 @@ export default function CustomerWizard({ orderId }: { orderId: string }) {
 
         {key === "name" && (
           <Question
-            title="Wie heißen Sie?"
-            subtitle="Als Betreiber der Anlage."
+            title="What is your name?"
+            subtitle="As the operator of the system."
           >
             <div className="flex flex-col gap-3">
               <TextInput
                 autoFocus
                 value={a.vorname}
                 onChange={(v) => set("vorname", v)}
-                placeholder="Vorname"
+                placeholder="First name"
                 onEnter={() => canProceed && next()}
               />
               <TextInput
                 value={a.nachname}
                 onChange={(v) => set("nachname", v)}
-                placeholder="Nachname"
+                placeholder="Last name"
                 onEnter={() => canProceed && next()}
               />
             </div>
@@ -428,8 +428,8 @@ export default function CustomerWizard({ orderId }: { orderId: string }) {
 
         {key === "standort" && (
           <Question
-            title="Wo wird die Anlage installiert?"
-            subtitle="Tippen Sie die Adresse – PLZ und Stadt füllen wir automatisch aus."
+            title="Where will the system be installed?"
+            subtitle="Type the address – we fill in the postal code and city automatically."
           >
             <AddressPicker
               value={a.standort}
@@ -439,11 +439,11 @@ export default function CustomerWizard({ orderId }: { orderId: string }) {
         )}
 
         {key === "sameHome" && (
-          <Question title="Wohnen Sie an dieser Adresse?">
+          <Question title="Do you live at this address?">
             <ChoiceCards
               options={[
-                { value: "yes", label: "Ja, hier wohne ich", icon: "🏡" },
-                { value: "no", label: "Nein, andere Adresse", icon: "📮" },
+                { value: "yes", label: "Yes, I live here", icon: "🏡" },
+                { value: "no", label: "No, different address", icon: "📮" },
               ]}
               onPick={(v) => {
                 set("sameHome", v === "yes");
@@ -454,7 +454,7 @@ export default function CustomerWizard({ orderId }: { orderId: string }) {
         )}
 
         {key === "home" && (
-          <Question title="Wie lautet Ihre Wohnadresse?">
+          <Question title="What is your home address?">
             <AddressPicker
               value={a.home}
               onSelect={(addr) => set("home", addr)}
@@ -464,8 +464,8 @@ export default function CustomerWizard({ orderId }: { orderId: string }) {
 
         {key === "contact" && (
           <Question
-            title="Wie erreichen wir Sie?"
-            subtitle="Für Rückfragen und Benachrichtigungen zum Status."
+            title="How can we reach you?"
+            subtitle="For questions and status notifications."
           >
             <div className="flex flex-col gap-3">
               <TextInput
@@ -473,13 +473,13 @@ export default function CustomerWizard({ orderId }: { orderId: string }) {
                 type="tel"
                 value={a.phone}
                 onChange={(v) => set("phone", v)}
-                placeholder="Telefonnummer"
+                placeholder="Phone number"
               />
               <TextInput
                 type="email"
                 value={a.email}
                 onChange={(v) => set("email", v)}
-                placeholder="E-Mail-Adresse"
+                placeholder="Email address"
                 onEnter={() => canProceed && next()}
               />
             </div>
@@ -488,8 +488,8 @@ export default function CustomerWizard({ orderId }: { orderId: string }) {
 
         {key === "verguetung" && (
           <Question
-            title="Wie möchten Sie Ihren Strom vergütet bekommen?"
-            subtitle="Keine Sorge – das lässt sich später anpassen."
+            title="How would you like to be paid for your electricity?"
+            subtitle="Don't worry – this can be adjusted later."
           >
             <ChoiceCards
               options={VERGUETUNG_OPTIONS}
@@ -504,14 +504,14 @@ export default function CustomerWizard({ orderId }: { orderId: string }) {
 
         {key === "zaehler" && (
           <Question
-            title="Wie lautet Ihre Zählernummer?"
-            subtitle="Sie finden sie auf Ihrer Stromrechnung oder vorne auf dem Stromzähler."
+            title="What is your meter number?"
+            subtitle="You'll find it on your electricity bill or on the front of the meter."
           >
             <TextInput
               autoFocus
               value={a.zaehler}
               onChange={(v) => set("zaehler", v)}
-              placeholder="z. B. 1ESY1234567890"
+              placeholder="e.g. 1ESY1234567890"
               mono
               onEnter={() => canProceed && next()}
             />
@@ -520,8 +520,8 @@ export default function CustomerWizard({ orderId }: { orderId: string }) {
 
         {key === "iban" && (
           <Question
-            title="Wohin sollen wir die Einspeisevergütung überweisen?"
-            subtitle="Optional – Sie können das später nachtragen."
+            title="Where should we transfer the feed-in compensation?"
+            subtitle="Optional – you can add this later."
           >
             <TextInput
               autoFocus
@@ -536,21 +536,21 @@ export default function CustomerWizard({ orderId }: { orderId: string }) {
 
         {key === "uis" && (
           <Question
-            title="Eine kurze Bestätigung"
-            subtitle="Für die EEG-Förderung müssen wir das wissen."
+            title="A quick confirmation"
+            subtitle="We need to know this for the EEG subsidy."
           >
             <ChoiceCards
               options={[
                 {
                   value: "ok",
-                  label: "Ich bestätige",
-                  desc: "Kein Unternehmen in Schwierigkeiten, keine offenen Rückforderungen.",
+                  label: "I confirm",
+                  desc: "Not a company in difficulty, no outstanding recovery claims.",
                   icon: "✅",
                 },
                 {
                   value: "no",
-                  label: "Trifft nicht zu",
-                  desc: "Mein Fall ist anders – bitte später klären.",
+                  label: "Does not apply",
+                  desc: "My case is different – please clarify later.",
                   icon: "↪️",
                 },
               ]}
@@ -564,42 +564,42 @@ export default function CustomerWizard({ orderId }: { orderId: string }) {
 
         {key === "review" && (
           <Question
-            title="Passt alles?"
-            subtitle="Sie können jeden Punkt über den Zurück-Pfeil noch ändern."
+            title="Does everything look right?"
+            subtitle="You can still change any item using the back arrow."
           >
             <dl className="divide-y divide-slate-100 rounded-2xl border border-slate-200 bg-white">
               <Row label="Name" value={`${a.vorname} ${a.nachname}`} />
               <Row
-                label="Anlagenstandort"
+                label="System location"
                 value={a.standort ? fmt(a.standort) : "—"}
               />
               <Row
-                label="Wohnadresse"
+                label="Home address"
                 value={
                   a.sameHome === false && a.home
                     ? fmt(a.home)
-                    : "wie Anlagenstandort"
+                    : "same as system location"
                 }
               />
-              <Row label="Kontakt" value={`${a.phone} · ${a.email}`} />
-              <Row label="Vergütung" value={a.verguetung ?? "—"} />
-              <Row label="Zählernummer" value={a.zaehler || "—"} />
+              <Row label="Contact" value={`${a.phone} · ${a.email}`} />
+              <Row label="Compensation" value={a.verguetung ?? "—"} />
+              <Row label="Meter number" value={a.zaehler || "—"} />
               <Row label="IBAN" value={a.iban || "—"} />
             </dl>
           </Question>
         )}
       </div>
 
-      {/* Footer-Aktion (nicht bei Auto-Advance-Schritten) */}
+      {/* Footer action (not on auto-advance steps) */}
       {!["intro", "start", "scan", "sameHome", "verguetung", "uis"].includes(
         key,
       ) && (
         <div className="mt-8 flex justify-center">
           {key === "review" ? (
-            <PrimaryButton onClick={submit}>Angaben absenden ✓</PrimaryButton>
+            <PrimaryButton onClick={submit}>Submit details ✓</PrimaryButton>
           ) : (
             <PrimaryButton onClick={next} disabled={!canProceed}>
-              {key === "iban" && a.iban.trim() === "" ? "Überspringen" : "Weiter"}
+              {key === "iban" && a.iban.trim() === "" ? "Skip" : "Next"}
             </PrimaryButton>
           )}
         </div>
@@ -626,7 +626,7 @@ function Shell({
     <div className="min-h-[calc(100vh-4rem)] bg-white">
       <div className="sticky top-16 z-10 border-b border-slate-100 bg-white/90 backdrop-blur">
         <div className="mx-auto max-w-2xl px-4 pt-4 pb-3">
-          {/* Ansichts-Tabs & Back Button */}
+          {/* View tabs & back button */}
           <div className="flex items-center justify-between">
             <BackButton href={`/orders/${orderId}`} />
             <DetailTabs orderId={orderId} active="customer" />
@@ -639,7 +639,7 @@ function Shell({
                 type="button"
                 onClick={onBack}
                 className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full border border-slate-200 text-slate-500 transition hover:bg-slate-50"
-                aria-label="Zurück"
+                aria-label="Back"
               >
                 ←
               </button>
@@ -654,7 +654,7 @@ function Shell({
             </div>
           </div>
 
-          {/* Anklickbare Schrittnavigation */}
+          {/* Clickable step navigation */}
           {nav && <div className="mt-3">{nav}</div>}
         </div>
       </div>
@@ -666,7 +666,7 @@ function Shell({
   );
 }
 
-// Anklickbare Chips für besuchte Schritte – Sprung zurück & ändern.
+// Clickable chips for visited steps – jump back & edit.
 function StepStrip({
   stepKeys,
   current,
@@ -835,8 +835,8 @@ function Row({ label, value }: { label: string; value: string }) {
   );
 }
 
-// Ausweis-Upload mit (mock) automatischer Extraktion von Name + Adresse.
-// Später: echtes OCR oder LLM-Vision (passt zu LZ5 – automatische Prüfung).
+// ID card upload with (mock) automatic extraction of name + address.
+// Later: real OCR or LLM vision (fits LZ5 – automated check).
 function IdScanStep({
   onComplete,
   onManual,
@@ -853,7 +853,7 @@ function IdScanStep({
   function handleFile(e: React.ChangeEvent<HTMLInputElement>) {
     if (!e.target.files || e.target.files.length === 0) return;
     setProcessing(true);
-    // Demo: simulierte Extraktion. Hier später Vision-API / OCR aufrufen.
+    // Demo: simulated extraction. Call a Vision API / OCR here later.
     setTimeout(() => {
       onComplete({
         vorname: "Max",
@@ -873,10 +873,10 @@ function IdScanStep({
       <div className="flex flex-col items-center gap-4 rounded-2xl border-2 border-blue-200 bg-blue-50 p-10 text-center">
         <div className="h-10 w-10 animate-spin rounded-full border-4 border-blue-200 border-t-blue-600" />
         <p className="text-sm font-semibold text-slate-700">
-          Ausweis wird ausgelesen…
+          Reading ID card…
         </p>
         <p className="text-xs text-slate-500">
-          Name und Adresse werden automatisch erkannt.
+          Name and address are detected automatically.
         </p>
       </div>
     );
@@ -893,21 +893,21 @@ function IdScanStep({
         />
         <span className="text-4xl">🪪</span>
         <span className="text-base font-bold text-slate-800">
-          Ausweis auswählen
+          Select ID card
         </span>
         <span className="text-sm text-slate-500">
-          Foto aufnehmen oder Datei hochladen (Vorder- &amp; Rückseite)
+          Take a photo or upload a file (front &amp; back)
         </span>
       </label>
       <p className="text-center text-xs text-slate-400">
-        Ihre Daten werden nur zur Vorausfüllung der Felder genutzt.
+        Your data is only used to pre-fill the fields.
       </p>
       <button
         type="button"
         onClick={onManual}
         className="text-center text-sm font-semibold text-slate-500 transition hover:text-slate-800"
       >
-        Lieber manuell eingeben →
+        Rather enter manually →
       </button>
     </div>
   );

@@ -5,10 +5,10 @@ import { useProjects } from "~/app/_context/ProjectContext";
 import { useAuth } from "~/app/_context/AuthContext";
 
 const STATUS_STYLE = {
-  Eingereicht: "bg-blue-50 text-blue-700 border-blue-200",
-  "In Prüfung": "bg-amber-50 text-amber-700 border-amber-200",
-  Genehmigt: "bg-emerald-50 text-emerald-700 border-emerald-200",
-  Entwurf: "bg-slate-100 text-slate-600 border-slate-200",
+  Submitted: "bg-blue-50 text-blue-700 border-blue-200",
+  "Under review": "bg-amber-50 text-amber-700 border-amber-200",
+  Approved: "bg-emerald-50 text-emerald-700 border-emerald-200",
+  Draft: "bg-slate-100 text-slate-600 border-slate-200",
 };
 
 export default function OrdersPage() {
@@ -31,13 +31,13 @@ export default function OrdersPage() {
         <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
           <div>
             <span className="text-xs font-bold tracking-wider text-blue-600 uppercase">
-              ConnectNow · Übersicht
+              ConnectNow · Overview
             </span>
             <h1 className="mt-1 text-2xl font-extrabold tracking-tight text-slate-900 sm:text-3xl">
-              Meine Vorgänge
+              My cases
             </h1>
             <p className="mt-2 text-sm text-slate-500">
-              Alle Netzanschluss-Anträge auf einen Blick.
+              All grid connection applications at a glance.
             </p>
           </div>
           {user?.role === "member" && (
@@ -45,7 +45,7 @@ export default function OrdersPage() {
               href="/register-project"
               className="inline-flex items-center justify-center rounded-lg bg-blue-600 px-5 py-3 text-sm font-semibold text-white shadow transition-all hover:-translate-y-0.5 hover:bg-blue-700 cursor-pointer"
             >
-              + Neuer Vorgang
+              + New case
             </Link>
           )}
         </div>
@@ -72,7 +72,7 @@ export default function OrdersPage() {
                     </span>
                   </div>
                   <p className="mt-0.5 text-sm text-slate-500">
-                    {order.power} · zuletzt aktualisiert {order.updated}
+                    {order.power} · last updated {order.updated}
                   </p>
                 </div>
               </div>
@@ -84,7 +84,7 @@ export default function OrdersPage() {
                   {order.status}
                 </span>
                 <span className="text-sm font-semibold text-blue-600 opacity-0 transition group-hover:opacity-100">
-                  Öffnen →
+                  Open →
                 </span>
               </div>
             </Link>
@@ -93,7 +93,7 @@ export default function OrdersPage() {
 
         {/* Empty-state hint */}
         <p className="pt-2 text-center text-xs text-slate-400">
-          Sandbox-Daten · Vorgänge werden im lokalen Browserspeicher (localStorage) gesichert.
+          Sandbox data · Cases are saved in your local browser storage (localStorage).
         </p>
       </div>
     </div>
