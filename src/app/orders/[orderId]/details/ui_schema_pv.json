@@ -4,6 +4,7 @@
     "fields": [
       {
         "id": "1001",
+        "owner": "customer",
         "label": "Art der Standortangabe",
         "type": "select",
         "required": true,
@@ -16,6 +17,7 @@
       },
       {
         "id": "1002",
+        "owner": "customer",
         "label": "Straße",
         "type": "text",
         "required": true,
@@ -24,6 +26,7 @@
       },
       {
         "id": "1003",
+        "owner": "customer",
         "label": "Hausnummer",
         "type": "text",
         "required": true,
@@ -32,6 +35,7 @@
       },
       {
         "id": "1004",
+        "owner": "customer",
         "label": "Adresszusatz",
         "type": "text",
         "required": true,
@@ -40,6 +44,7 @@
       },
       {
         "id": "1005",
+        "owner": "customer",
         "label": "Gemarkung",
         "type": "text",
         "required": true,
@@ -48,6 +53,7 @@
       },
       {
         "id": "1006",
+        "owner": "customer",
         "label": "Flurstück Zähler/Nenner",
         "type": "text",
         "required": true,
@@ -56,6 +62,7 @@
       },
       {
         "id": "1007",
+        "owner": "customer",
         "label": "PLZ",
         "type": "text",
         "required": true,
@@ -64,6 +71,7 @@
       },
       {
         "id": "1008",
+        "owner": "customer",
         "label": "Ort",
         "type": "text",
         "required": true,
@@ -72,6 +80,7 @@
       },
       {
         "id": "1009",
+        "owner": "customer",
         "label": "Ortsteil",
         "type": "text",
         "required": true,
@@ -85,6 +94,7 @@
     "fields": [
       {
         "id": "1101",
+        "owner": "customer",
         "label": "Name oder Firmenname",
         "type": "text",
         "required": true,
@@ -93,6 +103,7 @@
       },
       {
         "id": "1102",
+        "owner": "customer",
         "label": "Vorname",
         "type": "text",
         "required": true,
@@ -101,6 +112,7 @@
       },
       {
         "id": "1103",
+        "owner": "customer",
         "label": "Straße",
         "type": "text",
         "required": true,
@@ -109,6 +121,7 @@
       },
       {
         "id": "1104",
+        "owner": "customer",
         "label": "Hausnummer",
         "type": "text",
         "required": true,
@@ -117,6 +130,7 @@
       },
       {
         "id": "1105",
+        "owner": "customer",
         "label": "Adresszusatz",
         "type": "text",
         "required": true,
@@ -125,6 +139,7 @@
       },
       {
         "id": "1106",
+        "owner": "customer",
         "label": "PLZ",
         "type": "text",
         "required": true,
@@ -133,6 +148,7 @@
       },
       {
         "id": "1107",
+        "owner": "customer",
         "label": "Ort",
         "type": "text",
         "required": true,
@@ -141,6 +157,7 @@
       },
       {
         "id": "1108",
+        "owner": "customer",
         "label": "Ortsteil",
         "type": "text",
         "required": true,
@@ -149,6 +166,7 @@
       },
       {
         "id": "1109",
+        "owner": "customer",
         "label": "Telefon",
         "type": "text",
         "required": true,
@@ -157,6 +175,7 @@
       },
       {
         "id": "1110",
+        "owner": "customer",
         "label": "E-Mail",
         "type": "text",
         "required": true,
@@ -165,6 +184,7 @@
       },
       {
         "id": "1111",
+        "owner": "customer",
         "label": "IBAN",
         "type": "text",
         "required": false,
@@ -173,6 +193,7 @@
       },
       {
         "id": "1112",
+        "owner": "customer",
         "label": "Unternehmen in Schwierigkeiten oder offene Rückforderungs-ansprüche",
         "type": "select",
         "required": false,
@@ -191,6 +212,7 @@
     "fields": [
       {
         "id": "1201",
+        "owner": "customer",
         "label": "Name oder Firmenname",
         "type": "text",
         "required": true,
@@ -199,6 +221,7 @@
       },
       {
         "id": "1202",
+        "owner": "customer",
         "label": "Vorname",
         "type": "text",
         "required": true,
@@ -207,6 +230,7 @@
       },
       {
         "id": "1203",
+        "owner": "customer",
         "label": "Straße",
         "type": "text",
         "required": true,
@@ -215,6 +239,7 @@
       },
       {
         "id": "1204",
+        "owner": "customer",
         "label": "Hausnummer",
         "type": "text",
         "required": true,
@@ -223,6 +248,7 @@
       },
       {
         "id": "1205",
+        "owner": "customer",
         "label": "Adresszusatz",
         "type": "text",
         "required": true,
@@ -231,6 +257,7 @@
       },
       {
         "id": "1206",
+        "owner": "customer",
         "label": "PLZ",
         "type": "text",
         "required": true,
@@ -239,6 +266,7 @@
       },
       {
         "id": "1207",
+        "owner": "customer",
         "label": "Ort",
         "type": "text",
         "required": true,
@@ -247,6 +275,7 @@
       },
       {
         "id": "1208",
+        "owner": "customer",
         "label": "Ortsteil",
         "type": "text",
         "required": true,
@@ -255,6 +284,7 @@
       },
       {
         "id": "1209",
+        "owner": "customer",
         "label": "Telefon",
         "type": "text",
         "required": true,
@@ -263,6 +293,7 @@
       },
       {
         "id": "1210",
+        "owner": "customer",
         "label": "E-Mail",
         "type": "text",
         "required": true,
@@ -276,6 +307,7 @@
     "fields": [
       {
         "id": "1301",
+        "owner": "customer",
         "label": "Name oder Firmenname",
         "type": "text",
         "required": false,
@@ -284,6 +316,7 @@
       },
       {
         "id": "1302",
+        "owner": "customer",
         "label": "Vorname",
         "type": "text",
         "required": false,
@@ -292,6 +325,7 @@
       },
       {
         "id": "1303",
+        "owner": "customer",
         "label": "Straße",
         "type": "text",
         "required": false,
@@ -300,6 +334,7 @@
       },
       {
         "id": "1304",
+        "owner": "customer",
         "label": "Hausnummer",
         "type": "text",
         "required": false,
@@ -308,6 +343,7 @@
       },
       {
         "id": "1305",
+        "owner": "customer",
         "label": "Adresszusatz",
         "type": "text",
         "required": false,
@@ -316,6 +352,7 @@
       },
       {
         "id": "1306",
+        "owner": "customer",
         "label": "PLZ",
         "type": "text",
         "required": false,
@@ -324,6 +361,7 @@
       },
       {
         "id": "1307",
+        "owner": "customer",
         "label": "Ort",
         "type": "text",
         "required": false,
@@ -332,6 +370,7 @@
       },
       {
         "id": "1308",
+        "owner": "customer",
         "label": "Ortsteil",
         "type": "text",
         "required": false,
@@ -340,6 +379,7 @@
       },
       {
         "id": "1309",
+        "owner": "customer",
         "label": "Telefon",
         "type": "text",
         "required": false,
@@ -348,6 +388,7 @@
       },
       {
         "id": "1310",
+        "owner": "customer",
         "label": "E-Mail",
         "type": "text",
         "required": false,
@@ -361,6 +402,7 @@
     "fields": [
       {
         "id": "1401",
+        "owner": "installer",
         "label": "Firmenname",
         "type": "text",
         "required": true,
@@ -369,6 +411,7 @@
       },
       {
         "id": "1402",
+        "owner": "installer",
         "label": "Straße",
         "type": "text",
         "required": true,
@@ -377,6 +420,7 @@
       },
       {
         "id": "1403",
+        "owner": "installer",
         "label": "Hausnummer",
         "type": "text",
         "required": true,
@@ -385,6 +429,7 @@
       },
       {
         "id": "1404",
+        "owner": "installer",
         "label": "Adresszusatz",
         "type": "text",
         "required": true,
@@ -393,6 +438,7 @@
       },
       {
         "id": "1405",
+        "owner": "installer",
         "label": "PLZ",
         "type": "text",
         "required": true,
@@ -401,6 +447,7 @@
       },
       {
         "id": "1406",
+        "owner": "installer",
         "label": "Ort",
         "type": "text",
         "required": true,
@@ -409,6 +456,7 @@
       },
       {
         "id": "1407",
+        "owner": "installer",
         "label": "Ortsteil",
         "type": "text",
         "required": true,
@@ -417,6 +465,7 @@
       },
       {
         "id": "1408",
+        "owner": "installer",
         "label": "Telefon",
         "type": "text",
         "required": true,
@@ -425,6 +474,7 @@
       },
       {
         "id": "1409",
+        "owner": "installer",
         "label": "E-Mail",
         "type": "text",
         "required": true,
@@ -433,6 +483,7 @@
       },
       {
         "id": "1410",
+        "owner": "installer",
         "label": "Eingetragen bei folgendem Netzbetreiber",
         "type": "text",
         "required": false,
@@ -441,6 +492,7 @@
       },
       {
         "id": "1411",
+        "owner": "installer",
         "label": "Eintragungsnummer",
         "type": "text",
         "required": false,
@@ -454,6 +506,7 @@
     "fields": [
       {
         "id": "1501",
+        "owner": "installer",
         "label": "Name",
         "type": "text",
         "required": true,
@@ -462,6 +515,7 @@
       },
       {
         "id": "1502",
+        "owner": "installer",
         "label": "Vorname",
         "type": "text",
         "required": true,
@@ -470,6 +524,7 @@
       },
       {
         "id": "1503",
+        "owner": "installer",
         "label": "Telefon",
         "type": "text",
         "required": false,
@@ -478,6 +533,7 @@
       },
       {
         "id": "1504",
+        "owner": "installer",
         "label": "E-Mail",
         "type": "text",
         "required": false,
@@ -491,6 +547,7 @@
     "fields": [
       {
         "id": "1601",
+        "owner": "installer",
         "label": "Firmenname",
         "type": "text",
         "required": false,
@@ -499,6 +556,7 @@
       },
       {
         "id": "1602",
+        "owner": "installer",
         "label": "Straße",
         "type": "text",
         "required": false,
@@ -507,6 +565,7 @@
       },
       {
         "id": "1603",
+        "owner": "installer",
         "label": "Hausnummer",
         "type": "text",
         "required": false,
@@ -515,6 +574,7 @@
       },
       {
         "id": "1604",
+        "owner": "installer",
         "label": "Adresszusatz",
         "type": "text",
         "required": false,
@@ -523,6 +583,7 @@
       },
       {
         "id": "1605",
+        "owner": "installer",
         "label": "PLZ",
         "type": "text",
         "required": false,
@@ -531,6 +592,7 @@
       },
       {
         "id": "1606",
+        "owner": "installer",
         "label": "Ort",
         "type": "text",
         "required": false,
@@ -539,6 +601,7 @@
       },
       {
         "id": "1607",
+        "owner": "installer",
         "label": "Ortsteil",
         "type": "text",
         "required": false,
@@ -547,6 +610,7 @@
       },
       {
         "id": "1608",
+        "owner": "installer",
         "label": "Telefon",
         "type": "text",
         "required": false,
@@ -555,6 +619,7 @@
       },
       {
         "id": "1609",
+        "owner": "installer",
         "label": "E-Mail",
         "type": "text",
         "required": false,
@@ -568,6 +633,7 @@
     "fields": [
       {
         "id": "2001",
+        "owner": "installer",
         "label": "Vorhandene steuerbare Verbrauchseinrichtung nach § 14a EnWG",
         "type": "select",
         "required": true,
@@ -583,6 +649,7 @@
       },
       {
         "id": "2002",
+        "owner": "installer",
         "label": "Einrichtung zur Steuerung nach § 9 EEG",
         "type": "select",
         "required": true,
@@ -596,6 +663,7 @@
       },
       {
         "id": "2003",
+        "owner": "installer",
         "label": "Aufstellungsort im Lageplan, an dem die Anlage installiert werden soll",
         "type": "text",
         "required": true,
@@ -604,6 +672,7 @@
       },
       {
         "id": "2004",
+        "owner": "installer",
         "label": "Geplanter Inbetriebsetzungstermin",
         "type": "text",
         "required": false,
@@ -612,6 +681,7 @@
       },
       {
         "id": "2005",
+        "owner": "installer",
         "label": "EEG-Inbetriebnahmedatum",
         "type": "text",
         "required": true,
@@ -620,6 +690,7 @@
       },
       {
         "id": "2006",
+        "owner": "installer",
         "label": "Einpolige Darstellung des Messkonzepts (bei Erzeugungsanlagen/Speicher > Samax 30 kVA mit Einbauort des zentralen NA-Schutzes)",
         "type": "text",
         "required": true,
@@ -628,6 +699,7 @@
       },
       {
         "id": "2012",
+        "owner": "installer",
         "label": "Auswahl Messstellenbetreiber",
         "type": "select",
         "required": true,
@@ -640,6 +712,7 @@
       },
       {
         "id": "2018",
+        "owner": "customer",
         "label": "Gewünschte Veräußerungsform der Einspeisung",
         "type": "select",
         "required": true,
@@ -656,6 +729,7 @@
       },
       {
         "id": "2019",
+        "owner": "installer",
         "label": "Vergütungsrelevante Angaben zur Anlage",
         "type": "text",
         "required": false,
@@ -664,6 +738,7 @@
       },
       {
         "id": "2020",
+        "owner": "installer",
         "label": "Nachweis Fernsteuerbarkeit PV-Anlage zur Direktvermarktung",
         "type": "text",
         "required": false,
@@ -672,6 +747,7 @@
       },
       {
         "id": "2021",
+        "owner": "installer",
         "label": "Anschlussnetzbetreiber-Bestätigung",
         "type": "boolean",
         "required": false,
@@ -685,6 +761,7 @@
     "fields": [
       {
         "id": "3001",
+        "owner": "installer",
         "label": "Betriebsweise",
         "type": "select",
         "required": true,
@@ -698,6 +775,7 @@
       },
       {
         "id": "3002",
+        "owner": "installer",
         "label": "Inselbetriebsfähigkeit",
         "type": "boolean",
         "required": false,
@@ -706,6 +784,7 @@
       },
       {
         "id": "3003",
+        "owner": "installer",
         "label": "Hersteller",
         "type": "text",
         "required": true,
@@ -714,6 +793,7 @@
       },
       {
         "id": "3004",
+        "owner": "installer",
         "label": "Typ",
         "type": "text",
         "required": true,
@@ -722,6 +802,7 @@
       },
       {
         "id": "3005",
+        "owner": "installer",
         "label": "Einheitenzertifikat",
         "type": "text",
         "required": true,
@@ -730,6 +811,7 @@
       },
       {
         "id": "3006",
+        "owner": "installer",
         "label": "Maximale Scheinleistung",
         "type": "text",
         "required": true,
@@ -738,6 +820,7 @@
       },
       {
         "id": "3007",
+        "owner": "installer",
         "label": "Maximale Wirkleistung",
         "type": "text",
         "required": true,
@@ -746,6 +829,7 @@
       },
       {
         "id": "3008",
+        "owner": "installer",
         "label": "Anzahl baugleicher Wechselrichter",
         "type": "text",
         "required": true,
@@ -754,6 +838,7 @@
       },
       {
         "id": "3009",
+        "owner": "installer",
         "label": "Summe der maximalen Scheinleistungen",
         "type": "text",
         "required": true,
@@ -762,6 +847,7 @@
       },
       {
         "id": "3010",
+        "owner": "installer",
         "label": "Summe der maximalen Wirkleistungen",
         "type": "text",
         "required": true,
@@ -770,6 +856,7 @@
       },
       {
         "id": "3011",
+        "owner": "installer",
         "label": "Netzeinspeisung",
         "type": "select",
         "required": false,
@@ -783,6 +870,7 @@
       },
       {
         "id": "3012",
+        "owner": "installer",
         "label": "Netzeinspeisung",
         "type": "select",
         "required": false,
@@ -796,6 +884,7 @@
       },
       {
         "id": "3013",
+        "owner": "installer",
         "label": "Zähler bereits vorhanden",
         "type": "boolean",
         "required": true,
@@ -804,6 +893,7 @@
       },
       {
         "id": "3014",
+        "owner": "customer",
         "label": "Zählernummer",
         "type": "text",
         "required": true,
@@ -812,6 +902,7 @@
       },
       {
         "id": "3015",
+        "owner": "installer",
         "label": "ZEREZ-ID",
         "type": "text",
         "required": true,
@@ -825,6 +916,7 @@
     "fields": [
       {
         "id": "3101",
+        "owner": "installer",
         "label": "Gesamtleistung aller PV-Module",
         "type": "text",
         "required": true,
@@ -833,6 +925,7 @@
       },
       {
         "id": "3103",
+        "owner": "installer",
         "label": "Ort der Anbringung",
         "type": "select",
         "required": true,
@@ -850,6 +943,7 @@
     "fields": [
       {
         "id": "3201",
+        "owner": "installer",
         "label": "Leistungsfluss-überwachung Reduzierung der Einspeisewirkleistung",
         "type": "boolean",
         "required": false,
@@ -858,6 +952,7 @@
       },
       {
         "id": "3202",
+        "owner": "installer",
         "label": "Hersteller",
         "type": "text",
         "required": false,
@@ -866,6 +961,7 @@
       },
       {
         "id": "3203",
+        "owner": "installer",
         "label": "Typ",
         "type": "text",
         "required": false,
@@ -874,6 +970,7 @@
       },
       {
         "id": "3204",
+        "owner": "installer",
         "label": "Zertifikat Leistungsfluss-überwachung",
         "type": "text",
         "required": false,
@@ -882,6 +979,7 @@
       },
       {
         "id": "3205",
+        "owner": "installer",
         "label": "Vereinbarte Einspeisewirkleistung (PAV,E-Wert) für den Netzanschlusspunkt",
         "type": "text",
         "required": false,
@@ -890,6 +988,7 @@
       },
       {
         "id": "3206",
+        "owner": "installer",
         "label": "ZEREZ-ID",
         "type": "text",
         "required": false,
@@ -903,6 +1002,7 @@
     "fields": [
       {
         "id": "3301",
+        "owner": "installer",
         "label": "Ausführung des Netz- und Anlagenschutzes",
         "type": "select",
         "required": true,
@@ -916,6 +1016,7 @@
       },
       {
         "id": "3302",
+        "owner": "installer",
         "label": "Hersteller",
         "type": "text",
         "required": true,
@@ -924,6 +1025,7 @@
       },
       {
         "id": "3303",
+        "owner": "installer",
         "label": "Typ",
         "type": "text",
         "required": true,
@@ -932,6 +1034,7 @@
       },
       {
         "id": "3304",
+        "owner": "installer",
         "label": "Zertifikat NA-Schutz",
         "type": "text",
         "required": true,
@@ -940,6 +1043,7 @@
       },
       {
         "id": "3305",
+        "owner": "installer",
         "label": "ZEREZ-ID",
         "type": "text",
         "required": true,
