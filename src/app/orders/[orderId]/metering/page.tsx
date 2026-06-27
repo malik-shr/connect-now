@@ -1,354 +1,286 @@
 "use client";
 
 import React, { useState } from "react";
-import { useRouter } from "next/navigation";
+import { useRouter, useParams } from "next/navigation";
 
-export default function MeteringSimulationPage() {
+// Define our strict technical node property types
+interface ElectricalNode {
+  id: string;
+  type: "grid" | "meter" | "eza" | "load" | "protection";
+  label: string;
+  technicalCode: string;
+  icon: string;
+  details: string;
+}
+
+export default function TechnicalConstructorPage() {
   const router = useRouter();
+  const { orderId } = useParams();
 
-  // 1. Simulation Inputs (State)
-  const [operatingMode, setOperatingMode] = useState<"surplus" | "full">(
-    "surplus",
-  );
-  const [solarSizeKw, setSolarSizeKw] = useState<number>(10);
-  const [annualConsumption, setAnnualConsumption] = useState<number>(4000);
+  // 1. Initial baseline configuration sequence mirroring standard connection limits
+  const [nodes, setNodes] = useState<ElectricalNode[]>([
+    {
+      id: "n-1",
+      type: "grid",
+      label: "Public Utility Grid",
+      technicalCode: "VNB-Niederspannung",
+      icon: "🌐",
+      details: "400V / 230V Mains Connection Point",
+    },
+    {
+      id: "n-2",
+      type: "meter",
+      label: "Main Bidirectional Meter",
+      technicalCode: "Zähler 1 (Zweirichtung)",
+      icon: "📟",
+      details: "Tracks Import (1.8.0) & Export (2.8.0)",
+    },
+    {
+      id: "n-3",
+      type: "load",
+      label: "Household Consumer Loads",
+      technicalCode: "Kundenanlage Verbrauch",
+      icon: "🏡",
+      details: "Standard fuse-box distribution path",
+    },
+    {
+      id: "n-4",
+      type: "eza",
+      label: "PV Inverter System (EZA)",
+      technicalCode: "Wechselrichter",
+      icon: "☀️",
+      details: "Generates AC feed-in synchronization line",
+    },
+  ]);
 
-  // 2. Mock Constant Market Values
-  const GRID_PRICE_PER_KWH = 0.35; // What the user pays the utility
-  const FEED_IN_TARIFF_FULL = 0.13; // Higher legal rate for full export
-  const FEED_IN_TARIFF_SURPLUS = 0.08; // Standard rate for surplus export
+  // 2. Pool of addable nodes a user can inject to create a custom "Messkonzept"
+  const TOOLBOX_ITEMS = [
+    {
+      type: "meter",
+      label: "Generation Sub-Meter",
+      technicalCode: "Zähler 2 (Erzeugung)",
+      icon: "📟",
+      details: "Required for separate feed-in accounting",
+    },
+    {
+      type: "protection",
+      label: "Central Grid & Plant Protection",
+      technicalCode: "NA-Schutz (Zentral)",
+      icon: "🛡️",
+      details: "VDE-AR-N 4105 safety disconnect element",
+    },
+    {
+      type: "load",
+      label: "Controllable Load (Heat Pump)",
+      technicalCode: "Verbraucher §14a EnWG",
+      icon: "♨️",
+      details: "Dimmer utility load optimization line",
+    },
+    {
+      type: "load",
+      label: "EV Wallbox Charger Station",
+      technicalCode: "Ladestation",
+      icon: "🔌",
+      details: "High-power infrastructure terminal link",
+    },
+  ];
 
-  // 3. Dynamic Calculation Rules (Faked for the Hackathon Demo)
-  const annualGeneration = solarSizeKw * 1000; // General rule of thumb: 1kWp = 1000kWh/year
+  // Handler to inject a new component block node directly into the system circuit
+  const handleAddNode = (item: (typeof TOOLBOX_ITEMS)[0]) => {
+    const newNode: ElectricalNode = {
+      id: `n-${Date.now()}`,
+      type: item.type as any,
+      label: item.label,
+      technicalCode: item.technicalCode,
+      icon: item.icon,
+      details: item.details,
+    };
 
-  // Estimate that in surplus mode, a home naturally self-consumes roughly 30% of what they generate
-  const simulatedSelfConsumption = Math.min(
-    annualGeneration * 0.3,
-    annualConsumption,
-  );
-  const simulatedSurplusExport = Math.max(
-    annualGeneration - simulatedSelfConsumption,
-    0,
-  );
-  const simulatedGridImportNeeded = Math.max(
-    annualConsumption - simulatedSelfConsumption,
-    0,
-  );
+    // Insert structural nodes gracefully right before the final PV generation plant node element
+    const updated = [...nodes];
+    if (updated.length > 1) {
+      updated.splice(updated.length - 1, 0, newNode);
+    } else {
+      updated.push(newNode);
+    }
+    setNodes(updated);
+  };
 
-  // Financial Outcomes
-  const normalCostWithoutSolar = annualConsumption * GRID_PRICE_PER_KWH;
-
-  const fullFeedInSolarEarnings = annualGeneration * FEED_IN_TARIFF_FULL;
-  const fullFeedInGridCost = annualConsumption * GRID_PRICE_PER_KWH;
-  const fullFeedInNetBalance = fullFeedInSolarEarnings - fullFeedInGridCost;
-
-  const surplusSavedMoney = simulatedSelfConsumption * GRID_PRICE_PER_KWH;
-  const surplusExportEarnings = simulatedSurplusExport * FEED_IN_TARIFF_SURPLUS;
-  const surplusGridCost = simulatedGridImportNeeded * GRID_PRICE_PER_KWH;
-  const surplusNetBalance =
-    surplusSavedMoney + surplusExportEarnings - normalCostWithoutSolar;
+  // Handler to delete custom added items out of our network line scheme track
+  const handleRemoveNode = (id: string, label: string) => {
+    if (
+      label === "Public Utility Grid" ||
+      label === "PV Inverter System (EZA)"
+    ) {
+      alert(
+        "Core boundaries ('Public Utility Grid' and the primary 'EZA Production Line') are strictly required for line-routing evaluations.",
+      );
+      return;
+    }
+    setNodes(nodes.filter((n) => n.id !== id));
+  };
 
   return (
     <div className="flex min-h-screen flex-col justify-between bg-slate-50 font-sans text-slate-900 antialiased">
-      <nav className="mx-auto flex w-full max-w-7xl items-center justify-start px-4 pt-4 sm:px-6 lg:px-8">
+      {/* Header Bar Layout */}
+      <nav className="mx-auto flex h-16 w-full max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
         <button
           onClick={() => router.back()}
-          className="cursor-pointer rounded-lg border border-slate-200 bg-white px-4 py-2 text-xs font-bold text-slate-600 shadow-sm transition-all hover:bg-slate-50 hover:text-slate-900 active:scale-95"
+          className="cursor-pointer rounded-lg border border-slate-200 bg-white px-4 py-2 text-xs font-bold text-slate-600 shadow-sm transition-all hover:bg-slate-50 hover:text-slate-900"
         >
           ← Go Back
         </button>
       </nav>
-      {/* Main Workspace Frame */}
-      <main className="mx-auto grid w-full max-w-7xl flex-grow grid-cols-1 gap-8 px-4 py-8 sm:px-6 lg:grid-cols-12 lg:px-8">
-        {/* LEFT COLUMN: Input Strategy Configurator Dashboard (5 Cols) */}
-        <div className="space-y-6 lg:col-span-5">
-          <div className="space-y-6 rounded-2xl border border-slate-200 bg-white p-6 shadow-md">
+
+      {/* Main Framework Dashboard Workspace */}
+      <main className="mx-auto grid w-full max-w-7xl flex-grow grid-cols-1 gap-8 px-4 pt-4 pb-8 sm:px-6 lg:grid-cols-12 lg:px-8">
+        {/* LEFT COLUMN: Technical Node Components Toolbox (4 Cols) */}
+        <div className="space-y-5 lg:col-span-4">
+          <div className="space-y-4 rounded-2xl border border-slate-200 bg-white p-5 shadow-md">
             <div>
               <span className="block text-[10px] font-bold tracking-widest text-blue-600 uppercase">
-                Step 1
+                Circuit Components
               </span>
-              <h1 className="mt-0.5 text-xl font-extrabold text-slate-900">
-                Operating Mode Formula
-              </h1>
+              <h2 className="text-base font-extrabold text-slate-900">
+                Technical Node Toolbox
+              </h2>
               <p className="mt-1 text-xs leading-normal text-slate-400">
-                How will the energy paths flow? This input explicitly dictates
-                backend validation parameters for Datenset Field ID{" "}
-                <span className="rounded bg-slate-100 px-1 font-mono font-bold text-slate-700">
-                  3001
-                </span>
-                .
+                Click a hardware item below to dynamically splice it into your
+                single-line diagram track structure.
               </p>
             </div>
 
-            {/* Selector Cards */}
-            <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
-              <button
-                type="button"
-                onClick={() => setOperatingMode("surplus")}
-                className={`block cursor-pointer rounded-xl border p-4 text-left transition-all ${
-                  operatingMode === "surplus"
-                    ? "border-blue-600 bg-blue-50/40 ring-2 ring-blue-600/10"
-                    : "border-slate-200 bg-white hover:bg-slate-50"
-                }`}
-              >
-                <div className="mb-1 text-xl">🏡</div>
-                <span className="block text-xs font-bold text-slate-900">
-                  Surplus Feed-In
-                </span>
-                <span className="mt-0.5 block text-[11px] leading-tight text-slate-400">
-                  Überschusseinspeisung
-                </span>
-              </button>
-
-              <button
-                type="button"
-                onClick={() => setOperatingMode("full")}
-                className={`block cursor-pointer rounded-xl border p-4 text-left transition-all ${
-                  operatingMode === "full"
-                    ? "border-blue-600 bg-blue-50/40 ring-2 ring-blue-600/10"
-                    : "border-slate-200 bg-white hover:bg-slate-50"
-                }`}
-              >
-                <div className="mb-1 text-xl">🏦</div>
-                <span className="block text-xs font-bold text-slate-900">
-                  Full Grid Feed-In
-                </span>
-                <span className="mt-0.5 block text-[11px] leading-tight text-slate-400">
-                  Volleinspeisung
-                </span>
-              </button>
-            </div>
-
-            {/* Slider 1: Solar Power Array Size */}
-            <div className="space-y-2 border-t border-slate-100 pt-2">
-              <div className="flex items-center justify-between text-xs">
-                <label className="font-semibold text-slate-600">
-                  Planned PV Array Size
-                </label>
-                <span className="rounded border bg-slate-100 px-2 py-0.5 font-mono font-bold text-slate-800">
-                  {solarSizeKw} kWp (~{annualGeneration.toLocaleString()}{" "}
-                  kWh/yr)
-                </span>
-              </div>
-              <input
-                type="range"
-                min="5"
-                max="30"
-                step="1"
-                value={solarSizeKw}
-                onChange={(e) => setSolarSizeKw(Number(e.target.value))}
-                className="h-1.5 w-full cursor-pointer appearance-none rounded-lg bg-slate-200 accent-blue-600"
-              />
-            </div>
-
-            {/* Slider 2: Household Consumption */}
-            <div className="space-y-2 border-t border-slate-100 pt-2">
-              <div className="flex items-center justify-between text-xs">
-                <label className="font-semibold text-slate-600">
-                  Annual Home Consumption
-                </label>
-                <span className="rounded border bg-slate-100 px-2 py-0.5 font-mono font-bold text-slate-800">
-                  {annualConsumption.toLocaleString()} kWh/year
-                </span>
-              </div>
-              <input
-                type="range"
-                min="2000"
-                max="8000"
-                step="500"
-                value={annualConsumption}
-                onChange={(e) => setAnnualConsumption(Number(e.target.value))}
-                className="h-1.5 w-full cursor-pointer appearance-none rounded-lg bg-slate-200 accent-blue-600"
-              />
+            <div className="space-y-2">
+              {TOOLBOX_ITEMS.map((item, index) => (
+                <button
+                  key={index}
+                  onClick={() => handleAddNode(item)}
+                  className="group flex w-full cursor-pointer items-start space-x-3 rounded-xl border border-slate-200 bg-white p-3.5 text-left shadow-sm transition-all hover:border-blue-400 hover:bg-blue-50/30"
+                >
+                  <span className="rounded-lg bg-slate-100 p-1.5 text-xl transition-colors group-hover:bg-blue-100">
+                    {item.icon}
+                  </span>
+                  <div className="space-y-0.5">
+                    <span className="block text-xs font-bold text-slate-800">
+                      {item.label}
+                    </span>
+                    <span className="block font-mono text-[10px] text-slate-400">
+                      {item.technicalCode}
+                    </span>
+                  </div>
+                </button>
+              ))}
             </div>
           </div>
 
-          {/* Value Pitch Banner */}
-          <div className="space-y-1 rounded-xl border border-blue-200 bg-blue-50 p-4 text-blue-800">
-            <span className="block flex items-center gap-1.5 text-xs font-bold">
-              🚀 Hackathon Business Impact
+          {/* VDE Form Metadata Coupling Indicator Alert */}
+          <div className="space-y-1 rounded-xl border border-blue-200 bg-blue-50 p-4 text-xs text-blue-800">
+            <span className="block flex items-center gap-1 font-bold">
+              📄 Single-Line Auto Verification (ID: 2006)
             </span>
             <p className="text-[11px] leading-relaxed text-blue-900/80">
-              By giving installers and grid operators immediate sight over the
-              connection strategy formula, we bypass weeks of administrative
-              backlog. Clear parameters ensure error-free automated billing
-              registration setup from day one.
+              This constructor dynamically logs structural system chains to
+              compile the required Single-Line Diagram data block. Grid
+              engineers evaluate this blueprint tracking configuration layout
+              straight upon submission.
             </p>
           </div>
         </div>
 
-        {/* RIGHT COLUMN: The Visual Financial Formula Outcome Canvas (7 Cols) */}
-        <div className="flex min-h-[460px] flex-col justify-between rounded-2xl border border-slate-200 bg-white p-6 shadow-md lg:col-span-7">
+        {/* RIGHT COLUMN: The Interactive Single-Line Bus-Bar Trace Window (8 Cols) */}
+        <div className="flex min-h-[480px] flex-col justify-between rounded-2xl border border-slate-200 bg-white p-6 shadow-md lg:col-span-8">
           <div className="space-y-6">
             <div className="flex items-center justify-between border-b pb-3">
               <div>
-                <h2 className="text-sm font-bold tracking-wide text-slate-400 uppercase">
-                  2. Live Compensation Preview
+                <h2 className="text-base font-black text-slate-900">
+                  Custom Single-Line Diagram Grid Trace
                 </h2>
-                <span className="mt-0.5 block font-mono text-[10px] font-bold text-slate-400">
-                  Calculated Utility Accounting Logic
-                </span>
+                <p className="mt-0.5 text-xs text-slate-400">
+                  Physical Line Flow Sequence Mapped From Main Mains Inward
+                  Point
+                </p>
               </div>
-              <span className="rounded-lg border border-emerald-200 bg-emerald-50 px-2.5 py-1 font-mono text-[10px] font-bold tracking-wider text-emerald-700 uppercase">
-                Formula Active
+              <span className="rounded-lg border border-emerald-200 bg-emerald-50 px-2 py-1 font-mono text-[10px] font-bold text-emerald-700 uppercase">
+                Blueprint Output Stable
               </span>
             </div>
 
-            {/* IF OPERATING MODE IS SURPLUS FEED-IN */}
-            {operatingMode === "surplus" && (
-              <div className="space-y-4">
-                <div className="space-y-2 rounded-xl border border-slate-200 bg-slate-50 p-4">
-                  <div className="flex items-center gap-1 text-xs font-bold text-blue-700">
-                    <span>🔄</span> Bidirectional Meter Billing Model
-                    (Zweirichtungszähler)
-                  </div>
-                  <p className="text-xs leading-relaxed text-slate-500">
-                    Solar energy runs locally into your outlets first. Leftovers
-                    flow outwards through a single bidirectional grid module
-                    tracking both flow pathways.
-                  </p>
-                </div>
-
-                {/* Calculation Cards */}
-                <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">
-                  <div className="rounded-xl border border-slate-100 bg-slate-50 p-3 text-center">
-                    <span className="block text-[10px] font-bold text-slate-400 uppercase">
-                      Self-Consumed
-                    </span>
-                    <span className="mt-1 block font-mono text-sm font-black text-slate-800">
-                      {simulatedSelfConsumption.toLocaleString()} kWh
-                    </span>
-                    <span className="mt-0.5 block text-[10px] font-semibold text-emerald-600">
-                      +{Math.round(surplusSavedMoney)}€ Saved
-                    </span>
-                  </div>
-                  <div className="rounded-xl border border-slate-100 bg-slate-50 p-3 text-center">
-                    <span className="block text-[10px] font-bold text-slate-400 uppercase">
-                      Surplus Exported
-                    </span>
-                    <span className="mt-1 block font-mono text-sm font-black text-slate-800">
-                      {simulatedSurplusExport.toLocaleString()} kWh
-                    </span>
-                    <span className="mt-0.5 block text-[10px] font-semibold text-blue-600">
-                      +{Math.round(surplusExportEarnings)}€ Earned
-                    </span>
-                  </div>
-                  <div className="rounded-xl border border-slate-100 bg-slate-50 p-3 text-center">
-                    <span className="block text-[10px] font-bold text-slate-400 uppercase">
-                      Grid Buy Needed
-                    </span>
-                    <span className="mt-1 block font-mono text-sm font-black text-slate-800">
-                      {simulatedGridImportNeeded.toLocaleString()} kWh
-                    </span>
-                    <span className="mt-0.5 block text-[10px] font-semibold text-red-500">
-                      -{Math.round(surplusGridCost)}€ Cost
-                    </span>
-                  </div>
-                </div>
-
-                {/* Net Statement Box */}
-                <div className="flex items-center justify-between rounded-xl border border-emerald-200 bg-emerald-50/50 p-4">
-                  <div>
-                    <span className="block text-xs font-bold text-emerald-900">
-                      Net System Value Benefit
-                    </span>
-                    <span className="block text-[11px] leading-tight text-emerald-700">
-                      Combined returns vs normal baseline grid expenditure
-                    </span>
-                  </div>
-                  <div className="text-right">
-                    <span
-                      className={`font-mono text-xl font-black ${surplusNetBalance >= 0 ? "text-emerald-600" : "text-slate-700"}`}
+            {/* THE VISUAL SCHEMATIC TRACK */}
+            <div className="flex min-h-[160px] flex-col items-center justify-center space-y-6 rounded-2xl border border-dashed border-slate-300 bg-slate-50 p-6">
+              <div className="flex w-full flex-wrap items-center justify-center gap-x-2 gap-y-6">
+                {nodes.map((node, index) => {
+                  const isCoreBoundary =
+                    node.label === "Public Utility Grid" ||
+                    node.label === "PV Inverter System (EZA)";
+                  return (
+                    <div
+                      key={node.id}
+                      className="group flex items-center gap-2"
                     >
-                      {surplusNetBalance >= 0 ? "+" : ""}
-                      {Math.round(surplusNetBalance)}€{" "}
-                      <span className="text-xs">/ year</span>
-                    </span>
-                  </div>
-                </div>
+                      {/* Technical Circuit Node Element Card */}
+                      <div
+                        className={`relative flex w-36 flex-col items-center justify-center rounded-xl border bg-white p-3.5 text-center shadow-sm transition-all ${
+                          isCoreBoundary
+                            ? "border-slate-800 ring-2 ring-slate-900/5"
+                            : "border-blue-300 ring-1 ring-blue-100"
+                        }`}
+                      >
+                        <span className="mb-1 text-2xl">{node.icon}</span>
+                        <span className="block w-full truncate text-[11px] leading-tight font-extrabold text-slate-800">
+                          {node.label}
+                        </span>
+                        <span className="mt-0.5 block w-full truncate font-mono text-[9px] text-slate-400">
+                          {node.technicalCode}
+                        </span>
+
+                        {/* Interactive Removal Trigger Node Hook */}
+                        {!isCoreBoundary && (
+                          <button
+                            type="button"
+                            onClick={() =>
+                              handleRemoveNode(node.id, node.label)
+                            }
+                            className="absolute -top-1.5 -right-1.5 flex h-4 w-4 cursor-pointer items-center justify-center rounded-full bg-red-500 font-sans text-[9px] text-white opacity-0 shadow-md transition-opacity group-hover:opacity-100"
+                            title="Remove connection node"
+                          >
+                            ✕
+                          </button>
+                        )}
+                      </div>
+
+                      {/* Line-Routing Trace Arrow Indicator element */}
+                      {index < nodes.length - 1 && (
+                        <div className="flex flex-col items-center px-1 text-xs font-bold tracking-tighter text-slate-300 select-none">
+                          <span>🔌</span>
+                          <span className="text-blue-500">➔</span>
+                        </div>
+                      )}
+                    </div>
+                  );
+                })}
               </div>
-            )}
+            </div>
 
-            {/* IF OPERATING MODE IS FULL FEED-IN */}
-            {operatingMode === "full" && (
-              <div className="space-y-4">
-                <div className="space-y-2 rounded-xl border border-slate-200 bg-slate-50 p-4">
-                  <div className="flex items-center gap-1 text-xs font-bold text-amber-700">
-                    <span>📊</span> Dual-Meter Grid Isolation Model
-                    (Volleinspeisung)
-                  </div>
-                  <p className="text-xs leading-relaxed text-slate-500">
-                    Household paths and generation paths are explicitly split.
-                    100% of generated green energy escapes out into the main
-                    public line grid infrastructure directly.
-                  </p>
-                </div>
-
-                {/* Calculation Cards */}
-                <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
-                  <div className="rounded-xl border border-slate-100 bg-slate-50 p-4 text-center">
-                    <span className="block text-[10px] font-bold text-slate-400 uppercase">
-                      100% Export Revenue
-                    </span>
-                    <span className="mt-1 block font-mono text-base font-black text-slate-800">
-                      {annualGeneration.toLocaleString()} kWh
-                    </span>
-                    <span className="mt-0.5 block text-xs font-bold text-blue-600">
-                      +{Math.round(fullFeedInSolarEarnings)}€ Utility Pays You
-                    </span>
-                  </div>
-                  <div className="rounded-xl border border-slate-100 bg-slate-50 p-4 text-center">
-                    <span className="block text-[10px] font-bold text-slate-400 uppercase">
-                      Standard Household Import
-                    </span>
-                    <span className="mt-1 block font-mono text-base font-black text-slate-800">
-                      {annualConsumption.toLocaleString()} kWh
-                    </span>
-                    <span className="mt-0.5 block text-xs font-bold text-red-500">
-                      -{Math.round(fullFeedInGridCost)}€ You Pay Utility
-                    </span>
-                  </div>
-                </div>
-
-                {/* Net Statement Box */}
-                <div className="flex items-center justify-between rounded-xl border border-slate-200 bg-slate-100 p-4">
-                  <div>
-                    <span className="block text-xs font-bold text-slate-800">
-                      Net Yearly Statement Balance
-                    </span>
-                    <span className="block text-[11px] leading-tight text-slate-400">
-                      Final financial posture after balancing separate lines
-                    </span>
-                  </div>
-                  <div className="text-right">
-                    <span
-                      className={`font-mono text-xl font-black ${fullFeedInNetBalance >= 0 ? "text-emerald-600" : "text-slate-800"}`}
-                    >
-                      {fullFeedInNetBalance >= 0 ? "+" : ""}
-                      {Math.round(fullFeedInNetBalance)}€{" "}
-                      <span className="text-xs">/ year</span>
-                    </span>
-                  </div>
-                </div>
-              </div>
-            )}
-
-            {/* Automatic Metadata Generator Alert Callout */}
-            <div className="space-y-1 rounded-xl border bg-slate-50 p-3 text-[11px] text-slate-500">
-              <span className="block flex items-center gap-1 font-bold text-slate-700">
-                📄 VDE Datenset Auto-Registry Hook
+            {/* Machine Dataset Structure Preview Console Block */}
+            <div className="space-y-1.5">
+              <span className="block text-[10px] font-bold tracking-wider text-slate-400 uppercase">
+                Compiled Single-Line Topology Array JSON Data (Field ID 2006)
               </span>
-              <p className="leading-normal">
-                Applying this configuration auto-assigns the value token{" "}
-                <code className="rounded bg-slate-200 px-1 font-mono font-bold text-slate-800">
-                  "
-                  {operatingMode === "surplus"
-                    ? "Überschusseinspeisung"
-                    : "Volleinspeisung"}
-                  "
-                </code>{" "}
-                straight into your main Excel JSON structure schema registry.
-              </p>
+              <pre className="overflow-x-auto rounded-xl border border-slate-800 bg-slate-900 p-4 font-mono text-xs text-emerald-400 shadow-inner">
+                {JSON.stringify(
+                  {
+                    orderId: orderId,
+                    technicalSchemaKey: "2006_EINPOLIG",
+                    hardwareNodeSequence: nodes.map((n, idx) => ({
+                      sequenceOrder: idx + 1,
+                      deviceType: n.type,
+                      deviceRegistrationCode: n.technicalCode,
+                    })),
+                  },
+                  null,
+                  2,
+                )}
+              </pre>
             </div>
           </div>
 
@@ -358,21 +290,21 @@ export default function MeteringSimulationPage() {
               type="button"
               onClick={() =>
                 alert(
-                  `Locked strategy choice: '${operatingMode === "surplus" ? "Überschusseinspeisung" : "Volleinspeisung"}' is successfully mapped to grid order connection record.`,
+                  `Single-line system blueprint array lock confirmed for processing console payload mapping.`,
                 )
               }
               className="w-full cursor-pointer rounded-lg bg-blue-600 px-6 py-3 text-xs font-bold text-white shadow transition hover:bg-blue-700 sm:w-auto"
             >
-              Lock Operating Mode Parameter
+              Verify Technical Connection Path Setup
             </button>
           </div>
         </div>
       </main>
 
-      {/* Footer Branding */}
-      <footer className="border-t border-slate-200 bg-white py-3 text-center text-[11px] text-slate-400 shadow-inner">
-        connect-now interface engine • Simulating standardized billing
-        parameters cleanly
+      {/* Footer Element */}
+      <footer className="border-t border-slate-200 bg-white py-3 text-center text-[11px] text-slate-400">
+        connect-now sandbox line editor • Formulating valid single-line grid
+        topologies fluidly
       </footer>
     </div>
   );
