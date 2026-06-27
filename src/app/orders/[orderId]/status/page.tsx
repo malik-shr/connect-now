@@ -2,7 +2,11 @@
 
 import Link from "next/link";
 import { use } from "react";
-import { useProjects, Order, DocumentItem } from "~/app/_context/ProjectContext";
+import {
+  useProjects,
+  type Order,
+  type DocumentItem,
+} from "~/app/_context/ProjectContext";
 import BackButton from "~/app/_components/BackButton";
 
 type StepState = "done" | "current" | "pending";
@@ -56,10 +60,13 @@ export default function StatusPage({
 
   if (!order) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="text-center space-y-3">
+      <div className="flex min-h-screen items-center justify-center">
+        <div className="space-y-3 text-center">
           <p className="text-sm font-bold text-slate-500">Case not found.</p>
-          <Link href="/orders" className="text-xs text-blue-600 font-bold underline">
+          <Link
+            href="/orders"
+            className="text-xs font-bold text-blue-600 underline"
+          >
             Back to overview
           </Link>
         </div>
@@ -78,38 +85,48 @@ export default function StatusPage({
       {
         id: "submitted",
         title: "Application submitted",
-        description: "The installer has digitally submitted the grid connection request for your PV system.",
-        state: isEntwurf ? "pending" : (isEingereicht ? "current" : "done"),
+        description:
+          "The installer has digitally submitted the grid connection request for your PV system.",
+        state: isEntwurf ? "pending" : isEingereicht ? "current" : "done",
         date: isEntwurf ? undefined : "12/06/2026",
         actor: "Installer",
       },
       {
         id: "completeness",
         title: "Completeness check",
-        description: "The documents were automatically checked (AI-assisted) for completeness and plausibility.",
-        state: isEntwurf || isEingereicht ? "pending" : (isInPruefung ? "current" : "done"),
+        description:
+          "The documents were automatically checked (AI-assisted) for completeness and plausibility.",
+        state:
+          isEntwurf || isEingereicht
+            ? "pending"
+            : isInPruefung
+              ? "current"
+              : "done",
         date: isEntwurf || isEingereicht ? undefined : "13/06/2026",
         actor: "Grid operator",
       },
       {
         id: "review",
         title: "Technical review by grid operator",
-        description: "The grid operator is currently reviewing the technical details of your connection request.",
-        state: isGenehmigt ? "done" : (isInPruefung ? "current" : "pending"),
+        description:
+          "The grid operator is currently reviewing the technical details of your connection request.",
+        state: isGenehmigt ? "done" : isInPruefung ? "current" : "pending",
         date: isInPruefung ? "today" : isGenehmigt ? "18/06/2026" : undefined,
         actor: "Grid operator",
       },
       {
         id: "approval",
         title: "Grid connection approval",
-        description: "After a successful review, you will receive the official approval for the grid connection.",
+        description:
+          "After a successful review, you will receive the official approval for the grid connection.",
         state: isGenehmigt ? "current" : "pending",
         actor: "Grid operator",
       },
       {
         id: "completion",
         title: "Completion notice & commissioning",
-        description: "The installer submits the completion notice, after which commissioning takes place.",
+        description:
+          "The installer submits the completion notice, after which commissioning takes place.",
         state: "pending",
         actor: "Installer",
       },
@@ -130,7 +147,6 @@ export default function StatusPage({
   return (
     <div className="min-h-[calc(100vh-4rem)] px-4 py-10">
       <div className="mx-auto max-w-4xl space-y-6">
-        
         {/* Context Header */}
         <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-xl sm:p-10">
           <header className="border-b border-slate-200 pb-5">
@@ -161,7 +177,8 @@ export default function StatusPage({
                 {currentStep?.title ?? "Completed"}
               </p>
               <p className="mt-0.5 text-sm text-slate-500">
-                {currentStep?.description ?? "Your case has been fully processed."}
+                {currentStep?.description ??
+                  "Your case has been fully processed."}
               </p>
             </div>
             <div className="shrink-0 text-center">
@@ -190,10 +207,12 @@ export default function StatusPage({
               </span>
               <div className="text-sm">
                 <p className="font-semibold text-red-800">
-                  {missingDocs.length} document{missingDocs.length > 1 ? "s" : ""} still missing
+                  {missingDocs.length} document
+                  {missingDocs.length > 1 ? "s" : ""} still missing
                 </p>
                 <p className="mt-0.5 text-red-700">
-                  Please submit the missing documents digitally so that processing can continue.
+                  Please submit the missing documents digitally so that
+                  processing can continue.
                 </p>
               </div>
             </div>
@@ -202,13 +221,18 @@ export default function StatusPage({
 
         {/* Process Timeline */}
         <section className="rounded-2xl border border-slate-200 bg-white p-6 shadow-xl sm:p-10">
-          <h2 className="mb-6 text-lg font-bold text-slate-800">Processing history</h2>
+          <h2 className="mb-6 text-lg font-bold text-slate-800">
+            Processing history
+          </h2>
 
           <ol className="relative">
             {steps.map((step, index) => {
               const isLast = index === steps.length - 1;
               return (
-                <li key={step.id} className="relative flex gap-4 pb-8 last:pb-0">
+                <li
+                  key={step.id}
+                  className="relative flex gap-4 pb-8 last:pb-0"
+                >
                   {!isLast && (
                     <span
                       className={`absolute top-8 left-3.75 -ml-px h-full w-0.5 ${
@@ -236,12 +260,16 @@ export default function StatusPage({
                     <div className="flex flex-wrap items-center gap-2">
                       <h3
                         className={`text-sm font-semibold ${
-                          step.state === "pending" ? "text-slate-400" : "text-slate-800"
+                          step.state === "pending"
+                            ? "text-slate-400"
+                            : "text-slate-800"
                         }`}
                       >
                         {step.title}
                       </h3>
-                      <span className={`rounded-full px-2 py-0.5 text-[10px] font-bold ${actorBadge[step.actor]}`}>
+                      <span
+                        className={`rounded-full px-2 py-0.5 text-[10px] font-bold ${actorBadge[step.actor]}`}
+                      >
                         {step.actor}
                       </span>
                       {step.state === "current" && (
@@ -250,9 +278,13 @@ export default function StatusPage({
                         </span>
                       )}
                     </div>
-                    <p className="mt-1 text-sm leading-relaxed text-slate-500">{step.description}</p>
+                    <p className="mt-1 text-sm leading-relaxed text-slate-500">
+                      {step.description}
+                    </p>
                     {step.date && (
-                      <p className="mt-1 text-[11px] font-medium text-slate-400">{step.date}</p>
+                      <p className="mt-1 text-[11px] font-medium text-slate-400">
+                        {step.date}
+                      </p>
                     )}
                   </div>
                 </li>
@@ -264,7 +296,7 @@ export default function StatusPage({
         {/* Documents Overview */}
         <section className="rounded-2xl border border-slate-200 bg-white p-6 shadow-xl sm:p-10">
           <h2 className="mb-1 text-lg font-bold text-slate-800">Documents</h2>
-          <p className="mb-6 text-sm text-slate-500 font-medium">
+          <p className="mb-6 text-sm font-medium text-slate-500">
             Overview of all documents required for the grid connection.
           </p>
 
@@ -276,7 +308,9 @@ export default function StatusPage({
                   key={doc.id}
                   className="flex items-center justify-between gap-4 rounded-xl border border-slate-200 bg-slate-50/50 p-4"
                 >
-                  <span className="text-sm font-medium text-slate-700">{doc.label}</span>
+                  <span className="text-sm font-medium text-slate-700">
+                    {doc.label}
+                  </span>
                   <div className="flex items-center gap-3">
                     <span
                       className={`inline-flex items-center gap-1.5 rounded-full border px-2.5 py-0.5 text-xs font-bold ${meta.className}`}
