@@ -21,40 +21,32 @@ interface Message {
 const TOPICS = [
   {
     id: "docs",
-    title: "Documents & powers of attorney",
+    title: "Documents & Authorization",
     icon: "📄",
-    description: "Help with missing documents such as the operator power of attorney.",
-    defaultText: "Hello, I'm still missing the 'Power of attorney of the system operator'. Can you help me fill it out and upload it?",
+    description: "Help with missing documents like the power of attorney.",
+    defaultText: "Hello, I am missing the 'Operator Power of Attorney'. Can you help me fill out and upload this document?",
   },
   {
     id: "metering",
-    title: "Metering concept & meters",
+    title: "Metering Concept & Meters",
     icon: "🔌",
-    description: "Questions about the metering concept builder or meter location.",
-    defaultText: "Hello, I'm not sure which metering concept is best suited for my PV system with battery storage.",
+    description: "Questions regarding the Metering Concept Builder or panel setup.",
+    defaultText: "Hello, I am unsure which metering concept is best suited for my PV system with storage.",
   },
   {
     id: "technical",
-    title: "Technical parameters",
+    title: "Technical Parameters",
     icon: "📋",
-    description: "Clarification of data sheet values, inverter or grid protection.",
-    defaultText: "Hello, I have questions about the inverter data sheet (E.8) and the required details.",
+    description: "Clarifications on inverter datasheet specs, grid protection, etc.",
+    defaultText: "Hello, I have questions about the E.8 inverter datasheet specs and required grid parameters.",
   },
   {
     id: "general",
-    title: "Other questions",
+    title: "General Questions",
     icon: "❓",
-    description: "General questions about the process or commissioning appointments.",
-    defaultText: "Hello, I wanted to ask how long the review by the grid operator usually takes.",
+    description: "General questions about grid connection timelines and milestones.",
+    defaultText: "Hello, I wanted to ask how long the grid validation check typically takes with local operators.",
   },
-];
-
-const MATCHING_STEPS = [
-  "Submitting request details...",
-  "Analysing document and system status...",
-  "Searching for a qualified installer in your region...",
-  "Max Weber (Weber Solartechnik GmbH) found!",
-  "Initialising secure chat connection...",
 ];
 
 export default function SupportPage({
@@ -69,7 +61,7 @@ export default function SupportPage({
     orders, 
     installers, 
     updateOrderStatus, 
-    assignInstaller, 
+    acceptOffer,
     updateOrderDocumentStatus 
   } = useProjects();
   const { user } = useAuth();
@@ -79,14 +71,13 @@ export default function SupportPage({
   // Check active perspective: are we logged in as the installer?
   const isInstallerPerspective = user?.role === "installer";
 
-  // Force direct chat view for installer perspective (installer doesn't need to match him/herself)
+  // Intake view defaults
   const initialViewState = (isInstallerPerspective || order?.assignedInstallerId) ? "chat" : "intake";
 
   // States
-  const [viewState, setViewState] = useState<"intake" | "matching" | "chat">(initialViewState);
+  const [viewState, setViewState] = useState<"intake" | "lobby" | "chat">(initialViewState);
   const [selectedTopic, setSelectedTopic] = useState("docs");
   const [description, setDescription] = useState(TOPICS[0]!.defaultText);
-  const [matchingIndex, setMatchingIndex] = useState(0);
   const [messages, setMessages] = useState<Message[]>([]);
   const [inputValue, setInputValue] = useState("");
   const [isTyping, setIsTyping] = useState(false);
@@ -102,9 +93,21 @@ export default function SupportPage({
     chatEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages, isTyping]);
 
+  // Sync view state and support requested flag on mount/updates
+  useEffect(() => {
+    if (!order) return;
+    if (order.assignedInstallerId) {
+      localStorage.removeItem(`support_requested_${order.id}`);
+      setViewState("chat");
+    } else {
+      const isLobby = localStorage.getItem(`support_requested_${order.id}`) === "true";
+      setViewState(isLobby ? "lobby" : "intake");
+    }
+  }, [order?.assignedInstallerId, order?.id]);
+
   // Load chat messages based on perspective
   useEffect(() => {
-    if (messages.length > 0) return;
+    if (messages.length > 0 || !order?.assignedInstallerId) return;
 
     if (isInstallerPerspective) {
       // Seed ticket history from the installer's perspective (Customer opened a request)
@@ -112,31 +115,31 @@ export default function SupportPage({
         {
           id: "sys-1",
           sender: "system",
-          text: "Support ticket #SR-8492 loaded. Category: Documents & powers of attorney.",
+          text: "Support Ticket #SR-8492 loaded. Category: Documents & Authorization.",
           timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
         },
         {
           id: "msg-cust-init",
           sender: "user",
-          text: "Hello, I'm still missing the 'Power of attorney of the system operator'. Can you help me fill it out and upload it?",
+          text: "Hello, I am missing the 'Operator Power of Attorney'. Can you help me fill out and upload this document?",
           timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
         },
         {
           id: "msg-inst-reply",
           sender: "installer",
-          text: "Hello! I'm Max Weber. I can see your request. Do you already have the form to hand?",
+          text: "Hello! I am Max Weber. I see your request. Do you have the document template ready?",
           timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
         }
       ];
       setMessages(initialMsgs);
-    } else if (order?.assignedInstallerId) {
+    } else {
       // Seed details for customer perspective if already matched
       const topicObj = TOPICS[0];
       const initialMsgs: Message[] = [
         {
           id: "sys-1",
           sender: "system",
-          text: `Support ticket #SR-8492 loaded. Category: ${topicObj?.title}.`,
+          text: `Support Ticket #SR-8492 loaded. Category: ${topicObj?.title}.`,
           timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
         },
         {
@@ -148,7 +151,7 @@ export default function SupportPage({
         {
           id: "msg-reply-1",
           sender: "installer",
-          text: "Hello! I can see your case has been assigned to me. How can I help you with your documents?",
+          text: "Hello! I see your workspace project has been assigned to me. How can I help you complete your operator documents?",
           timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
         }
       ];
@@ -165,80 +168,20 @@ export default function SupportPage({
     }
   };
 
-  // Start Matching Simulation (Customer view only)
+  // Start Matching Simulation (Customer view: goes to waiting lobby)
   const startMatching = (e: React.FormEvent) => {
     e.preventDefault();
-    setViewState("matching");
-    setMatchingIndex(0);
+    if (order) {
+      localStorage.setItem(`support_requested_${order.id}`, "true");
+    }
+    setViewState("lobby");
   };
 
-  // Step through matching phases
-  useEffect(() => {
-    if (viewState !== "matching") return;
-
-    if (matchingIndex < MATCHING_STEPS.length) {
-      const timer = setTimeout(() => {
-        setMatchingIndex((prev) => prev + 1);
-      }, 700);
-      return () => clearTimeout(timer);
-    } else {
-      // Save assignment to ProjectContext
-      assignInstaller(orderId, "inst-1");
-
-      const topicObj = TOPICS.find((t) => t.id === selectedTopic);
-      const initialMsgs: Message[] = [
-        {
-          id: "sys-1",
-          sender: "system",
-          text: `Support ticket #SR-8492 has been created. Category: ${topicObj?.title}.`,
-          timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
-        },
-        {
-          id: "sys-2",
-          sender: "system",
-          text: "Installer Max Weber has joined the chat.",
-          timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
-        },
-        {
-          id: "msg-init-user",
-          sender: "user",
-          text: description,
-          timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
-        }
-      ];
-
-      setMessages(initialMsgs);
-      setViewState("chat");
-      
-      const timer = setTimeout(() => {
-        setIsTyping(true);
-        const typingTimer = setTimeout(() => {
-          setIsTyping(false);
-          let replyText = "Hello! I'm Max, your assigned installer for this connection request. I'm happy to help you complete your documents.";
-          if (selectedTopic === "docs") {
-            replyText += " I can see in the status portal that you're still missing the 'Power of attorney of the system operator'. Do you already have the document, or do you need the form to sign?";
-          } else if (selectedTopic === "metering") {
-            replyText += " For a PV system with battery storage, I usually recommend a surplus feed-in metering concept with separate measurement. Do you already have a specific meter location in mind?";
-          } else {
-            replyText += " Let's take a quick look at this together. Where exactly are you stuck right now?";
-          }
-
-          setMessages((prev) => [
-            ...prev,
-            {
-              id: "msg-reply-1",
-              sender: "installer",
-              text: replyText,
-              timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
-            }
-          ]);
-        }, 1500);
-        return () => clearTimeout(typingTimer);
-      }, 1000);
-
-      return () => clearTimeout(timer);
-    }
-  }, [viewState, matchingIndex, assignInstaller, orderId, selectedTopic, description]);
+  // Simulate acceptance (for hackathon demo)
+  const handleSimulateAccept = () => {
+    if (!order) return;
+    acceptOffer(order.id, "inst-1");
+  };
 
   // Send Message
   const handleSendMessage = (textToSend?: string, attachedFile?: Message["file"], forceSender?: "user" | "installer") => {
@@ -271,7 +214,7 @@ export default function SupportPage({
       if (!isInstallerPerspective) {
         if (attachedFile) {
           updateOrderDocumentStatus(orderId, "vollmacht", "complete");
-          replyText = "Excellent, thank you very much! The document 'Power_of_attorney_signed.pdf' looks complete. I'll submit it directly to the grid operator system.";
+          replyText = "Excellent, thank you! The document 'Operator_Power_of_Attorney_signed.pdf' looks fully complete. The signature and address coordinates match.";
           setMessages((prev) => [
             ...prev,
             {
@@ -286,13 +229,13 @@ export default function SupportPage({
             setIsTyping(true);
             setTimeout(() => {
               setIsTyping(false);
-              updateOrderStatus(orderId, "Under review");
+              updateOrderStatus(orderId, "In Review");
               setMessages((prev) => [
                 ...prev,
                 {
                   id: `msg-installer-sub-${Date.now()}`,
                   sender: "installer",
-                  text: "Now that all mandatory documents are in place, I've just officially submitted your grid connection request to the grid operator! Your status in the portal has been updated to 'Under review'. You can follow the progress live in the status portal.",
+                  text: "Since all required files are now complete, I have officially submitted your grid connection application to the local utility grid operator! Your project status has updated to 'In Review' in the portal. You can follow the progress live in the Status Portal.",
                   timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
                 }
               ]);
@@ -302,13 +245,13 @@ export default function SupportPage({
         }
 
         const userText = text.toLowerCase();
-        if (userText.includes("power of attorney") || userText.includes("document") || userText.includes("template")) {
-          replyText = "You can fill out the official operator power of attorney template, sign it and upload it to me right here in the chat. Just use the paperclip icon at the bottom left.";
-        } else if (userText.includes("thanks") || userText.includes("thank you") || userText.includes("great") || userText.includes("done")) {
-          replyText = "You're very welcome! I'll close this support ticket now. If anything else comes up, you can start a new support request at any time.";
+        if (userText.includes("vollmacht") || userText.includes("document") || userText.includes("template") || userText.includes("attorney")) {
+          replyText = "You can fill out and sign the official Power of Attorney template, then upload the PDF here in the chat. Drag and drop the file or click the paperclip symbol below.";
+        } else if (userText.includes("thank") || userText.includes("great") || userText.includes("done") || userText.includes("thanks")) {
+          replyText = "You are very welcome! I am closing this ticket. If you need anything else, feel free to open a new support request. Have a sunny day! ☀️";
           setTicketStatus("Resolved");
         } else {
-          replyText = "No problem, we'll sort this out. Do you have any further questions about it, or shall we submit the matter directly for you?";
+          replyText = "No problem, we'll get this sorted out. Do you have any other questions, or should we submit this technical section?";
         }
 
         setMessages((prev) => [
@@ -326,12 +269,12 @@ export default function SupportPage({
         // Customer answers the installer
         const userText = text.toLowerCase();
         if (userText.includes("hello") || userText.includes("looks") || userText.includes("ok")) {
-          replyText = "Great, thanks! I'll sign the document shortly and upload it to you here.";
-        } else if (userText.includes("submitted") || userText.includes("filed") || userText.includes("review")) {
-          replyText = "Excellent! Thank you for the quick support. I'll track the status in the portal.";
+          replyText = "Great, thanks! I will sign the document and upload it here in the chat right away.";
+        } else if (userText.includes("submit") || userText.includes("review") || userText.includes("status")) {
+          replyText = "Awesome! Thank you for the quick support. I will follow the status updates in the portal.";
           setTicketStatus("Resolved");
         } else {
-          replyText = "Thanks for the information, Mr Weber. I'll take a look at it right away.";
+          replyText = "Thanks for the information, Mr. Weber. I will check that immediately.";
         }
 
         setMessages((prev) => [
@@ -355,7 +298,7 @@ export default function SupportPage({
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
-      handleSendMessage(`I have uploaded the document: ${file.name}`, {
+      handleSendMessage(`I have uploaded the file: ${file.name}`, {
         name: file.name,
         size: `${(file.size / 1024 / 1024).toFixed(1)} MB`,
         type: file.type || "application/pdf",
@@ -366,8 +309,8 @@ export default function SupportPage({
   // Mock Upload Shortcuts (For Hackathon Demos)
   const uploadMockVollmacht = () => {
     // Customer uploads
-    handleSendMessage("I have filled out the signed power of attorney.", {
-      name: "Power_of_attorney_operator_signed.pdf",
+    handleSendMessage("I have filled out the operator authorization form.", {
+      name: "Operator_Power_of_Attorney_signed.pdf",
       size: "1.2 MB",
       type: "application/pdf",
     }, "user");
@@ -383,7 +326,7 @@ export default function SupportPage({
         <div className="flex items-center justify-between">
           <BackButton href={isInstallerPerspective ? "/orders" : `/orders/${orderId}`} />
           <span className="rounded bg-slate-100 px-2 py-0.5 font-mono text-xs font-bold text-slate-800">
-            Case ID: {orderId}
+            Order-ID: {orderId}
           </span>
         </div>
 
@@ -392,20 +335,20 @@ export default function SupportPage({
           <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-xl sm:p-10 transition-all duration-300">
             <header className="border-b border-slate-200 pb-5 mb-6">
               <span className="text-xs font-bold tracking-wider text-blue-600 uppercase">
-                Expert service · Installer help
+                Expert Service · Installer Support
               </span>
               <h1 className="mt-1 text-2xl font-extrabold tracking-tight text-slate-900 sm:text-3xl">
-                Request help
+                Request Support
               </h1>
               <p className="mt-2 text-sm text-slate-500">
-                Select a topic. We'll match you directly with a certified electrical installer who will help you via live chat.
+                Choose a category below. We will match you directly with a certified electrical technician for live collaboration.
               </p>
             </header>
 
             <form onSubmit={startMatching} className="space-y-6">
               <div>
                 <label className="text-sm font-bold text-slate-700 block mb-3">
-                  What do you need help with?
+                  What do you need assistance with?
                 </label>
                 <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
                   {TOPICS.map((topic) => (
@@ -446,7 +389,7 @@ export default function SupportPage({
               {/* Upload Zone */}
               <div>
                 <label className="text-sm font-bold text-slate-700 block mb-2">
-                  Attach document (optional)
+                  Attach Document (Optional)
                 </label>
                 <div 
                   onClick={triggerFileInput}
@@ -461,7 +404,7 @@ export default function SupportPage({
                   />
                   <span className="text-2xl block mb-2">📤</span>
                   <span className="text-sm font-semibold text-slate-600 block">
-                    Drag & drop a file here or browse
+                    Drag & drop a file here, or browse files
                   </span>
                   <span className="text-xs text-slate-400 mt-1 block">
                     PDF, PNG or JPG up to 10 MB
@@ -474,53 +417,60 @@ export default function SupportPage({
                   type="submit"
                   className="w-full flex justify-center items-center gap-2 rounded-xl bg-blue-600 px-6 py-4 text-base font-bold text-white shadow-md transition-all hover:bg-blue-700 hover:-translate-y-0.5 cursor-pointer"
                 >
-                  ⚡ Start support request
+                  ⚡ Start Support Request
                 </button>
               </div>
             </form>
           </div>
         )}
 
-        {/* --- MATCHING ANIMATION (Customer only) --- */}
-        {viewState === "matching" && !isInstallerPerspective && (
-          <div className="rounded-2xl border border-slate-200 bg-white p-10 shadow-xl text-center min-h-[450px] flex flex-col justify-center items-center transition-all duration-300">
-            <div className="relative flex items-center justify-center mb-8">
-              <div className="absolute h-24 w-24 rounded-full border-4 border-blue-500/30 animate-ping" />
-              <div className="relative h-20 w-20 rounded-full bg-blue-50 flex items-center justify-center text-3xl font-extrabold text-blue-600 shadow-md">
-                ⚡
+        {/* --- WAITING LOBBY (Customer only: waiting for installer acceptance) --- */}
+        {viewState === "lobby" && !isInstallerPerspective && (
+          <div className="rounded-2xl border border-slate-200 bg-white p-10 shadow-xl text-center min-h-[450px] flex flex-col justify-center items-center transition-all duration-300 space-y-6">
+            <div className="relative flex items-center justify-center">
+              <div className="absolute h-24 w-24 rounded-full border-4 border-emerald-500/20 animate-ping" />
+              <div className="relative h-20 w-20 rounded-full bg-emerald-50 flex items-center justify-center text-3xl font-extrabold text-emerald-600 shadow-md">
+                💼
               </div>
             </div>
 
-            <h2 className="text-2xl font-bold text-slate-800">
-              Connecting to partner installer
-            </h2>
-            <p className="text-slate-500 text-sm mt-1 max-w-sm">
-              We're finding a certified electrical specialist partner for your grid connection.
-            </p>
+            <div className="space-y-2">
+              <h2 className="text-2xl font-bold text-slate-800">
+                Connection Offer Listed
+              </h2>
+              <p className="text-slate-500 text-sm max-w-sm mx-auto">
+                Your PV grid connection has been posted to the open job board. Certified electricians are reviewing the offer.
+              </p>
+            </div>
 
-            <div className="mt-8 space-y-3 w-full max-w-md">
-              {MATCHING_STEPS.map((step, idx) => {
-                const isActive = idx === matchingIndex;
-                const isCompleted = idx < matchingIndex;
-                
-                return (
-                  <div
-                    key={idx}
-                    className={`flex items-center gap-3 p-3 rounded-lg border text-left transition-all duration-300 ${
-                      isActive
-                        ? "border-blue-200 bg-blue-50/50 text-blue-800 font-semibold"
-                        : isCompleted
-                          ? "border-emerald-100 bg-emerald-50/30 text-emerald-800 opacity-80"
-                          : "border-slate-100 bg-slate-50/10 text-slate-400 opacity-40"
-                    }`}
-                  >
-                    <span className="text-sm shrink-0">
-                      {isCompleted ? "✓" : isActive ? "📡" : "○"}
-                    </span>
-                    <span className="text-xs">{step}</span>
-                  </div>
-                );
-              })}
+            <div className="rounded-xl bg-slate-50 border border-slate-200 p-4 max-w-xs w-full text-center space-y-1.5 shadow-xs">
+              <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider block">
+                Listed Price Offer
+              </span>
+              <span className="text-2xl font-extrabold text-emerald-600 block">
+                {order?.priceOffer || "1,500 €"}
+              </span>
+              <span className="inline-flex items-center gap-1.5 text-xs text-slate-500 font-bold bg-white px-2.5 py-1 rounded border border-slate-100 mt-2">
+                <span className="h-2 w-2 rounded-full bg-amber-500 animate-pulse" />
+                Waiting for acceptance...
+              </span>
+            </div>
+
+            {/* Hackathon Demo acceptance bypass */}
+            <div className="p-4 bg-blue-50 rounded-xl border border-blue-200 max-w-md w-full space-y-2 text-center shadow-xs">
+              <span className="text-xs font-bold text-blue-700 block">
+                💡 Hackathon Demo Shortcut
+              </span>
+              <p className="text-[10px] text-blue-600 leading-normal">
+                Click below to simulate installer **Max Weber** accepting your job bid from the open market.
+              </p>
+              <button
+                type="button"
+                onClick={handleSimulateAccept}
+                className="w-full text-center bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-lg text-xs py-2 shadow-sm transition cursor-pointer"
+              >
+                Accept Bid (Simulate Max Weber)
+              </button>
             </div>
           </div>
         )}
@@ -532,7 +482,7 @@ export default function SupportPage({
             {/* Sidebar Profile & Details */}
             <div className="space-y-6">
               
-              {/* Profile Card (Who is the opposite person?) */}
+              {/* Profile Card */}
               <div className="rounded-2xl border border-slate-200 bg-white p-5 shadow-lg">
                 <div className="flex items-center gap-4 border-b border-slate-100 pb-4 mb-4">
                   <div className="relative">
@@ -548,11 +498,11 @@ export default function SupportPage({
                       {isInstallerPerspective ? "Customer One" : activeInstaller.name}
                     </h3>
                     <p className="text-xs text-slate-400">
-                      {isInstallerPerspective ? "System operator" : "Certified partner"}
+                      {isInstallerPerspective ? "Operator / Customer" : "Certified Partner"}
                     </p>
                     <div className="flex items-center gap-1 mt-0.5">
                       <span className="text-xs text-slate-600">
-                        {isInstallerPerspective ? "PLZ: 06108 Halle" : activeInstaller.company}
+                        {isInstallerPerspective ? "Zip Code: 06108" : activeInstaller.company}
                       </span>
                     </div>
                   </div>
@@ -564,9 +514,15 @@ export default function SupportPage({
                     <span className="font-bold text-slate-700">Online</span>
                   </div>
                   <div className="flex justify-between items-center text-xs">
-                    <span className="text-slate-400">Connection capacity:</span>
+                    <span className="text-slate-400">Connection Power:</span>
                     <span className="font-bold text-slate-700">
                       {order?.power || "9.8 kWp"}
+                    </span>
+                  </div>
+                  <div className="flex justify-between items-center text-xs border-t border-slate-100 pt-2">
+                    <span className="text-slate-400">Accepted Price:</span>
+                    <span className="font-extrabold text-emerald-600">
+                      {order?.priceOffer || "1,500 €"}
                     </span>
                   </div>
                 </div>
@@ -575,7 +531,7 @@ export default function SupportPage({
               {/* Ticket Details Card */}
               <div className="rounded-2xl border border-slate-200 bg-white p-5 shadow-lg space-y-4">
                 <h4 className="text-xs font-bold uppercase tracking-wider text-slate-400">
-                  Ticket details
+                  Ticket Details
                 </h4>
 
                 <div className="space-y-3 text-xs">
@@ -592,11 +548,11 @@ export default function SupportPage({
                   <div className="flex justify-between items-center">
                     <span className="text-slate-400">Category:</span>
                     <span className="font-semibold text-slate-800">
-                      Documents & powers of attorney
+                      Documents & Authorization
                     </span>
                   </div>
                   <div className="flex justify-between items-center">
-                    <span className="text-slate-400">Project ID:</span>
+                    <span className="text-slate-400">Project-ID:</span>
                     <span className="font-mono font-bold text-slate-700">#{orderId}</span>
                   </div>
                 </div>
@@ -608,9 +564,9 @@ export default function SupportPage({
                       💡 Hackathon Demo Helper
                     </span>
                     <p className="text-[10px] text-blue-600 leading-normal mb-2">
-                      {isInstallerPerspective
-                        ? "Simulate the customer sending you the completed power of attorney."
-                        : "Upload the signed power of attorney as the customer."
+                      {isInstallerPerspective 
+                        ? "Simulate the customer uploading their signed operator authorization form."
+                        : "Upload the signed Operator Power of Attorney form as the customer."
                       }
                     </p>
                     <button
@@ -618,7 +574,7 @@ export default function SupportPage({
                       onClick={uploadMockVollmacht}
                       className="w-full text-center bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-lg text-xs py-2 shadow-sm transition cursor-pointer"
                     >
-                      {isInstallerPerspective ? "📄 Simulate customer upload" : "📄 Upload power of attorney"}
+                      {isInstallerPerspective ? "📄 Simulate Customer Upload" : "📄 Upload Power of Attorney"}
                     </button>
                   </div>
                 )}
@@ -632,13 +588,13 @@ export default function SupportPage({
               <div className="bg-slate-50 border-b border-slate-200 px-6 py-4 flex items-center justify-between">
                 <div>
                   <h3 className="text-sm font-bold text-slate-800 flex items-center gap-1.5">
-                    {isInstallerPerspective
-                      ? "Live chat with Customer One"
-                      : `Live chat with ${activeInstaller.name}`
+                    {isInstallerPerspective 
+                      ? "Live Chat with Customer One" 
+                      : `Live Chat with ${activeInstaller.name}`
                     }
                   </h3>
                   <p className="text-[11px] text-slate-500">
-                    {isInstallerPerspective ? "Support request regarding the power of attorney." : "Your case is being processed directly."}
+                    {isInstallerPerspective ? "Support request regarding authorization." : "Your application is being reviewed."}
                   </p>
                 </div>
                 <div className="flex items-center gap-2">
@@ -660,7 +616,6 @@ export default function SupportPage({
                     );
                   }
 
-                  // Determine if bubble should be on the right (i.e. matches our perspective)
                   const isRightSide = isInstallerPerspective 
                     ? msg.sender === "installer" 
                     : msg.sender === "user";
@@ -757,7 +712,7 @@ export default function SupportPage({
                     onClick={triggerFileInput}
                     disabled={ticketStatus === "Resolved"}
                     className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border border-slate-200 hover:border-slate-300 bg-slate-50 hover:bg-slate-100 text-lg transition disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
-                    title="Attach file"
+                    title="Attach File"
                   >
                     📎
                   </button>
@@ -768,9 +723,9 @@ export default function SupportPage({
                     onChange={(e) => setInputValue(e.target.value)}
                     disabled={ticketStatus === "Resolved"}
                     placeholder={
-                      ticketStatus === "Resolved"
-                        ? "This chat is closed."
-                        : "Write a message..."
+                      ticketStatus === "Resolved" 
+                        ? "This chat session has been closed." 
+                        : "Type a message..."
                     }
                     className="flex-1 h-10 rounded-xl border border-slate-200 px-4 text-sm focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500/20 disabled:bg-slate-50 disabled:cursor-not-allowed"
                   />
@@ -790,13 +745,13 @@ export default function SupportPage({
                       ✓ This ticket has been marked as resolved
                     </span>
                     <p className="text-[11px] text-emerald-600 leading-normal mt-0.5">
-                      Thank you! The operator power of attorney was submitted successfully.
+                      The Operator Power of Attorney has been successfully uploaded and checked.
                     </p>
                     <Link
                       href={isInstallerPerspective ? "/orders" : `/orders/${orderId}/status`}
                       className="inline-flex mt-2 text-xs font-semibold text-blue-600 underline hover:text-blue-700"
                     >
-                      {isInstallerPerspective ? "Back to overview" : "Go to status portal"}
+                      {isInstallerPerspective ? "Back to Dashboard" : "Go to Status Portal"}
                     </Link>
                   </div>
                 )}
