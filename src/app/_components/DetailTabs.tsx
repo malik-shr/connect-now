@@ -5,7 +5,7 @@ import { useAuth } from "~/app/_context/AuthContext";
 
 export type DetailView = "all" | "customer" | "installer";
 
-// Geteilte Tab-Navigation zwischen den drei Detail-Ansichten.
+// Shared tab navigation between the three detail views.
 export default function DetailTabs({
   orderId,
   active,
@@ -16,15 +16,15 @@ export default function DetailTabs({
   const { user } = useAuth();
 
   const tabs = [
-    { key: "all", label: "Vollständig", href: `/orders/${orderId}/details` },
+    { key: "all", label: "Complete", href: `/orders/${orderId}/details` },
     user?.role !== "installer" && {
       key: "customer",
-      label: "👤 Kunde",
+      label: "👤 Customer",
       href: `/orders/${orderId}/details/customer`,
     },
     {
       key: "installer",
-      label: "🔧 Installateur",
+      label: "🔧 Installer",
       href: `/orders/${orderId}/details/installer`,
     },
   ].filter(Boolean) as { key: DetailView; label: string; href: string }[];

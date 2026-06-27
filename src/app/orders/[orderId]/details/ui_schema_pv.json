@@ -1,185 +1,185 @@
 [
   {
-    "section": "Anlagenstandort",
+    "section": "System location",
     "fields": [
       {
         "id": "1001",
         "owner": "customer",
-        "label": "Art der Standortangabe",
+        "label": "Type of location specification",
         "type": "select",
         "required": true,
-        "helpText": "Wählen Sie aus, ob Sie für den Anlagenstandort eine postalische Adresse (Straße, Hausnummer) oder die Gemarkung und das Flurstück angeben.\nHinweis: Die Angabe einer Postfachadresse ist nicht möglich.",
+        "helpText": "Select whether you want to provide a postal address (street, house number) or the cadastral district and parcel for the system location.\nNote: Providing a P.O. box address is not possible.",
         "unit": "",
         "options": [
-          "postalische Adresse",
-          "Flurdaten"
+          "Postal address",
+          "Cadastral data"
         ]
       },
       {
         "id": "1002",
         "owner": "customer",
-        "label": "Straße",
+        "label": "Street",
         "type": "text",
         "required": true,
-        "helpText": "Tragen Sie die Straße des Anlagenstandorts ein.",
+        "helpText": "Enter the street of the system location.",
         "unit": ""
       },
       {
         "id": "1003",
         "owner": "customer",
-        "label": "Hausnummer",
+        "label": "House number",
         "type": "text",
         "required": true,
-        "helpText": "Tragen Sie die Hausnummer des Anlagenstandorts ein.",
+        "helpText": "Enter the house number of the system location.",
         "unit": ""
       },
       {
         "id": "1004",
         "owner": "customer",
-        "label": "Adresszusatz",
+        "label": "Address supplement",
         "type": "text",
         "required": true,
-        "helpText": "Sie können einen evtl. vorhandenen Adresszusatz eintragen.",
+        "helpText": "You can enter an address supplement if one exists.",
         "unit": ""
       },
       {
         "id": "1005",
         "owner": "customer",
-        "label": "Gemarkung",
+        "label": "Cadastral district",
         "type": "text",
         "required": true,
-        "helpText": "Tragen Sie die Gemarkung des Anlagenstandorts ein.",
+        "helpText": "Enter the cadastral district of the system location.",
         "unit": ""
       },
       {
         "id": "1006",
         "owner": "customer",
-        "label": "Flurstück Zähler/Nenner",
+        "label": "Parcel numerator/denominator",
         "type": "text",
         "required": true,
-        "helpText": "Tragen Sie die Flur- und Flurstücksnummern des Anlagenstandorts ein.",
+        "helpText": "Enter the cadastral and parcel numbers of the system location.",
         "unit": ""
       },
       {
         "id": "1007",
         "owner": "customer",
-        "label": "PLZ",
+        "label": "Postal code",
         "type": "text",
         "required": true,
-        "helpText": "Tragen Sie die Postleitzahl des Anlagenstandorts ein.",
+        "helpText": "Enter the postal code of the system location.",
         "unit": ""
       },
       {
         "id": "1008",
         "owner": "customer",
-        "label": "Ort",
+        "label": "City",
         "type": "text",
         "required": true,
-        "helpText": "Tragen Sie den Ort des Anlagenstandorts ein.",
+        "helpText": "Enter the city of the system location.",
         "unit": ""
       },
       {
         "id": "1009",
         "owner": "customer",
-        "label": "Ortsteil",
+        "label": "District",
         "type": "text",
         "required": true,
-        "helpText": "Sie können einen evtl. vorhandenen Ortsteil eintragen.",
+        "helpText": "You can enter a district if one exists.",
         "unit": ""
       }
     ]
   },
   {
-    "section": "Anschlussnutzer Bezug/ Anschlussnutzer Einspeisung (Anlagenbetreiber)",
+    "section": "Connection user consumption / connection user feed-in (system operator)",
     "fields": [
       {
         "id": "1101",
         "owner": "customer",
-        "label": "Name oder Firmenname",
+        "label": "Name or company name",
         "type": "text",
         "required": true,
-        "helpText": "Tragen Sie den Namen des Anschlussnutzers oder den der Organisation mit rechtsformergänzendem Namenszusatz ein.",
+        "helpText": "Enter the name of the connection user or that of the organization including the legal form suffix.",
         "unit": ""
       },
       {
         "id": "1102",
         "owner": "customer",
-        "label": "Vorname",
+        "label": "First name",
         "type": "text",
         "required": true,
-        "helpText": "Tragen Sie den Vornamen des Anschlussnutzers ein.",
+        "helpText": "Enter the first name of the connection user.",
         "unit": ""
       },
       {
         "id": "1103",
         "owner": "customer",
-        "label": "Straße",
+        "label": "Street",
         "type": "text",
         "required": true,
-        "helpText": "Tragen Sie die Straße des Anschlussnutzers ein.",
+        "helpText": "Enter the street of the connection user.",
         "unit": ""
       },
       {
         "id": "1104",
         "owner": "customer",
-        "label": "Hausnummer",
+        "label": "House number",
         "type": "text",
         "required": true,
-        "helpText": "Tragen Sie die Hausnummer des Anschlussnutzers ein.",
+        "helpText": "Enter the house number of the connection user.",
         "unit": ""
       },
       {
         "id": "1105",
         "owner": "customer",
-        "label": "Adresszusatz",
+        "label": "Address supplement",
         "type": "text",
         "required": true,
-        "helpText": "Sie können einen evtl. vorhandenen Adresszusatz eintragen.",
+        "helpText": "You can enter an address supplement if one exists.",
         "unit": ""
       },
       {
         "id": "1106",
         "owner": "customer",
-        "label": "PLZ",
+        "label": "Postal code",
         "type": "text",
         "required": true,
-        "helpText": "Tragen Sie die Postleitzahl des Anschlussnutzers ein.",
+        "helpText": "Enter the postal code of the connection user.",
         "unit": ""
       },
       {
         "id": "1107",
         "owner": "customer",
-        "label": "Ort",
+        "label": "City",
         "type": "text",
         "required": true,
-        "helpText": "Tragen Sie den Ort des Anschlussnutzers ein.",
+        "helpText": "Enter the city of the connection user.",
         "unit": ""
       },
       {
         "id": "1108",
         "owner": "customer",
-        "label": "Ortsteil",
+        "label": "District",
         "type": "text",
         "required": true,
-        "helpText": "Sie können einen evtl. vorhandenen Ortsteil eintragen.",
+        "helpText": "You can enter a district if one exists.",
         "unit": ""
       },
       {
         "id": "1109",
         "owner": "customer",
-        "label": "Telefon",
+        "label": "Phone",
         "type": "text",
         "required": true,
-        "helpText": "Tragen Sie die Telefonnummer des Anschlussnutzers ein.",
+        "helpText": "Enter the phone number of the connection user.",
         "unit": ""
       },
       {
         "id": "1110",
         "owner": "customer",
-        "label": "E-Mail",
+        "label": "Email",
         "type": "text",
         "required": true,
-        "helpText": "Tragen Sie die E-Mailadresse des Anschlussnutzers ein.",
+        "helpText": "Enter the email address of the connection user.",
         "unit": ""
       },
       {
@@ -188,321 +188,321 @@
         "label": "IBAN",
         "type": "text",
         "required": false,
-        "helpText": "Tragen Sie die IBAN von dem Konto ein, auf das die Auszahlung der EEG-Förderung erfolgen soll.",
+        "helpText": "Enter the IBAN of the account to which the EEG subsidy payment should be made.",
         "unit": ""
       },
       {
         "id": "1112",
         "owner": "customer",
-        "label": "Unternehmen in Schwierigkeiten oder offene Rückforderungs-ansprüche",
+        "label": "Undertaking in difficulty or outstanding recovery claims",
         "type": "select",
         "required": false,
-        "helpText": "Bestätigen Sie, dass Sie kein Unternehmen in Schwierigkeiten sind oder offene Rückforderungsansprüche bestehen. Hinweis: Damit Förderung ausgezahlt werden kann, ist nach § 19 Absatz 4 iVm § 3 Nummer 47 EEG die Bestätigung erforderlich, kein UiS zu sein. Ebenfalls dürfen keine offenen Rückforderungsansprüche bestehen.",
+        "helpText": "Confirm that you are not an undertaking in difficulty and that no outstanding recovery claims exist. Note: In order for the subsidy to be paid out, confirmation that you are not an undertaking in difficulty (UiD) is required pursuant to § 19 Absatz 4 in conjunction with § 3 Nummer 47 EEG. Likewise, no outstanding recovery claims may exist.",
         "unit": "",
         "options": [
-          "Ich bin ein Unternehmen in Schwierigkeiten",
-          "Gegen mein Unternehmen bestehen offene Rückforderungsansprüche",
-          "Beides nicht zutreffend"
+          "I am an undertaking in difficulty",
+          "There are outstanding recovery claims against my company",
+          "Neither applies"
         ]
       }
     ]
   },
   {
-    "section": "Anschlussnehmer",
+    "section": "Grid connection customer",
     "fields": [
       {
         "id": "1201",
         "owner": "customer",
-        "label": "Name oder Firmenname",
+        "label": "Name or company name",
         "type": "text",
         "required": true,
-        "helpText": "Tragen Sie den Namen des Anschlussnehmers oder den der Organisation mit rechtsformergänzendem Namenszusatz ein.",
+        "helpText": "Enter the name of the grid connection customer or that of the organization including the legal form suffix.",
         "unit": ""
       },
       {
         "id": "1202",
         "owner": "customer",
-        "label": "Vorname",
+        "label": "First name",
         "type": "text",
         "required": true,
-        "helpText": "Tragen Sie den Vornamen des Anschlussnehmers ein.",
+        "helpText": "Enter the first name of the grid connection customer.",
         "unit": ""
       },
       {
         "id": "1203",
         "owner": "customer",
-        "label": "Straße",
+        "label": "Street",
         "type": "text",
         "required": true,
-        "helpText": "Tragen Sie die Straße des Anschlussnehmers ein.",
+        "helpText": "Enter the street of the grid connection customer.",
         "unit": ""
       },
       {
         "id": "1204",
         "owner": "customer",
-        "label": "Hausnummer",
+        "label": "House number",
         "type": "text",
         "required": true,
-        "helpText": "Tragen Sie die Hausnummer des Anschlussnehmers ein.",
+        "helpText": "Enter the house number of the grid connection customer.",
         "unit": ""
       },
       {
         "id": "1205",
         "owner": "customer",
-        "label": "Adresszusatz",
+        "label": "Address supplement",
         "type": "text",
         "required": true,
-        "helpText": "Sie können einen evtl. vorhandenen Adresszusatz eintragen.",
+        "helpText": "You can enter an address supplement if one exists.",
         "unit": ""
       },
       {
         "id": "1206",
         "owner": "customer",
-        "label": "PLZ",
+        "label": "Postal code",
         "type": "text",
         "required": true,
-        "helpText": "Tragen Sie die Postleitzahl des Anschlussnehmers ein.",
+        "helpText": "Enter the postal code of the grid connection customer.",
         "unit": ""
       },
       {
         "id": "1207",
         "owner": "customer",
-        "label": "Ort",
+        "label": "City",
         "type": "text",
         "required": true,
-        "helpText": "Tragen Sie den Ort des Anschlussnehmers ein.",
+        "helpText": "Enter the city of the grid connection customer.",
         "unit": ""
       },
       {
         "id": "1208",
         "owner": "customer",
-        "label": "Ortsteil",
+        "label": "District",
         "type": "text",
         "required": true,
-        "helpText": "Sie können einen evtl. vorhandenen Ortsteil eintragen.",
+        "helpText": "You can enter a district if one exists.",
         "unit": ""
       },
       {
         "id": "1209",
         "owner": "customer",
-        "label": "Telefon",
+        "label": "Phone",
         "type": "text",
         "required": true,
-        "helpText": "Tragen Sie die Telefonnummer des Anschlussnehmers ein.",
+        "helpText": "Enter the phone number of the grid connection customer.",
         "unit": ""
       },
       {
         "id": "1210",
         "owner": "customer",
-        "label": "E-Mail",
+        "label": "Email",
         "type": "text",
         "required": true,
-        "helpText": "Tragen Sie die E-Mailadresse des Anschlussnehmers ein.",
+        "helpText": "Enter the email address of the grid connection customer.",
         "unit": ""
       }
     ]
   },
   {
-    "section": "Rechnungs-empfänger",
+    "section": "Invoice recipient",
     "fields": [
       {
         "id": "1301",
         "owner": "customer",
-        "label": "Name oder Firmenname",
+        "label": "Name or company name",
         "type": "text",
         "required": false,
-        "helpText": "Tragen Sie den Namen des Rechnungsempfängers oder den der Organisation mit rechtsformergänzendem Namenszusatz ein.",
+        "helpText": "Enter the name of the invoice recipient or that of the organization including the legal form suffix.",
         "unit": ""
       },
       {
         "id": "1302",
         "owner": "customer",
-        "label": "Vorname",
+        "label": "First name",
         "type": "text",
         "required": false,
-        "helpText": "Tragen Sie den Vornamen des Rechnungsempfängers ein.",
+        "helpText": "Enter the first name of the invoice recipient.",
         "unit": ""
       },
       {
         "id": "1303",
         "owner": "customer",
-        "label": "Straße",
+        "label": "Street",
         "type": "text",
         "required": false,
-        "helpText": "Tragen Sie die Straße des Rechnungsempfängers ein.",
+        "helpText": "Enter the street of the invoice recipient.",
         "unit": ""
       },
       {
         "id": "1304",
         "owner": "customer",
-        "label": "Hausnummer",
+        "label": "House number",
         "type": "text",
         "required": false,
-        "helpText": "Tragen Sie die Hausnummer des Rechnungsempfängers ein.",
+        "helpText": "Enter the house number of the invoice recipient.",
         "unit": ""
       },
       {
         "id": "1305",
         "owner": "customer",
-        "label": "Adresszusatz",
+        "label": "Address supplement",
         "type": "text",
         "required": false,
-        "helpText": "Sie können einen evtl. vorhandenen Adresszusatz eintragen.",
+        "helpText": "You can enter an address supplement if one exists.",
         "unit": ""
       },
       {
         "id": "1306",
         "owner": "customer",
-        "label": "PLZ",
+        "label": "Postal code",
         "type": "text",
         "required": false,
-        "helpText": "Tragen Sie die Postleitzahl des Rechnungsempfängers ein.",
+        "helpText": "Enter the postal code of the invoice recipient.",
         "unit": ""
       },
       {
         "id": "1307",
         "owner": "customer",
-        "label": "Ort",
+        "label": "City",
         "type": "text",
         "required": false,
-        "helpText": "Tragen Sie den Ort des Rechnungsempfängers ein.",
+        "helpText": "Enter the city of the invoice recipient.",
         "unit": ""
       },
       {
         "id": "1308",
         "owner": "customer",
-        "label": "Ortsteil",
+        "label": "District",
         "type": "text",
         "required": false,
-        "helpText": "Sie können einen evtl. vorhandenen Ortsteil eintragen.",
+        "helpText": "You can enter a district if one exists.",
         "unit": ""
       },
       {
         "id": "1309",
         "owner": "customer",
-        "label": "Telefon",
+        "label": "Phone",
         "type": "text",
         "required": false,
-        "helpText": "Tragen Sie die Telefonnummer des Rechnungsempfängers ein.",
+        "helpText": "Enter the phone number of the invoice recipient.",
         "unit": ""
       },
       {
         "id": "1310",
         "owner": "customer",
-        "label": "E-Mail",
+        "label": "Email",
         "type": "text",
         "required": false,
-        "helpText": "Tragen Sie die E-Mailadresse des Rechnungsempfängers ein.",
+        "helpText": "Enter the email address of the invoice recipient.",
         "unit": ""
       }
     ]
   },
   {
-    "section": "Elektrofachbetrieb",
+    "section": "Electrical contractor",
     "fields": [
       {
         "id": "1401",
         "owner": "installer",
-        "label": "Firmenname",
+        "label": "Company name",
         "type": "text",
         "required": true,
-        "helpText": "Tragen Sie den Namen der Organisation mit rechtsformergänzendem Namenszusatz ein.",
+        "helpText": "Enter the name of the organization including the legal form suffix.",
         "unit": ""
       },
       {
         "id": "1402",
         "owner": "installer",
-        "label": "Straße",
+        "label": "Street",
         "type": "text",
         "required": true,
-        "helpText": "Tragen Sie die Straße des Elektrofachbetriebs ein.",
+        "helpText": "Enter the street of the electrical contractor.",
         "unit": ""
       },
       {
         "id": "1403",
         "owner": "installer",
-        "label": "Hausnummer",
+        "label": "House number",
         "type": "text",
         "required": true,
-        "helpText": "Tragen Sie die Hausnummer des Elektrofachbetriebs ein.",
+        "helpText": "Enter the house number of the electrical contractor.",
         "unit": ""
       },
       {
         "id": "1404",
         "owner": "installer",
-        "label": "Adresszusatz",
+        "label": "Address supplement",
         "type": "text",
         "required": true,
-        "helpText": "Sie können einen evtl. vorhandenen Adresszusatz eintragen.",
+        "helpText": "You can enter an address supplement if one exists.",
         "unit": ""
       },
       {
         "id": "1405",
         "owner": "installer",
-        "label": "PLZ",
+        "label": "Postal code",
         "type": "text",
         "required": true,
-        "helpText": "Tragen Sie die Postleitzahl des Elektrofachbetriebs ein.",
+        "helpText": "Enter the postal code of the electrical contractor.",
         "unit": ""
       },
       {
         "id": "1406",
         "owner": "installer",
-        "label": "Ort",
+        "label": "City",
         "type": "text",
         "required": true,
-        "helpText": "Tragen Sie den Ort des Elektrofachbetriebs ein.",
+        "helpText": "Enter the city of the electrical contractor.",
         "unit": ""
       },
       {
         "id": "1407",
         "owner": "installer",
-        "label": "Ortsteil",
+        "label": "District",
         "type": "text",
         "required": true,
-        "helpText": "Sie können einen evtl. vorhandenen Ortsteil eintragen.",
+        "helpText": "You can enter a district if one exists.",
         "unit": ""
       },
       {
         "id": "1408",
         "owner": "installer",
-        "label": "Telefon",
+        "label": "Phone",
         "type": "text",
         "required": true,
-        "helpText": "Tragen Sie die Telefonnummer des Elektrofachbetriebs ein.",
+        "helpText": "Enter the phone number of the electrical contractor.",
         "unit": ""
       },
       {
         "id": "1409",
         "owner": "installer",
-        "label": "E-Mail",
+        "label": "Email",
         "type": "text",
         "required": true,
-        "helpText": "Tragen Sie die E-Mailadresse des Elektrofachbetriebs ein.",
+        "helpText": "Enter the email address of the electrical contractor.",
         "unit": ""
       },
       {
         "id": "1410",
         "owner": "installer",
-        "label": "Eingetragen bei folgendem Netzbetreiber",
+        "label": "Registered with the following grid operator",
         "type": "text",
         "required": false,
-        "helpText": "Tragen Sie den Netzbetreiber ein, bei dem der Elektrofachbetrieb eingetragen ist.",
+        "helpText": "Enter the grid operator with which the electrical contractor is registered.",
         "unit": ""
       },
       {
         "id": "1411",
         "owner": "installer",
-        "label": "Eintragungsnummer",
+        "label": "Registration number",
         "type": "text",
         "required": false,
-        "helpText": "Tragen Sie die Eintragungsnummer des Elektrofachbetriebs ein.",
+        "helpText": "Enter the registration number of the electrical contractor.",
         "unit": ""
       }
     ]
   },
   {
-    "section": "Elektrofachbetrieb Ansprechpartner",
+    "section": "Electrical contractor contact person",
     "fields": [
       {
         "id": "1501",
@@ -510,371 +510,371 @@
         "label": "Name",
         "type": "text",
         "required": true,
-        "helpText": "Tragen Sie den Namen des Ansprechpartners des Elektrofachbetriebs ein.",
+        "helpText": "Enter the name of the electrical contractor's contact person.",
         "unit": ""
       },
       {
         "id": "1502",
         "owner": "installer",
-        "label": "Vorname",
+        "label": "First name",
         "type": "text",
         "required": true,
-        "helpText": "Tragen Sie den Vornamen des Ansprechpartners des Elektrofachbetriebs ein.",
+        "helpText": "Enter the first name of the electrical contractor's contact person.",
         "unit": ""
       },
       {
         "id": "1503",
         "owner": "installer",
-        "label": "Telefon",
+        "label": "Phone",
         "type": "text",
         "required": false,
-        "helpText": "Tragen Sie die Telefonnummer des Ansprechpartners des Elektrofachbetriebs ein.",
+        "helpText": "Enter the phone number of the electrical contractor's contact person.",
         "unit": ""
       },
       {
         "id": "1504",
         "owner": "installer",
-        "label": "E-Mail",
+        "label": "Email",
         "type": "text",
         "required": false,
-        "helpText": "Tragen Sie die E-Mailadresse des Ansprechpartners des Elektrofachbetriebs ein.",
+        "helpText": "Enter the email address of the electrical contractor's contact person.",
         "unit": ""
       }
     ]
   },
   {
-    "section": "Anlagenerrichter",
+    "section": "System installer",
     "fields": [
       {
         "id": "1601",
         "owner": "installer",
-        "label": "Firmenname",
+        "label": "Company name",
         "type": "text",
         "required": false,
-        "helpText": "Tragen Sie den Namen der Organisation mit rechtsformergänzendem Namenszusatz ein.",
+        "helpText": "Enter the name of the organization including the legal form suffix.",
         "unit": ""
       },
       {
         "id": "1602",
         "owner": "installer",
-        "label": "Straße",
+        "label": "Street",
         "type": "text",
         "required": false,
-        "helpText": "Tragen Sie die Straße des Anlagenerrichters ein.",
+        "helpText": "Enter the street of the system installer.",
         "unit": ""
       },
       {
         "id": "1603",
         "owner": "installer",
-        "label": "Hausnummer",
+        "label": "House number",
         "type": "text",
         "required": false,
-        "helpText": "Tragen Sie die Hausnummer des Anlagenerrichters ein.",
+        "helpText": "Enter the house number of the system installer.",
         "unit": ""
       },
       {
         "id": "1604",
         "owner": "installer",
-        "label": "Adresszusatz",
+        "label": "Address supplement",
         "type": "text",
         "required": false,
-        "helpText": "Sie können einen evtl. vorhandenen Adresszusatz eintragen.",
+        "helpText": "You can enter an address supplement if one exists.",
         "unit": ""
       },
       {
         "id": "1605",
         "owner": "installer",
-        "label": "PLZ",
+        "label": "Postal code",
         "type": "text",
         "required": false,
-        "helpText": "Tragen Sie die Postleitzahl des Anlagenerrichters ein.",
+        "helpText": "Enter the postal code of the system installer.",
         "unit": ""
       },
       {
         "id": "1606",
         "owner": "installer",
-        "label": "Ort",
+        "label": "City",
         "type": "text",
         "required": false,
-        "helpText": "Tragen Sie den Ort des Anlagenerrichters ein.",
+        "helpText": "Enter the city of the system installer.",
         "unit": ""
       },
       {
         "id": "1607",
         "owner": "installer",
-        "label": "Ortsteil",
+        "label": "District",
         "type": "text",
         "required": false,
-        "helpText": "Sie können einen evtl. vorhandenen Ortsteil eintragen.",
+        "helpText": "You can enter a district if one exists.",
         "unit": ""
       },
       {
         "id": "1608",
         "owner": "installer",
-        "label": "Telefon",
+        "label": "Phone",
         "type": "text",
         "required": false,
-        "helpText": "Tragen Sie die Telefonnummer des Anlagenerrichters ein.",
+        "helpText": "Enter the phone number of the system installer.",
         "unit": ""
       },
       {
         "id": "1609",
         "owner": "installer",
-        "label": "E-Mail",
+        "label": "Email",
         "type": "text",
         "required": false,
-        "helpText": "Tragen Sie die E-Mailadresse des Anlagenerrichters ein.",
+        "helpText": "Enter the email address of the system installer.",
         "unit": ""
       }
     ]
   },
   {
-    "section": "Kundenanlage",
+    "section": "Customer installation",
     "fields": [
       {
         "id": "2001",
         "owner": "installer",
-        "label": "Vorhandene steuerbare Verbrauchseinrichtung nach § 14a EnWG",
+        "label": "Existing controllable consumption device pursuant to § 14a EnWG",
         "type": "select",
         "required": true,
-        "helpText": "Wählen Sie aus, ob sich hinter dem Netzanschlusspunkt eine steuerbare Verbrauchseinrichtung nach § 14a EnWG (Ladepunkt, Wärmepumpe, Klimaanlage oder Speicher) mit einer Netzanschlussleistung von mehr als 4,2 kW befindet.",
+        "helpText": "Select whether there is a controllable consumption device pursuant to § 14a EnWG (charging point, heat pump, air conditioning, or storage) with a grid connection capacity of more than 4.2 kW behind the grid connection point.",
         "unit": "",
         "options": [
-          "Keine",
-          "Ladepunkt",
-          "Wärmepumpe",
-          "Klimaanlage",
-          "Stromspeicher"
+          "None",
+          "Charging point",
+          "Heat pump",
+          "Air conditioning",
+          "Electricity storage"
         ]
       },
       {
         "id": "2002",
         "owner": "installer",
-        "label": "Einrichtung zur Steuerung nach § 9 EEG",
+        "label": "Control device pursuant to § 9 EEG",
         "type": "select",
         "required": true,
-        "helpText": "Wählen Sie aus, ob der Netzbetreiber über eine bereits verbaute Steuerbox vor Ort zugreifen kann. Wählen Sie die technische Einrichtung zur Umsetzung der Steuerungsverpflichtung nach § 9 EEG für die PV-Einspeisung aus.",
+        "helpText": "Select whether the grid operator can access an already installed control box on site. Select the technical device for implementing the control obligation pursuant to § 9 EEG for the PV feed-in.",
         "unit": "",
         "options": [
-          "Auftrag zum Einbau neuer technischer Einrichtung (grundzuständiger Messtellenbetreiber)",
-          "Auftrag zum Einbau neuer technischer Einrichtung (wettbewerblicher Messtellenbetreiber)",
-          "Nutzung vorhandener technischer Einrichtungen möglich"
+          "Order to install a new technical device (default metering point operator)",
+          "Order to install a new technical device (competitive metering point operator)",
+          "Use of existing technical devices possible"
         ]
       },
       {
         "id": "2003",
         "owner": "installer",
-        "label": "Aufstellungsort im Lageplan, an dem die Anlage installiert werden soll",
+        "label": "Installation location in the site plan where the system is to be installed",
         "type": "text",
         "required": true,
-        "helpText": "Aktueller Lageplan, aus dem der Aufstellungsort der Anlage ersichtlich ist oder digitaler Eintrag in einem Geosystem des Netzbetreibers.",
+        "helpText": "Current site plan showing the installation location of the system, or a digital entry in a geosystem of the grid operator.",
         "unit": ""
       },
       {
         "id": "2004",
         "owner": "installer",
-        "label": "Geplanter Inbetriebsetzungstermin",
+        "label": "Planned commissioning date",
         "type": "text",
         "required": false,
-        "helpText": "Geben Sie das Datum an, an dem die geplante erstmalige Nutzung und Abrechnung der Anlage erfolgen wird.",
+        "helpText": "Provide the date on which the planned initial use and billing of the system will take place.",
         "unit": ""
       },
       {
         "id": "2005",
         "owner": "installer",
-        "label": "EEG-Inbetriebnahmedatum",
+        "label": "EEG commissioning date",
         "type": "text",
         "required": true,
-        "helpText": "Geben Sie das Datum an, an dem die Anlage installiert wurde. Hinweis: Inbetriebnahme ist „die erstmalige Inbetriebsetzung der Anlage ausschließlich mit erneuerbaren Energien oder Grubengas nach Herstellung der technischen Betriebsbereitschaft der Anlage; die technische Betriebsbereitschaft setzt voraus, dass die Anlage fest an dem für den dauerhaften Betrieb vorgesehenen Ort und dauerhaft mit dem für die Erzeugung von Wechselstrom erforderlichen Zubehör installiert wurde; der Austausch des Generators oder sonstiger technischer oder baulicher Teile nach der erstmaligen Inbetriebnahme führt nicht zu einer Änderung des Zeitpunkts der Inbetriebnahme“ (§ 3 Nummer 30 EEG).",
+        "helpText": "Provide the date on which the system was installed. Note: Commissioning is “the initial putting into operation of the system exclusively using renewable energies or mine gas after establishing the technical operational readiness of the system; technical operational readiness requires that the system has been permanently installed at the location intended for permanent operation and permanently equipped with the accessories required for generating alternating current; the replacement of the generator or other technical or structural parts after the initial commissioning does not result in a change of the commissioning date” (§ 3 Nummer 30 EEG).",
         "unit": ""
       },
       {
         "id": "2006",
         "owner": "installer",
-        "label": "Einpolige Darstellung des Messkonzepts (bei Erzeugungsanlagen/Speicher > Samax 30 kVA mit Einbauort des zentralen NA-Schutzes)",
+        "label": "Single-line diagram of the metering concept (for generation systems/storage > Smax 30 kVA, with installation location of the central NA protection)",
         "type": "text",
         "required": true,
-        "helpText": "Mess- und Betriebskonzept der Anlage, dass alle zur Erzeugungsanlage zugehörigen Elemente enthält (EnFluRi, NA-Schutz, PAV,E-Überwachung). Messkonzepte müssen mit dem Netzbetreiber abgestimmt werden, sofern sie nicht dem anerkannten Stand der Technik entsprechen.",
+        "helpText": "Metering and operating concept of the system that contains all elements belonging to the generation system (EnFluRi, NA protection, PAV,E monitoring). Metering concepts must be coordinated with the grid operator if they do not comply with the recognized state of the art.",
         "unit": ""
       },
       {
         "id": "2012",
         "owner": "installer",
-        "label": "Auswahl Messstellenbetreiber",
+        "label": "Selection of metering point operator",
         "type": "select",
         "required": true,
-        "helpText": "Wählen Sie aus, durch wen der Zählereinbau erfolgen soll.",
+        "helpText": "Select by whom the meter installation is to be carried out.",
         "unit": "",
         "options": [
-          "Zählereinbau durch grundzuständigen Messstellenbetreiber",
-          "Zählereinbau durch wettbewerblichen Messstellenbetreiber (d.h. kein Zählereinbau durch grundzuständigen Messstellenbetreiber gewünscht)"
+          "Meter installation by the default metering point operator",
+          "Meter installation by a competitive metering point operator (i.e. no meter installation by the default metering point operator desired)"
         ]
       },
       {
         "id": "2018",
         "owner": "customer",
-        "label": "Gewünschte Veräußerungsform der Einspeisung",
+        "label": "Desired form of marketing of the feed-in",
         "type": "select",
         "required": true,
-        "helpText": "Wählen Sie aus, wie der eingespeiste Strom vergütet bzw. vermarktet werden soll.",
+        "helpText": "Select how the fed-in electricity should be remunerated or marketed.",
         "unit": "",
         "options": [
-          "Unentgeltliche Abnahme",
-          "Geförderte Direktvermarktung (Marktprämie) nach § 20 EEG",
-          "Einspeisevergütung nach § 21 Abs. 1 EEG",
-          "Mieterstromzuschlag nach § 21 Abs. 3 EEG",
-          "sonstige Direktvermarktung nach § 21a EEG",
-          "Vermarktung ohne gesetzliche Vergütung"
+          "Free of charge offtake",
+          "Subsidized direct marketing (market premium) pursuant to § 20 EEG",
+          "Feed-in tariff pursuant to § 21 Abs. 1 EEG",
+          "Tenant electricity supplement pursuant to § 21 Abs. 3 EEG",
+          "Other direct marketing pursuant to § 21a EEG",
+          "Marketing without statutory remuneration"
         ]
       },
       {
         "id": "2019",
         "owner": "installer",
-        "label": "Vergütungsrelevante Angaben zur Anlage",
+        "label": "Remuneration-relevant information about the system",
         "type": "text",
         "required": false,
-        "helpText": "Bitte reichen Sie Nachweise ein, welche für die gewählte Veräußerungsform nach EEG relevant sind.",
+        "helpText": "Please submit evidence that is relevant for the selected form of marketing pursuant to EEG.",
         "unit": "-"
       },
       {
         "id": "2020",
         "owner": "installer",
-        "label": "Nachweis Fernsteuerbarkeit PV-Anlage zur Direktvermarktung",
+        "label": "Proof of remote controllability of the PV system for direct marketing",
         "type": "text",
         "required": false,
-        "helpText": "Bitte reichen Sie Nachweise zur Fernsteuerbarkeit der PV-Anlage ein, welche für die gewählte Veräußerungsform relevant.",
+        "helpText": "Please submit evidence of the remote controllability of the PV system that is relevant for the selected form of marketing.",
         "unit": "-"
       },
       {
         "id": "2021",
         "owner": "installer",
-        "label": "Anschlussnetzbetreiber-Bestätigung",
+        "label": "Connecting grid operator confirmation",
         "type": "boolean",
         "required": false,
-        "helpText": "Wählen Sie aus, ob eine Anschlussnetzbetreiber-Bestätigung zur Präqualifikation für Regelleistung gewünscht wird.",
+        "helpText": "Select whether a connecting grid operator confirmation for prequalification for control reserve is desired.",
         "unit": "-"
       }
     ]
   },
   {
-    "section": "Erzeugungsanlage Wechselrichter",
+    "section": "Generation system inverter",
     "fields": [
       {
         "id": "3001",
         "owner": "installer",
-        "label": "Betriebsweise",
+        "label": "Operating mode",
         "type": "select",
         "required": true,
-        "helpText": "Wählen Sie die Betriebsweise der Erzeugungsanlage aus. Es kann der gesamte (Volleinspeisung), nur der überschüssige (Überschusseinspeisung) und nicht selbst genutzte oder gar kein erzeugter Strom (Nulleinspeisung) in das öffentliche Netz eingespeist werden.",
+        "helpText": "Select the operating mode of the generation system. The entire generated electricity (full feed-in), only the surplus that is not self-consumed (surplus feed-in), or no generated electricity at all (zero feed-in) can be fed into the public grid.",
         "unit": "",
         "options": [
-          "Überschussein-speisung",
-          "Volleinspeisung",
-          "Nulleinspeisung"
+          "Surplus feed-in",
+          "Full feed-in",
+          "Zero feed-in"
         ]
       },
       {
         "id": "3002",
         "owner": "installer",
-        "label": "Inselbetriebsfähigkeit",
+        "label": "Island operation capability",
         "type": "boolean",
         "required": false,
-        "helpText": "Wählen Sie aus, ob die Kundenanlage oder Teile der Kundenanlage (nach VDE-AR-E 2510-2) die Anforderungen zur Inselbetriebsfähigkeit erfüllt bzw. erfüllen. Der Inselbetrieb dient der Weiterversorgung der Kundenanlage oder von Teilen davon bei einer Netztrennung.",
+        "helpText": "Select whether the customer installation or parts of the customer installation (pursuant to VDE-AR-E 2510-2) meet(s) the requirements for island operation capability. Island operation serves to continue supplying the customer installation or parts of it in the event of a grid disconnection.",
         "unit": ""
       },
       {
         "id": "3003",
         "owner": "installer",
-        "label": "Hersteller",
+        "label": "Manufacturer",
         "type": "text",
         "required": true,
-        "helpText": "Wählen Sie den Hersteller des Wechselrichters aus.",
+        "helpText": "Select the manufacturer of the inverter.",
         "unit": ""
       },
       {
         "id": "3004",
         "owner": "installer",
-        "label": "Typ",
+        "label": "Type",
         "type": "text",
         "required": true,
-        "helpText": "Wählen Sie den Typ/das Modell des Wechselrichters aus.",
+        "helpText": "Select the type/model of the inverter.",
         "unit": ""
       },
       {
         "id": "3005",
         "owner": "installer",
-        "label": "Einheitenzertifikat",
+        "label": "Unit certificate",
         "type": "text",
         "required": true,
-        "helpText": "Wählen Sie das Zertifikat für den Wechselrichter aus.",
+        "helpText": "Select the certificate for the inverter.",
         "unit": "-"
       },
       {
         "id": "3006",
         "owner": "installer",
-        "label": "Maximale Scheinleistung",
+        "label": "Maximum apparent power",
         "type": "text",
         "required": true,
-        "helpText": "Tragen Sie die maximale Scheinleistung des Wechselrichters in Kilovoltampere (kVA) ein. Das ist der Leistungswert, der effektiv auftritt und für den das Netz und seine Betriebsmittel ausgelegt sein müssen.",
+        "helpText": "Enter the maximum apparent power of the inverter in kilovolt-amperes (kVA). This is the power value that effectively occurs and for which the grid and its equipment must be designed.",
         "unit": "kVA"
       },
       {
         "id": "3007",
         "owner": "installer",
-        "label": "Maximale Wirkleistung",
+        "label": "Maximum active power",
         "type": "text",
         "required": true,
-        "helpText": "Tragen Sie die maximale Wirkleistung des Wechselrichters in Kilowatt (kW) ein. Das ist der Leistungswert, der für die Erzeugung elektrischer Energie maßgebend ist. Verwenden Sie dafür die Herstellerangabe, die Sie im Datenblatt des Wechselrichters oder der Anlage finden. Sie finden die Angabe auch auf dem Typenschild des Wechselrichters. Die Wechselrichterleistung wird auch als \"AC-Leistung\" oder \"Bemessungsleistung\" bezeichnet.",
+        "helpText": "Enter the maximum active power of the inverter in kilowatts (kW). This is the power value that is decisive for the generation of electrical energy. Use the manufacturer's specification, which you can find in the data sheet of the inverter or the system. You can also find the specification on the nameplate of the inverter. The inverter power is also referred to as \"AC power\" or \"rated power\".",
         "unit": "kW"
       },
       {
         "id": "3008",
         "owner": "installer",
-        "label": "Anzahl baugleicher Wechselrichter",
+        "label": "Number of identical inverters",
         "type": "text",
         "required": true,
-        "helpText": "Tragen Sie die Anzahl baugleicher Wechselrichter ein, die in der Erzeugungsanlage verbaut sind.",
+        "helpText": "Enter the number of identical inverters installed in the generation system.",
         "unit": "1"
       },
       {
         "id": "3009",
         "owner": "installer",
-        "label": "Summe der maximalen Scheinleistungen",
+        "label": "Sum of the maximum apparent powers",
         "type": "text",
         "required": true,
-        "helpText": "Tragen Sie die Summe der maximalen Scheinleistungen aller Wechselrichter in Kilovoltampere (kVA) ein.",
+        "helpText": "Enter the sum of the maximum apparent powers of all inverters in kilovolt-amperes (kVA).",
         "unit": "kVA"
       },
       {
         "id": "3010",
         "owner": "installer",
-        "label": "Summe der maximalen Wirkleistungen",
+        "label": "Sum of the maximum active powers",
         "type": "text",
         "required": true,
-        "helpText": "Tragen Sie die Summe der maximalen Wirkleistungen aller Wechselrichter in Kilowatt (kW) ein.",
+        "helpText": "Enter the sum of the maximum active powers of all inverters in kilowatts (kW).",
         "unit": "kW"
       },
       {
         "id": "3011",
         "owner": "installer",
-        "label": "Netzeinspeisung",
+        "label": "Grid feed-in",
         "type": "select",
         "required": false,
-        "helpText": "Wählen Sie aus, wie das System mit den Phasen der Anlage des Anschlussnutzers gekoppelt wird.",
+        "helpText": "Select how the system is coupled with the phases of the connection user's installation.",
         "unit": "",
         "options": [
-          "1-phasig",
-          "2-phasig",
-          "3-phasig (symmetrisch)"
+          "Single-phase",
+          "Two-phase",
+          "Three-phase (symmetrical)"
         ]
       },
       {
         "id": "3012",
         "owner": "installer",
-        "label": "Netzeinspeisung",
+        "label": "Grid feed-in",
         "type": "select",
         "required": false,
-        "helpText": "Wählen Sie aus, an welche Phasen die Erzeugungsanlage angeschlossen wurde.",
+        "helpText": "Select which phases the generation system has been connected to.",
         "unit": "",
         "options": [
           "L1",
@@ -885,19 +885,19 @@
       {
         "id": "3013",
         "owner": "installer",
-        "label": "Zähler bereits vorhanden",
+        "label": "Meter already present",
         "type": "boolean",
         "required": true,
-        "helpText": "Wählen Sie aus, ob ein zu nutzender Zähler bereits vorhanden ist.",
+        "helpText": "Select whether a meter to be used is already present.",
         "unit": "-"
       },
       {
         "id": "3014",
         "owner": "customer",
-        "label": "Zählernummer",
+        "label": "Meter number",
         "type": "text",
         "required": true,
-        "helpText": "Tragen Sie die Zählernummer des Stromzählers ein.\nHinweis: Zählernummer ist auf jeder Stromrechnung angegeben oder kann auf der Vorderseite des Stromzählers abgelesen werden.",
+        "helpText": "Enter the meter number of the electricity meter.\nNote: The meter number is shown on every electricity bill or can be read off the front of the electricity meter.",
         "unit": "-"
       },
       {
@@ -906,84 +906,84 @@
         "label": "ZEREZ-ID",
         "type": "text",
         "required": true,
-        "helpText": "Tragen Sie die ZEREZ-ID ein.",
+        "helpText": "Enter the ZEREZ-ID.",
         "unit": ""
       }
     ]
   },
   {
-    "section": "Erzeugungsanlage PV-Module",
+    "section": "Generation system PV modules",
     "fields": [
       {
         "id": "3101",
         "owner": "installer",
-        "label": "Gesamtleistung aller PV-Module",
+        "label": "Total output of all PV modules",
         "type": "text",
         "required": true,
-        "helpText": "Tragen Sie die Gesamtleistung aller PV-Module in Kilowattpeak (kWp) ein. Einzutragen ist die Summe der Gleichstromleistungen aller Module in kWp gemäß der Herstellerangabe.",
+        "helpText": "Enter the total output of all PV modules in kilowatt-peak (kWp). Enter the sum of the direct-current outputs of all modules in kWp according to the manufacturer's specification.",
         "unit": "kWp"
       },
       {
         "id": "3103",
         "owner": "installer",
-        "label": "Ort der Anbringung",
+        "label": "Installation location",
         "type": "select",
         "required": true,
-        "helpText": "Wählen Sie den Ort zur Anbringung aus. \nHinweis: Wenn PV-Module auf der Dachfläche und der Freifläche angebracht werden, ist die Gesamtleistung aller PV-Module entsprechend zuzuordnen.",
+        "helpText": "Select the installation location. \nNote: If PV modules are installed on the roof surface and the open-ground surface, the total output of all PV modules must be allocated accordingly.",
         "unit": "-",
         "options": [
-          "Dachfläche",
-          "Freifläche"
+          "Roof surface",
+          "Open-ground surface"
         ]
       }
     ]
   },
   {
-    "section": "Erzeugungsanlage PAV,E-Überwachung",
+    "section": "Generation system PAV,E monitoring",
     "fields": [
       {
         "id": "3201",
         "owner": "installer",
-        "label": "Leistungsfluss-überwachung Reduzierung der Einspeisewirkleistung",
+        "label": "Power flow monitoring reduction of feed-in active power",
         "type": "boolean",
         "required": false,
-        "helpText": "Wählen Sie aus, ob eine Leistungsflussüberwachung eingesetzt wird. Die installierte Leistung kann reduziert werden, sodass sich eine abweichende Einspeiseleistung ergibt.",
+        "helpText": "Select whether power flow monitoring is used. The installed power can be reduced, resulting in a different feed-in power.",
         "unit": ""
       },
       {
         "id": "3202",
         "owner": "installer",
-        "label": "Hersteller",
+        "label": "Manufacturer",
         "type": "text",
         "required": false,
-        "helpText": "Wählen Sie den Hersteller der Leistungsflussüberwachung aus.",
+        "helpText": "Select the manufacturer of the power flow monitoring.",
         "unit": ""
       },
       {
         "id": "3203",
         "owner": "installer",
-        "label": "Typ",
+        "label": "Type",
         "type": "text",
         "required": false,
-        "helpText": "Wählen Sie den Typ/das Modell der Leistungsflussüberwachung aus.",
+        "helpText": "Select the type/model of the power flow monitoring.",
         "unit": ""
       },
       {
         "id": "3204",
         "owner": "installer",
-        "label": "Zertifikat Leistungsfluss-überwachung",
+        "label": "Power flow monitoring certificate",
         "type": "text",
         "required": false,
-        "helpText": "Wählen Sie das Zertifikat für die Leistungsflussüberwachung aus.",
+        "helpText": "Select the certificate for the power flow monitoring.",
         "unit": ""
       },
       {
         "id": "3205",
         "owner": "installer",
-        "label": "Vereinbarte Einspeisewirkleistung (PAV,E-Wert) für den Netzanschlusspunkt",
+        "label": "Agreed feed-in active power (PAV,E value) for the grid connection point",
         "type": "text",
         "required": false,
-        "helpText": "Wählen Sie aus, welche Einspeisewirkleistung (PAV,E-Wert) am Netzanschlusspunkt mit dem Netzbetreiber vereinbart werden soll. Dies kommt zum Tragen, wenn nicht die gesamte installierte Leistung ab Netzanschlusspunkt abgegeben werden soll bzw. abgegeben werden kann.",
+        "helpText": "Select which feed-in active power (PAV,E value) is to be agreed with the grid operator at the grid connection point. This applies when not all of the installed power is to be or can be delivered from the grid connection point.",
         "unit": "kW"
       },
       {
@@ -992,53 +992,53 @@
         "label": "ZEREZ-ID",
         "type": "text",
         "required": false,
-        "helpText": "Tragen Sie die ZEREZ-ID ein.",
+        "helpText": "Enter the ZEREZ-ID.",
         "unit": ""
       }
     ]
   },
   {
-    "section": "NA-Schutz",
+    "section": "NA protection (NA-Schutz)",
     "fields": [
       {
         "id": "3301",
         "owner": "installer",
-        "label": "Ausführung des Netz- und Anlagenschutzes",
+        "label": "Design of the grid and system protection",
         "type": "select",
         "required": true,
-        "helpText": "Wählen Sie aus, wie das Konzept zum Netz- und Anlagenschutz (NA-Schutz) umgesetzt wird.",
+        "helpText": "Select how the concept for grid and system protection (NA protection) is implemented.",
         "unit": "",
         "options": [
-          "Zentral am Zählerplatz",
-          "Integriert",
-          "Zentral am Zählerplatz und integriert in Kombination"
+          "Central at the meter location",
+          "Integrated",
+          "Central at the meter location and integrated in combination"
         ]
       },
       {
         "id": "3302",
         "owner": "installer",
-        "label": "Hersteller",
+        "label": "Manufacturer",
         "type": "text",
         "required": true,
-        "helpText": "Wählen Sie den Hersteller des NA-Schutzes aus.",
+        "helpText": "Select the manufacturer of the NA protection.",
         "unit": ""
       },
       {
         "id": "3303",
         "owner": "installer",
-        "label": "Typ",
+        "label": "Type",
         "type": "text",
         "required": true,
-        "helpText": "Wählen Sie den Typ des NA-Schutzes aus.",
+        "helpText": "Select the type of the NA protection.",
         "unit": ""
       },
       {
         "id": "3304",
         "owner": "installer",
-        "label": "Zertifikat NA-Schutz",
+        "label": "NA protection certificate",
         "type": "text",
         "required": true,
-        "helpText": "Wählen Sie das Zertifikat für den NA-Schutz aus.",
+        "helpText": "Select the certificate for the NA protection.",
         "unit": ""
       },
       {
@@ -1047,7 +1047,7 @@
         "label": "ZEREZ-ID",
         "type": "text",
         "required": true,
-        "helpText": "Tragen Sie die ZEREZ-ID ein.",
+        "helpText": "Enter the ZEREZ-ID.",
         "unit": ""
       }
     ]

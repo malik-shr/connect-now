@@ -19,7 +19,7 @@ export default function BackButton({ href }: { href?: string }) {
       type="button"
       className="cursor-pointer inline-flex items-center gap-1.5 rounded-lg border border-slate-200 bg-white px-3 py-1.5 text-xs font-bold text-slate-600 shadow-xs transition hover:bg-slate-50 hover:text-slate-900"
     >
-      ← Zurück
+      ← Back
     </button>
   );
 }

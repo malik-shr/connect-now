@@ -9,7 +9,7 @@ import { ProjectProvider } from "./_context/ProjectContext";
 
 export const metadata: Metadata = {
   title: "connectnow · Digital Grid Connection",
-  description: "Digitale Netzanschluss-Anmeldung nach VDE Data Set 3.0",
+  description: "Digital grid connection registration per VDE Data Set 3.0",
   icons: [{ rel: "icon", url: "/favicon.ico" }],
 };
 

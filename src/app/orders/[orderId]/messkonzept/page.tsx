@@ -4,13 +4,13 @@ import Link from "next/link";
 import { use, useMemo, useState } from "react";
 
 // ============================================================================
-// NO-CODE MESSKONZEPT BUILDER — Geführter Wizard (Prototyp)
+// NO-CODE METERING CONCEPT BUILDER — Guided wizard (prototype)
 //
-// Idee: Nicht-technische Kunden bauen kein freies Diagramm, sondern beantworten
-// Klartext-Fragen. Daraus wird automatisch das passende Standard-Messkonzept
-// abgeleitet, als Einliniendiagramm visualisiert und als strukturiertes JSON
-// ausgegeben (LZ2 / LZ4 / LV1). Das JSON ist die Basis für die spätere
-// LLM-Vollständigkeitsprüfung (LZ5 / LZ6).
+// Idea: Non-technical customers don't build a free-form diagram, but instead
+// answer plain-language questions. From these, the matching standard metering
+// concept is automatically derived, visualized as a single-line diagram, and
+// output as structured JSON (LZ2 / LZ4 / LV1). The JSON is the basis for the
+// later LLM completeness check (LZ5 / LZ6).
 // ============================================================================
 
 // --- TYPES ---------------------------------------------------------------
@@ -66,57 +66,57 @@ interface Step {
 const STEPS: Step[] = [
   {
     id: "einspeisung",
-    question: "Wie möchten Sie Ihren Solarstrom nutzen?",
-    help: "Das bestimmt, welche Zähler Sie benötigen.",
+    question: "How would you like to use your solar power?",
+    help: "This determines which meters you need.",
     options: [
       {
         value: "ueberschuss",
-        label: "Selbst verbrauchen",
-        desc: "Sie nutzen den Strom im Haus und speisen nur den Überschuss ins Netz ein.",
+        label: "Use it yourself",
+        desc: "You use the electricity in your home and feed only the surplus into the grid.",
         icon: "🏠",
       },
       {
         value: "voll",
-        label: "Komplett einspeisen",
-        desc: "Der gesamte erzeugte Strom wird ins Netz eingespeist (Volleinspeisung).",
+        label: "Feed in completely",
+        desc: "All generated electricity is fed into the grid (full feed-in).",
         icon: "⚡",
       },
     ],
   },
   {
     id: "speicher",
-    question: "Haben Sie einen Batteriespeicher?",
-    help: "Ein Speicher legt überschüssigen Strom für später zurück.",
+    question: "Do you have a battery storage system?",
+    help: "A storage system holds surplus electricity for later use.",
     options: [
       {
         value: "ja",
-        label: "Ja, mit Speicher",
-        desc: "Ein Batteriespeicher ist Teil der Anlage.",
+        label: "Yes, with storage",
+        desc: "A battery storage system is part of the system.",
         icon: "🔋",
       },
       {
         value: "nein",
-        label: "Nein, ohne Speicher",
-        desc: "Kein Batteriespeicher vorhanden.",
+        label: "No, without storage",
+        desc: "No battery storage present.",
         icon: "🚫",
       },
     ],
   },
   {
     id: "steuerbar",
-    question: "Gibt es steuerbare Verbraucher?",
-    help: "Z. B. Wärmepumpe oder Wallbox (steuerbare Verbrauchseinrichtung nach §14a EnWG).",
+    question: "Are there any controllable loads?",
+    help: "E.g. a heat pump or wallbox (controllable consumption device per §14a EnWG).",
     options: [
       {
         value: "ja",
-        label: "Ja, vorhanden",
-        desc: "Wärmepumpe, Wallbox o. Ä. wird mit angeschlossen.",
+        label: "Yes, present",
+        desc: "A heat pump, wallbox or similar will be connected as well.",
         icon: "🚗",
       },
       {
         value: "nein",
-        label: "Nein",
-        desc: "Keine zusätzlichen steuerbaren Verbraucher.",
+        label: "No",
+        desc: "No additional controllable loads.",
         icon: "—",
       },
     ],
@@ -124,29 +124,29 @@ const STEPS: Step[] = [
 ];
 
 // --- CONCEPT RESOLUTION ---------------------------------------------------
-// Bildet die Antworten auf ein standardisiertes Messkonzept ab.
+// Maps the answers onto a standardized metering concept.
 function resolveConcept(a: Answers): Messkonzept | null {
   if (!a.einspeisung || !a.speicher || !a.steuerbar) return null;
 
-  const netz: ConceptNode = { id: "netz", type: "netz", label: "Netzanschluss" };
+  const netz: ConceptNode = { id: "netz", type: "netz", label: "Grid connection" };
   const steuerbarNode: ConceptNode | null =
     a.steuerbar === "ja"
       ? {
           id: "z_steuer",
           type: "verbraucher",
-          label: "Steuerbare Einrichtung",
-          meta: "§14a EnWG · sep. Zähler",
+          label: "Controllable device",
+          meta: "§14a EnWG · separate meter",
         }
       : null;
 
-  // 1) Volleinspeisung: getrennter Erzeugungs- und Bezugszähler
+  // 1) Full feed-in: separate generation and consumption meters
   if (a.einspeisung === "voll") {
     const nodes: ConceptNode[] = [
       netz,
-      { id: "z_einsp", type: "zaehler", label: "Einspeisezähler", meta: "Z1 · Erzeugung" },
-      { id: "z_bezug", type: "zaehler", label: "Bezugszähler", meta: "Z2 · Verbrauch" },
-      { id: "pv", type: "erzeuger", label: "PV-Anlage" },
-      { id: "haus", type: "verbraucher", label: "Hausverbrauch" },
+      { id: "z_einsp", type: "zaehler", label: "Feed-in meter", meta: "Z1 · Generation" },
+      { id: "z_bezug", type: "zaehler", label: "Consumption meter", meta: "Z2 · Consumption" },
+      { id: "pv", type: "erzeuger", label: "PV system" },
+      { id: "haus", type: "verbraucher", label: "Household consumption" },
     ];
     const edges: ConceptEdge[] = [
       { from: "netz", to: "z_einsp" },
@@ -160,31 +160,31 @@ function resolveConcept(a: Answers): Messkonzept | null {
     }
     return {
       key: a.steuerbar === "ja" ? "voll-steuerbar" : "voll",
-      title: "Volleinspeisung",
+      title: "Full feed-in",
       summary:
-        "Erzeugung und Verbrauch werden getrennt gemessen. Der gesamte PV-Strom fließt über den Einspeisezähler ins Netz.",
+        "Generation and consumption are metered separately. All PV electricity flows into the grid via the feed-in meter.",
       nodes,
       edges,
     };
   }
 
-  // 2) Überschusseinspeisung (Eigenverbrauch) — mit/ohne Speicher
+  // 2) Surplus feed-in (self-consumption) — with/without storage
   const sammel: ConceptNode = {
     id: "sammel",
     type: "sammelschiene",
-    label: "Sammelschiene / HAK",
+    label: "Busbar / house service connection",
   };
   const nodes: ConceptNode[] = [
     netz,
     {
       id: "z_zwei",
       type: "zaehler",
-      label: "Zweirichtungszähler",
-      meta: "Z1 · Bezug + Einspeisung",
+      label: "Bidirectional meter",
+      meta: "Z1 · Consumption + feed-in",
     },
     sammel,
-    { id: "pv", type: "erzeuger", label: "PV-Anlage" },
-    { id: "haus", type: "verbraucher", label: "Hausverbrauch" },
+    { id: "pv", type: "erzeuger", label: "PV system" },
+    { id: "haus", type: "verbraucher", label: "Household consumption" },
   ];
   const edges: ConceptEdge[] = [
     { from: "netz", to: "z_zwei" },
@@ -197,7 +197,7 @@ function resolveConcept(a: Answers): Messkonzept | null {
     nodes.push({
       id: "speicher",
       type: "speicher",
-      label: "Batteriespeicher",
+      label: "Battery storage",
     });
     edges.push({ from: "sammel", to: "speicher" });
   }
@@ -214,12 +214,12 @@ function resolveConcept(a: Answers): Messkonzept | null {
       (a.steuerbar === "ja" ? "-steuerbar" : ""),
     title:
       a.speicher === "ja"
-        ? "Überschusseinspeisung mit Speicher"
-        : "Überschusseinspeisung",
+        ? "Surplus feed-in with storage"
+        : "Surplus feed-in",
     summary:
-      "Ein Zweirichtungszähler misst Bezug und Einspeisung. Der PV-Strom wird vorrangig selbst verbraucht" +
-      (a.speicher === "ja" ? ", überschüssige Energie im Speicher gepuffert" : "") +
-      ", nur der Rest ins Netz eingespeist.",
+      "A bidirectional meter measures consumption and feed-in. The PV electricity is primarily self-consumed" +
+      (a.speicher === "ja" ? ", surplus energy is buffered in the storage system" : "") +
+      ", and only the remainder is fed into the grid.",
     nodes,
     edges,
   };
@@ -252,7 +252,7 @@ function DiagramNode({ node }: { node: ConceptNode }) {
   );
 }
 
-// Vereinfachtes Einliniendiagramm: Netz → Zähler → Sammelschiene → Komponenten.
+// Simplified single-line diagram: grid → meter → busbar → components.
 function Diagram({ concept }: { concept: Messkonzept }) {
   const byId = (id: string) => concept.nodes.find((n) => n.id === id)!;
   const meters = concept.nodes.filter((n) => n.type === "zaehler");
@@ -341,13 +341,13 @@ export default function MesskonzeptPage({
         <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-xl sm:p-10">
           <header className="border-b border-slate-200 pb-5">
             <span className="text-xs font-bold tracking-wider text-blue-600 uppercase">
-              No-Code Builder · Messkonzept
+              No-Code Builder · Metering concept
             </span>
             <h1 className="mt-1 text-2xl font-extrabold tracking-tight text-slate-900 sm:text-3xl">
-              Messkonzept zusammenstellen
+              Build your metering concept
             </h1>
             <p className="mt-2 text-sm text-slate-500">
-              Vorgangsnummer / Order-ID:{" "}
+              Order number / Order ID:{" "}
               <span className="rounded bg-slate-100 px-2 py-0.5 font-mono font-bold text-slate-800">
                 {orderId}
               </span>
@@ -359,8 +359,8 @@ export default function MesskonzeptPage({
             <div className="mb-2 flex items-center justify-between text-xs font-semibold text-slate-500">
               <span>
                 {isResult
-                  ? "Fertig"
-                  : `Frage ${stepIndex + 1} von ${STEPS.length}`}
+                  ? "Done"
+                  : `Question ${stepIndex + 1} of ${STEPS.length}`}
               </span>
               <span>{progress}%</span>
             </div>
@@ -414,7 +414,7 @@ export default function MesskonzeptPage({
                   onClick={back}
                   className="mt-6 text-sm font-medium text-slate-500 transition hover:text-slate-800"
                 >
-                  ← Zurück
+                  ← Back
                 </button>
               )}
             </div>
@@ -429,7 +429,7 @@ export default function MesskonzeptPage({
                 </span>
                 <div>
                   <p className="text-xs font-semibold tracking-wide text-emerald-600 uppercase">
-                    Empfohlenes Messkonzept
+                    Recommended metering concept
                   </p>
                   <p className="mt-0.5 text-lg font-bold text-slate-800">
                     {concept.title}
@@ -442,20 +442,20 @@ export default function MesskonzeptPage({
 
               <div>
                 <h3 className="mb-3 text-sm font-bold text-slate-700">
-                  Einliniendiagramm
+                  Single-line diagram
                 </h3>
                 <Diagram concept={concept} />
               </div>
 
-              {/* JSON output (LLM-prüfbare Datenstruktur) */}
+              {/* JSON output (LLM-verifiable data structure) */}
               <div>
                 <button
                   type="button"
                   onClick={() => setShowJson((v) => !v)}
                   className="text-sm font-medium text-blue-600 transition hover:text-blue-700"
                 >
-                  {showJson ? "▾" : "▸"} Strukturierte Daten (JSON) für die
-                  automatische Prüfung
+                  {showJson ? "▾" : "▸"} Structured data (JSON) for the
+                  automated check
                 </button>
                 {showJson && (
                   <pre className="mt-3 max-h-80 overflow-auto rounded-xl border border-slate-200 bg-slate-900 p-4 text-[11px] leading-relaxed text-slate-100">
@@ -471,7 +471,7 @@ export default function MesskonzeptPage({
                   onClick={restart}
                   className="cursor-pointer text-sm font-medium text-slate-500 transition hover:text-slate-800"
                 >
-                  ↻ Neu starten
+                  ↻ Start over
                 </button>
                 <button
                   type="button"
@@ -480,7 +480,7 @@ export default function MesskonzeptPage({
                   }
                   className="cursor-pointer rounded-lg bg-blue-600 px-6 py-3 text-sm font-semibold text-white shadow transition-all hover:bg-blue-700 focus:ring-2 focus:ring-blue-500/50 focus:outline-none"
                 >
-                  Messkonzept übernehmen
+                  Apply metering concept
                 </button>
               </div>
             </div>
@@ -493,13 +493,13 @@ export default function MesskonzeptPage({
             href={`/orders/${orderId}`}
             className="text-sm font-medium text-slate-500 transition hover:text-slate-800"
           >
-            ← Zurück zum Vorgang
+            ← Back to order
           </Link>
           <Link
             href={`/orders/${orderId}/status`}
             className="text-sm font-semibold text-blue-600 transition hover:text-blue-700"
           >
-            Status ansehen →
+            View status →
           </Link>
         </div>
       </div>

@@ -51,12 +51,12 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     const emailLower = email.toLowerCase().trim();
 
     if (emailLower === "user1@connect-now.io") {
-      firstName = "Kunde";
-      lastName = "Eins";
+      firstName = "Customer";
+      lastName = "One";
       role = "member";
     } else if (emailLower === "user2@connect-now.io") {
-      firstName = "Kunde";
-      lastName = "Zwei";
+      firstName = "Customer";
+      lastName = "Two";
       role = "member";
     } else if (emailLower === "install@connect-now.io" || emailLower === "installer1@connect-now.io") {
       firstName = "Max";

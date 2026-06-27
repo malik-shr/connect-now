@@ -28,8 +28,8 @@ export default function AuthGuard({ children }: { children: React.ReactNode }) {
           </div>
         </div>
         <div className="space-y-1 text-center">
-          <h2 className="text-sm font-bold text-slate-800">Sicherheitsprüfung...</h2>
-          <p className="text-[11px] text-slate-400">Verifiziere Berechtigungen für diesen Bereich.</p>
+          <h2 className="text-sm font-bold text-slate-800">Security check...</h2>
+          <p className="text-[11px] text-slate-400">Verifying permissions for this area.</p>
         </div>
       </div>
     );

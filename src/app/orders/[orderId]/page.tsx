@@ -21,38 +21,45 @@ export default function Page({
   const { user } = useAuth();
 
   // Dynamic support card texts based on logged-in persona role
-  let supportTitle = "Hilfe anfordern";
-  let supportDesc = "Rückfrage an Installateur oder Netzbetreiber stellen.";
+  let supportTitle = "Request help";
+  let supportDesc = "Ask the installer or grid operator a question.";
 
   if (user?.role === "installer") {
-    supportTitle = "Kunden-Chat öffnen";
-    supportDesc = "Öffnen Sie den Chatverlauf, um dem Kunden bei Unterlagen zu helfen.";
+    supportTitle = "Open customer chat";
+    supportDesc = "Open the chat history to help the customer with documents.";
   } else if (user?.role === "admin") {
-    supportTitle = "Support-Chat einsehen";
-    supportDesc = "Sehen Sie die Ticketverläufe zwischen Kunde und Installateur ein.";
+    supportTitle = "View support chat";
+    supportDesc = "Review the ticket history between customer and installer.";
   }
 
   const menu: MenuItem[] = [
     {
       href: `/orders/${orderId}/details`,
       icon: "📝",
-      title: "Netzanschlussdaten",
+      title: "Grid connection data",
       description:
-        "Die 50+ Pflichtfelder des Anschlussbegehrens digital erfassen.",
+        "Capture the 50+ mandatory fields of the connection request digitally.",
     },
     {
       href: `/orders/${orderId}/metering`,
       icon: "🔗",
-      title: "Messkonzept-Builder",
+      title: "Metering concept builder",
       description:
-        "Per geführtem No-Code-Wizard das passende Messkonzept zusammenstellen.",
+        "Assemble the right metering concept via a guided no-code wizard.",
+    },
+    {
+      href: `/orders/${orderId}/site-plan`,
+      icon: "📐",
+      title: "Site plan (AI check)",
+      description:
+        "Upload your site plan and have it verified by AI before submission.",
     },
     {
       href: `/orders/${orderId}/status`,
       icon: "📊",
-      title: "Status-Portal",
+      title: "Status portal",
       description:
-        "Echtzeit-Bearbeitungsstand, Timeline und fehlende Unterlagen einsehen.",
+        "View real-time processing status, timeline and missing documents.",
     },
     {
       href: `/orders/${orderId}/support`,
@@ -68,13 +75,13 @@ export default function Page({
         {/* Header */}
         <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-xl sm:p-10">
           <span className="text-xs font-bold tracking-wider text-blue-600 uppercase">
-            ConnectNow · Vorgang
+            ConnectNow · Order
           </span>
           <h1 className="mt-1 text-2xl font-extrabold tracking-tight text-slate-900 sm:text-3xl">
-            Übersicht
+            Overview
           </h1>
           <p className="mt-2 text-sm text-slate-500">
-            Vorgangsnummer / Order-ID:{" "}
+            Order ID:{" "}
             <span className="rounded bg-slate-100 px-2 py-0.5 font-mono font-bold text-slate-800">
               {orderId}
             </span>
@@ -98,7 +105,7 @@ export default function Page({
                   {item.description}
                 </span>
                 <span className="mt-3 text-xs font-semibold tracking-wide text-slate-400 uppercase">
-                  Bald verfügbar
+                  Coming soon
                 </span>
               </div>
             ) : (
@@ -115,7 +122,7 @@ export default function Page({
                   {item.description}
                 </span>
                 <span className="mt-3 text-sm font-semibold text-blue-600">
-                  Öffnen →
+                  Open →
                 </span>
               </Link>
             ),
