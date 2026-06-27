@@ -51,8 +51,6 @@ Bootstrapped with the [T3 Stack](https://create.t3.gg/):
 - **[Next.js 15](https://nextjs.org)** (App Router, Server Components & Server Actions, Turbopack)
 - **[React 19](https://react.dev)** + **TypeScript**
 - **[Tailwind CSS v4](https://tailwindcss.com)**
-- **[Prisma 7](https://prisma.io)** with the PostgreSQL adapter
-- **[Zod](https://zod.dev)** for validation and type-safe environment variables (`@t3-oss/env-nextjs`)
 
 ## Architecture Notes
 
