@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useMemo, useState } from "react";
 
 import DetailTabs from "./DetailTabs";
+import BackButton from "./BackButton";
 
 // Kurzlabels für die anklickbare Schrittnavigation
 const STEP_LABELS: Record<string, string> = {
@@ -625,8 +626,9 @@ function Shell({
     <div className="min-h-[calc(100vh-4rem)] bg-white">
       <div className="sticky top-16 z-10 border-b border-slate-100 bg-white/90 backdrop-blur">
         <div className="mx-auto max-w-2xl px-4 pt-4 pb-3">
-          {/* Ansichts-Tabs */}
-          <div className="flex justify-center">
+          {/* Ansichts-Tabs & Back Button */}
+          <div className="flex items-center justify-between">
+            <BackButton href={`/orders/${orderId}`} />
             <DetailTabs orderId={orderId} active="customer" />
           </div>
 

@@ -1,6 +1,7 @@
 import { redirect } from "next/navigation";
 
 import DetailTabs from "./DetailTabs";
+import BackButton from "./BackButton";
 
 // Shared, schema-driven Datensatz-Form. Wird von /details/customer und
 // /details/installer mit gefilterten Sections genutzt; /details bleibt davon
@@ -100,7 +101,8 @@ export default function GridDataForm({
       <div className="mx-auto max-w-4xl rounded-2xl border border-slate-200 bg-white p-6 shadow-xl sm:p-10">
         {/* Context Header */}
         <header className="mb-8 border-b border-slate-200 pb-5">
-          <div className="mb-6">
+          <div className="mb-6 flex items-center justify-between">
+            <BackButton href={`/orders/${orderId}`} />
             <DetailTabs orderId={orderId} active={audience} />
           </div>
           <span

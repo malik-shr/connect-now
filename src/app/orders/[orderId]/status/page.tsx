@@ -1,4 +1,5 @@
 import Link from "next/link";
+import BackButton from "~/app/_components/BackButton";
 
 // --- TYPES ---
 type StepState = "done" | "current" | "pending";
@@ -118,6 +119,9 @@ export default async function StatusPage({
         {/* Context Header */}
         <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-xl sm:p-10">
           <header className="border-b border-slate-200 pb-5">
+            <div className="mb-4">
+              <BackButton href={`/orders/${orderId}`} />
+            </div>
             <span className="text-xs font-bold tracking-wider text-blue-600 uppercase">
               Status-Portal · Netzanschluss
             </span>

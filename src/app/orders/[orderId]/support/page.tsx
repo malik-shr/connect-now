@@ -2,6 +2,7 @@
 
 import { use, useState, useEffect, useRef } from "react";
 import Link from "next/link";
+import BackButton from "~/app/_components/BackButton";
 
 interface Message {
   id: string;
@@ -280,12 +281,7 @@ export default function SupportPage({
         
         {/* Context Breadcrumbs */}
         <div className="flex items-center justify-between">
-          <Link
-            href={`/orders/${orderId}`}
-            className="inline-flex items-center text-sm font-medium text-slate-500 transition hover:text-slate-800"
-          >
-            ← Zurück zur Übersicht
-          </Link>
+          <BackButton href={`/orders/${orderId}`} />
           <span className="rounded bg-slate-100 px-2 py-0.5 font-mono text-xs font-bold text-slate-800">
             Vorgangs-ID: {orderId}
           </span>
