@@ -38,11 +38,10 @@ export default async function Page({
         "Echtzeit-Bearbeitungsstand, Timeline und fehlende Unterlagen einsehen.",
     },
     {
-      href: `/orders/${orderId}/details`,
+      href: `/orders/${orderId}/support`,
       icon: "💬",
       title: "Hilfe anfordern",
       description: "Rückfrage an Installateur oder Netzbetreiber stellen.",
-      disabled: true,
     },
   ];
 
