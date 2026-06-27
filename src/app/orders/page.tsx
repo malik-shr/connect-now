@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { useProjects } from "~/app/_context/ProjectContext";
+import { useAuth } from "~/app/_context/AuthContext";
 
 const STATUS_STYLE = {
   Eingereicht: "bg-blue-50 text-blue-700 border-blue-200",
@@ -12,6 +13,16 @@ const STATUS_STYLE = {
 
 export default function OrdersPage() {
   const { orders } = useProjects();
+  const { user } = useAuth();
+
+  const filteredOrders = orders.filter((o) => {
+    if (!user) return false;
+    if (user.role === "admin") return true;
+    if (user.role === "installer") {
+      return o.assignedInstallerId === user.installerId;
+    }
+    return o.ownerEmail === user.email;
+  });
 
   return (
     <div className="min-h-[calc(100vh-4rem)] px-4 py-10">
@@ -39,7 +50,7 @@ export default function OrdersPage() {
 
         {/* Order cards */}
         <div className="grid grid-cols-1 gap-4">
-          {orders.map((order) => (
+          {filteredOrders.map((order) => (
             <Link
               key={order.id}
               href={`/orders/${order.id}`}

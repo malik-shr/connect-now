@@ -3,9 +3,11 @@
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { useProjects } from "~/app/_context/ProjectContext";
+import { useAuth } from "~/app/_context/AuthContext";
 
 export default function Register() {
   const { createOrder } = useProjects();
+  const { user } = useAuth();
   const router = useRouter();
   
   const [projectName, setProjectName] = useState("");
@@ -15,7 +17,8 @@ export default function Register() {
     if (!projectName.trim()) return;
 
     const slug = encodeURIComponent(projectName.trim().replace(/\s+/g, "-"));
-    createOrder(slug, projectName.trim(), "10,0 kWp");
+    const email = user?.email || "unknown@connect-now.io";
+    createOrder(slug, projectName.trim(), "10,0 kWp", email);
     
     // Redirect cleanly to the newly created project workspace
     router.push(`/orders/${slug}`);

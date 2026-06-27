@@ -15,6 +15,7 @@ export interface Order {
   status: "Entwurf" | "Eingereicht" | "In Prüfung" | "Genehmigt";
   updated: string;
   assignedInstallerId: string | null;
+  ownerEmail: string;
   documents: DocumentItem[];
 }
 
@@ -30,7 +31,7 @@ export interface Installer {
 interface ProjectContextType {
   orders: Order[];
   installers: Installer[];
-  createOrder: (id: string, asset: string, power: string) => void;
+  createOrder: (id: string, asset: string, power: string, ownerEmail: string) => void;
   updateOrderStatus: (orderId: string, status: Order["status"]) => void;
   assignInstaller: (orderId: string, installerId: string | null) => void;
   updateOrderDocumentStatus: (orderId: string, docId: string, status: DocumentItem["status"]) => void;
@@ -42,12 +43,13 @@ const ProjectContext = createContext<ProjectContextType | undefined>(undefined);
 
 const INITIAL_ORDERS: Order[] = [
   {
-    id: "123",
-    asset: "PV-Aufdachanlage",
+    id: "pv-halle-nord",
+    asset: "PV-Aufdachanlage (Nord)",
     power: "9,8 kWp",
     status: "In Prüfung",
     updated: "26.06.2026",
     assignedInstallerId: "inst-1",
+    ownerEmail: "user1@connect-now.io",
     documents: [
       { id: "e8", label: "Datenblatt Wechselrichter (E.8)", status: "complete" },
       { id: "lageplan", label: "Lageplan / Übersichtsschaltplan", status: "complete" },
@@ -56,12 +58,13 @@ const INITIAL_ORDERS: Order[] = [
     ],
   },
   {
-    id: "PV-Solar-2026",
-    asset: "PV mit Speicher",
+    id: "solar-speicher-sued",
+    asset: "PV mit Speicher (Süd)",
     power: "12,4 kWp",
     status: "Eingereicht",
     updated: "24.06.2026",
-    assignedInstallerId: null,
+    assignedInstallerId: "inst-3",
+    ownerEmail: "user1@connect-now.io",
     documents: [
       { id: "e8", label: "Datenblatt Wechselrichter (E.8)", status: "review" },
       { id: "lageplan", label: "Lageplan / Übersichtsschaltplan", status: "complete" },
@@ -70,16 +73,32 @@ const INITIAL_ORDERS: Order[] = [
     ],
   },
   {
-    id: "Hof-Nord-WP",
+    id: "wp-hof-sued",
     asset: "PV + Wärmepumpe",
     power: "15,0 kWp",
     status: "Entwurf",
     updated: "20.06.2026",
-    assignedInstallerId: null,
+    assignedInstallerId: "inst-1",
+    ownerEmail: "user2@connect-now.io",
     documents: [
       { id: "e8", label: "Datenblatt Wechselrichter (E.8)", status: "missing" },
       { id: "lageplan", label: "Lageplan / Übersichtsschaltplan", status: "missing" },
       { id: "messkonzept", label: "Messkonzept", status: "complete" },
+      { id: "vollmacht", label: "Vollmacht des Anlagenbetreibers", status: "missing" },
+    ],
+  },
+  {
+    id: "pv-schulstrasse",
+    asset: "Dachanlage Grundschule",
+    power: "29,5 kWp",
+    status: "Entwurf",
+    updated: "22.06.2026",
+    assignedInstallerId: null,
+    ownerEmail: "user2@connect-now.io",
+    documents: [
+      { id: "e8", label: "Datenblatt Wechselrichter (E.8)", status: "missing" },
+      { id: "lageplan", label: "Lageplan / Übersichtsschaltplan", status: "complete" },
+      { id: "messkonzept", label: "Messkonzept", status: "missing" },
       { id: "vollmacht", label: "Vollmacht des Anlagenbetreibers", status: "missing" },
     ],
   },
@@ -122,7 +141,17 @@ export function ProjectProvider({ children }: { children: React.ReactNode }) {
       const storedInstallers = localStorage.getItem("connectNowInstallers");
 
       if (storedOrders) {
-        setOrders(JSON.parse(storedOrders) as Order[]);
+        // Migration safeguard: check if stored order objects have ownerEmail
+        const parsed = JSON.parse(storedOrders) as Order[];
+        const needsMigration = parsed.some(o => !o.ownerEmail);
+        
+        if (needsMigration) {
+          // Overwrite with initial seeded ones to avoid bugs
+          localStorage.setItem("connectNowOrders", JSON.stringify(INITIAL_ORDERS));
+          setOrders(INITIAL_ORDERS);
+        } else {
+          setOrders(parsed);
+        }
       } else {
         localStorage.setItem("connectNowOrders", JSON.stringify(INITIAL_ORDERS));
         setOrders(INITIAL_ORDERS);
@@ -139,7 +168,7 @@ export function ProjectProvider({ children }: { children: React.ReactNode }) {
     }
   }, []);
 
-  const createOrder = (id: string, asset: string, power: string) => {
+  const createOrder = (id: string, asset: string, power: string, ownerEmail: string) => {
     const newOrder: Order = {
       id: id,
       asset: asset,
@@ -147,6 +176,7 @@ export function ProjectProvider({ children }: { children: React.ReactNode }) {
       status: "Entwurf",
       updated: new Date().toLocaleDateString("de-DE"),
       assignedInstallerId: null,
+      ownerEmail: ownerEmail,
       documents: [
         { id: "e8", label: "Datenblatt Wechselrichter (E.8)", status: "missing" },
         { id: "lageplan", label: "Lageplan / Übersichtsschaltplan", status: "missing" },

@@ -7,6 +7,7 @@ export interface User {
   lastName: string;
   email: string;
   role: string;
+  installerId?: string;
 }
 
 interface AuthContextType {
@@ -43,14 +44,31 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     // Simulating quick API latency
     await new Promise((r) => setTimeout(r, 600));
     
-    // Pick name depending on email or default to Max Muster
     let firstName = "Max";
     let lastName = "Mustermann";
-    if (email.includes("install")) {
+    let installerId: string | undefined = undefined;
+
+    const emailLower = email.toLowerCase().trim();
+
+    if (emailLower === "user1@connect-now.io") {
+      firstName = "Kunde";
+      lastName = "Eins";
+      role = "member";
+    } else if (emailLower === "user2@connect-now.io") {
+      firstName = "Kunde";
+      lastName = "Zwei";
+      role = "member";
+    } else if (emailLower === "install@connect-now.io" || emailLower === "installer1@connect-now.io") {
       firstName = "Max";
       lastName = "Weber";
       role = "installer";
-    } else if (email.includes("admin") || email.includes("vnb")) {
+      installerId = "inst-1";
+    } else if (emailLower === "installer2@connect-now.io") {
+      firstName = "Alex";
+      lastName = "Wagner";
+      role = "installer";
+      installerId = "inst-3";
+    } else if (emailLower === "admin@connect-now.io" || emailLower.includes("vnb")) {
       firstName = "Dr. Andrea";
       lastName = "Kraft";
       role = "admin";
@@ -61,6 +79,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       lastName,
       email,
       role,
+      installerId,
     };
 
     localStorage.setItem("connectNowUser", JSON.stringify(newUser));
