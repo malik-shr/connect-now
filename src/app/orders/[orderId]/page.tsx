@@ -48,11 +48,11 @@ export default function Page({
         "Assemble the right metering concept via a guided no-code wizard.",
     },
     {
-      href: `/orders/${orderId}/site-plan`,
-      icon: "📐",
-      title: "Site plan (AI check)",
+      href: `/orders/${orderId}/documents`,
+      icon: "📄",
+      title: "Documents (AI check)",
       description:
-        "Upload your site plan and have it verified by AI before submission.",
+        "Upload your documents and have them verified by AI before submission.",
     },
     {
       href: `/orders/${orderId}/status`,
