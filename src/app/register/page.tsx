@@ -58,7 +58,7 @@ export default function RegisterPage() {
 
         <div>
           <label htmlFor="contact" className="mb-1 block text-sm font-medium text-gray-700">
-            Contact Number
+            Your Contact
           </label>
           <input
             id="contact"
