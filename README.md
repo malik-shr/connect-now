@@ -1,29 +1,94 @@
-# Create T3 App
+# connect-now
 
-This is a [T3 Stack](https://create.t3.gg/) project bootstrapped with `create-t3-app`.
+> Digital grid-connection workspace for solar (PV) installations — turning the paper-and-email grid application process into a transparent, real-time, multi-party workflow.
 
-## What's next? How do I make an app with this?
+Built as a prototype at the **Startup Elevator Energy Hackathon 2026** by **Team bitroot**.
 
-We try to keep this project as simple as possible, so you can start with just the scaffolding we set up for you, and add additional things later when they become necessary.
+---
 
-If you are not familiar with the different technologies used in this project, please refer to the respective docs. If you still are in the wind, please join our [Discord](https://t3.gg/discord) and ask for help.
+## The Problem
 
-- [Next.js](https://nextjs.org)
-- [NextAuth.js](https://next-auth.js.org)
-- [Prisma](https://prisma.io)
-- [Drizzle](https://orm.drizzle.team)
-- [Tailwind CSS](https://tailwindcss.com)
-- [tRPC](https://trpc.io)
+Connecting a new PV installation to the public grid in Germany is slow and opaque. Operators like **NetzHalle** / **EVH (Energieversorgung Halle)** receive applications as scattered emails, PDFs, and incomplete forms. Three bottlenecks dominate:
 
-## Learn More
+- **Data Ping-Pong** — applications bounce back and forth between customer, installer, and grid operator because documents are incomplete or invalid on submission.
+- **Status Silos** — the applicant (the *Anlagenbetreiber*) is left in the dark; there is no single source of truth for "who has the ball" right now.
+- **Role Gaps** — installers hold the technical data, customers hold the signatures, and grid operators need a validated package — but no shared workspace connects them.
 
-To learn more about the [T3 Stack](https://create.t3.gg/), take a look at the following resources:
+The result: a grid connection that should be straightforward takes **months** of back-and-forth.
 
-- [Documentation](https://create.t3.gg/)
-- [Learn the T3 Stack](https://create.t3.gg/en/faq#what-learning-resources-are-currently-available) — Check out these awesome tutorials
+## The Solution
 
-You can check out the [create-t3-app GitHub repository](https://github.com/t3-oss/create-t3-app) — your feedback and contributions are welcome!
+**connect-now** is a shared workspace that brings the three parties — **Customer**, **certified Installer**, and **Grid Operator (VNB)** — onto one transparent timeline. Documents are co-authored and pre-validated *before* submission, status is live for everyone, and the grid operator approves a clean, standards-compliant package in one click.
 
-## How do I deploy this?
+It is modeled on the official German digital grid-connection standard **Data Set 3.0 (Datenset 3.0 / VDE)** so submissions match what operators like NetzHalle and EVH Halle actually need.
 
-Follow our deployment guides for [Vercel](https://create.t3.gg/en/deployment/vercel), [Netlify](https://create.t3.gg/en/deployment/netlify) and [Docker](https://create.t3.gg/en/deployment/docker) for more information.
+**Impact target:** time-to-grid-connection cut from **~6 months** to **~6 days** via straight-through digital processing.
+
+## Key Features
+
+- **Role-aware UI** — a single app that adapts to three personas with strict data isolation (each customer only sees their own projects; each installer only sees assigned ones).
+- **Live status portal** — an interactive timeline showing exactly which party is responsible at each step, and which documents are still missing.
+- **Shared chat workspace** — customer and installer collaborate in real time, exchange signed documents, and the project status updates automatically (e.g. `In Prüfung` → `Genehmigt`).
+- **Pre-validated submissions** — a Data Set 3.0–aligned form and document checklist act as a digital buffer so the grid operator receives only complete requests.
+- **VNB dashboard** — connected-capacity charts, processing times, and one-click approvals for the grid operator.
+
+## Personas (demo logins)
+
+The prototype runs in **mock mode** with three seeded roles:
+
+| Role | Persona | Login |
+| :--- | :--- | :--- |
+| Customer (Anlagenbetreiber) | Kunde 1 | `user1@connect-now.io` |
+| Installer (Zertifizierter Fachpartner) | Max Weber | `install@connect-now.io` |
+| Grid Operator (VNB) | Dr. Andrea Kraft | `admin@connect-now.io` |
+
+See [user_stories_presentation.md](user_stories_presentation.md) for the full demo script and pitch.
+
+## Tech Stack
+
+Bootstrapped with the [T3 Stack](https://create.t3.gg/):
+
+- **[Next.js 15](https://nextjs.org)** (App Router, Server Components & Server Actions, Turbopack)
+- **[React 19](https://react.dev)** + **TypeScript**
+- **[Tailwind CSS v4](https://tailwindcss.com)**
+- **[Prisma 7](https://prisma.io)** with the PostgreSQL adapter
+- **[Zod](https://zod.dev)** for validation and type-safe environment variables (`@t3-oss/env-nextjs`)
+
+## Architecture Notes
+
+- Forms are generated dynamically by mapping a JSON UI schema (`src/app/orders/[orderId]/details/ui_schema_pv.json`) and submit raw payloads directly into asynchronous Server Actions.
+- Dynamic routing follows the Next.js 15 promise-wrapped convention, e.g. `/orders/[orderId]/details`.
+- See [AGENTS.md](AGENTS.md) for the agent/automation integration guide and the Data Set 3.0 payload shape.
+
+## Getting Started
+
+Requirements: Node.js (with `npm`).
+
+```bash
+# 1. Install dependencies
+npm install
+
+# 2. Create your local environment file
+cp .env.example .env
+
+# 3. Start the dev server (Turbopack)
+npm run dev
+```
+
+Then open [http://localhost:3000](http://localhost:3000) and sign in with one of the demo personas above.
+
+### Useful scripts
+
+| Command | Description |
+| :--- | :--- |
+| `npm run dev` | Start the dev server with Turbopack |
+| `npm run build` | Production build |
+| `npm run start` | Run the production build |
+| `npm run check` | Lint + TypeScript type-check |
+| `npm run format:write` | Format with Prettier |
+
+## Team
+
+Made with ⚡ by **Team bitroot** at the **Startup Elevator Energy Hackathon 2026**.
+
+> Prototype / proof-of-concept — not production software.
