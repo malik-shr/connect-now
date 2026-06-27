@@ -24,7 +24,7 @@ export default async function Page({
         "Die 50+ Pflichtfelder des Anschlussbegehrens digital erfassen.",
     },
     {
-      href: `/orders/${orderId}/messkonzept`,
+      href: `/orders/${orderId}/metering`,
       icon: "🔗",
       title: "Messkonzept-Builder",
       description:
