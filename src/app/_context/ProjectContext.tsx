@@ -143,8 +143,8 @@ export function ProjectProvider({ children }: { children: React.ReactNode }) {
 
   useEffect(() => {
     try {
-      const storedOrders = localStorage.getItem("connectNowOrders");
-      const storedInstallers = localStorage.getItem("connectNowInstallers");
+      const storedOrders = localStorage.getItem("connectNowOrders_v2");
+      const storedInstallers = localStorage.getItem("connectNowInstallers_v2");
 
       if (storedOrders) {
         // Migration safeguard: check if stored order objects have ownerEmail, priceOffer or old German statuses
@@ -154,26 +154,54 @@ export function ProjectProvider({ children }: { children: React.ReactNode }) {
         );
         
         if (needsMigration) {
-          localStorage.setItem("connectNowOrders", JSON.stringify(INITIAL_ORDERS));
+          localStorage.setItem("connectNowOrders_v2", JSON.stringify(INITIAL_ORDERS));
           setOrders(INITIAL_ORDERS);
         } else {
           setOrders(parsed);
         }
       } else {
-        localStorage.setItem("connectNowOrders", JSON.stringify(INITIAL_ORDERS));
+        localStorage.setItem("connectNowOrders_v2", JSON.stringify(INITIAL_ORDERS));
         setOrders(INITIAL_ORDERS);
       }
 
       if (storedInstallers) {
         setInstallers(JSON.parse(storedInstallers) as Installer[]);
       } else {
-        localStorage.setItem("connectNowInstallers", JSON.stringify(INITIAL_INSTALLERS));
+        localStorage.setItem("connectNowInstallers_v2", JSON.stringify(INITIAL_INSTALLERS));
         setInstallers(INITIAL_INSTALLERS);
       }
     } catch (e) {
       console.error("Failed to load project database", e);
     }
   }, []);
+
+  // Sync logged-in installer to the registry
+  useEffect(() => {
+    try {
+      const storedUser = localStorage.getItem("connectNowUser");
+      if (storedUser) {
+        const u = JSON.parse(storedUser);
+        if (u && u.role === "installer" && u.installerId) {
+          const exists = installers.some(i => i.id === u.installerId);
+          if (!exists && installers.length > 0) {
+            const newInst: Installer = {
+              id: u.installerId,
+              name: `${u.firstName} ${u.lastName}`,
+              company: u.firstName.includes("Weber") ? "Weber Solar" : "Custom Electrician Ltd",
+              certified: false, // default pending
+              region: "06108 Halle",
+              rating: "New",
+            };
+            const updated = [...installers, newInst];
+            localStorage.setItem("connectNowInstallers_v2", JSON.stringify(updated));
+            setInstallers(updated);
+          }
+        }
+      }
+    } catch (e) {
+      console.error("Failed to sync logged-in installer", e);
+    }
+  }, [installers]);
 
   const createOrder = (id: string, asset: string, power: string, ownerEmail: string, priceOffer: string) => {
     const newOrder: Order = {
@@ -194,7 +222,7 @@ export function ProjectProvider({ children }: { children: React.ReactNode }) {
     };
 
     const updated = [newOrder, ...orders];
-    localStorage.setItem("connectNowOrders", JSON.stringify(updated));
+    localStorage.setItem("connectNowOrders_v2", JSON.stringify(updated));
     setOrders(updated);
   };
 
@@ -209,7 +237,7 @@ export function ProjectProvider({ children }: { children: React.ReactNode }) {
       }
       return o;
     });
-    localStorage.setItem("connectNowOrders", JSON.stringify(updated));
+    localStorage.setItem("connectNowOrders_v2", JSON.stringify(updated));
     setOrders(updated);
   };
 
@@ -224,7 +252,7 @@ export function ProjectProvider({ children }: { children: React.ReactNode }) {
       }
       return o;
     });
-    localStorage.setItem("connectNowOrders", JSON.stringify(updated));
+    localStorage.setItem("connectNowOrders_v2", JSON.stringify(updated));
     setOrders(updated);
   };
 
@@ -239,7 +267,7 @@ export function ProjectProvider({ children }: { children: React.ReactNode }) {
       }
       return o;
     });
-    localStorage.setItem("connectNowOrders", JSON.stringify(updated));
+    localStorage.setItem("connectNowOrders_v2", JSON.stringify(updated));
     setOrders(updated);
   };
 
@@ -260,7 +288,7 @@ export function ProjectProvider({ children }: { children: React.ReactNode }) {
       }
       return o;
     });
-    localStorage.setItem("connectNowOrders", JSON.stringify(updated));
+    localStorage.setItem("connectNowOrders_v2", JSON.stringify(updated));
     setOrders(updated);
   };
 
@@ -271,7 +299,7 @@ export function ProjectProvider({ children }: { children: React.ReactNode }) {
       }
       return i;
     });
-    localStorage.setItem("connectNowInstallers", JSON.stringify(updated));
+    localStorage.setItem("connectNowInstallers_v2", JSON.stringify(updated));
     setInstallers(updated);
   };
 
@@ -290,7 +318,7 @@ export function ProjectProvider({ children }: { children: React.ReactNode }) {
         return i;
       });
     }
-    localStorage.setItem("connectNowInstallers", JSON.stringify(updated));
+    localStorage.setItem("connectNowInstallers_v2", JSON.stringify(updated));
     setInstallers(updated);
   };
 

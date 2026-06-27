@@ -50,9 +50,9 @@ export default function Page({
     {
       href: `/orders/${orderId}/documents`,
       icon: "📄",
-      title: "Documents (AI check)",
+      title: "Documents (AI Check)",
       description:
-        "Upload your documents and have them verified by AI before submission.",
+        "Upload and verify required project attachments via AI verification.",
     },
     {
       href: `/orders/${orderId}/status`,

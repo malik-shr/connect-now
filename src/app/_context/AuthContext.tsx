@@ -74,6 +74,10 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       role = "admin";
     }
 
+    if (role === "installer" && !installerId) {
+      installerId = `inst-${emailLower.split("@")[0] || "custom"}`;
+    }
+
     const newUser: User = {
       firstName,
       lastName,
@@ -92,11 +96,18 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     setLoading(true);
     await new Promise((r) => setTimeout(r, 600));
 
+    let installerId: string | undefined = undefined;
+    const emailLower = email.toLowerCase().trim();
+    if (role === "installer") {
+      installerId = `inst-${emailLower.split("@")[0] || "custom"}`;
+    }
+
     const newUser: User = {
       firstName,
       lastName,
       email,
       role,
+      installerId,
     };
 
     localStorage.setItem("connectNowUser", JSON.stringify(newUser));
