@@ -82,12 +82,14 @@ export default function Navbar() {
             </div>
           )}
 
-          <Link
-            href="/register-project"
-            className="hidden rounded-lg bg-blue-600 px-4 py-2 text-sm font-semibold text-white shadow-sm transition hover:bg-blue-700 sm:block"
-          >
-            New Grid Connection
-          </Link>
+          {(!isLoggedIn || user?.role === "member") && (
+            <Link
+              href="/register-project"
+              className="hidden rounded-lg bg-blue-600 px-4 py-2 text-sm font-semibold text-white shadow-sm transition hover:bg-blue-700 sm:block"
+            >
+              New Grid Connection
+            </Link>
+          )}
         </div>
       </div>
     </nav>

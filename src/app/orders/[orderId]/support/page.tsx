@@ -4,6 +4,7 @@ import { use, useState, useEffect, useRef } from "react";
 import Link from "next/link";
 import BackButton from "~/app/_components/BackButton";
 import { useProjects } from "~/app/_context/ProjectContext";
+import { useAuth } from "~/app/_context/AuthContext";
 
 interface Message {
   id: string;
@@ -63,7 +64,7 @@ export default function SupportPage({
 }) {
   const { orderId } = use(params);
   
-  // Connect to Project Context
+  // Connect to Contexts
   const { 
     orders, 
     installers, 
@@ -71,13 +72,18 @@ export default function SupportPage({
     assignInstaller, 
     updateOrderDocumentStatus 
   } = useProjects();
+  const { user } = useAuth();
 
   const order = orders.find((o) => o.id === orderId);
 
+  // Check active perspective: are we logged in as the installer?
+  const isInstallerPerspective = user?.role === "installer";
+
+  // Force direct chat view for installer perspective (installer doesn't need to match him/herself)
+  const initialViewState = (isInstallerPerspective || order?.assignedInstallerId) ? "chat" : "intake";
+
   // States
-  const [viewState, setViewState] = useState<"intake" | "matching" | "chat">(
-    order?.assignedInstallerId ? "chat" : "intake"
-  );
+  const [viewState, setViewState] = useState<"intake" | "matching" | "chat">(initialViewState);
   const [selectedTopic, setSelectedTopic] = useState("docs");
   const [description, setDescription] = useState(TOPICS[0]!.defaultText);
   const [matchingIndex, setMatchingIndex] = useState(0);
@@ -87,18 +93,44 @@ export default function SupportPage({
   const [chatStep, setChatStep] = useState(0);
   const [ticketStatus, setTicketStatus] = useState<"Aktiv" | "Gelöst">("Aktiv");
   
-  // File upload simulation
+  // File upload refs
   const fileInputRef = useRef<HTMLInputElement>(null);
   const chatEndRef = useRef<HTMLDivElement>(null);
 
-  // Auto-scroll chat to bottom
+  // Auto-scroll chat
   useEffect(() => {
     chatEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages, isTyping]);
 
-  // Load existing chat messages if installer already assigned
+  // Load chat messages based on perspective
   useEffect(() => {
-    if (order?.assignedInstallerId && messages.length === 0) {
+    if (messages.length > 0) return;
+
+    if (isInstallerPerspective) {
+      // Seed ticket history from the installer's perspective (Customer opened a request)
+      const initialMsgs: Message[] = [
+        {
+          id: "sys-1",
+          sender: "system",
+          text: "Support-Ticket #SR-8492 geladen. Kategorie: Unterlagen & Vollmachten.",
+          timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+        },
+        {
+          id: "msg-cust-init",
+          sender: "user",
+          text: "Hallo, mir fehlt noch die 'Vollmacht des Anlagenbetreibers'. Können Sie mir helfen, diese auszufüllen und hochzuladen?",
+          timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+        },
+        {
+          id: "msg-inst-reply",
+          sender: "installer",
+          text: "Hallo! Ich bin Max Weber. Ich sehe Ihre Anfrage. Haben Sie das Formular bereits zur Hand?",
+          timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+        }
+      ];
+      setMessages(initialMsgs);
+    } else if (order?.assignedInstallerId) {
+      // Seed details for customer perspective if already matched
       const topicObj = TOPICS[0];
       const initialMsgs: Message[] = [
         {
@@ -122,7 +154,7 @@ export default function SupportPage({
       ];
       setMessages(initialMsgs);
     }
-  }, [order, messages.length]);
+  }, [order, messages.length, isInstallerPerspective]);
 
   // Handle Topic Change
   const handleTopicSelect = (topicId: string) => {
@@ -133,7 +165,7 @@ export default function SupportPage({
     }
   };
 
-  // Start Matching Simulation
+  // Start Matching Simulation (Customer view only)
   const startMatching = (e: React.FormEvent) => {
     e.preventDefault();
     setViewState("matching");
@@ -153,7 +185,6 @@ export default function SupportPage({
       // Save assignment to ProjectContext
       assignInstaller(orderId, "inst-1");
 
-      // Initialize Chat
       const topicObj = TOPICS.find((t) => t.id === selectedTopic);
       const initialMsgs: Message[] = [
         {
@@ -179,7 +210,6 @@ export default function SupportPage({
       setMessages(initialMsgs);
       setViewState("chat");
       
-      // Delay installer's first response
       const timer = setTimeout(() => {
         setIsTyping(true);
         const typingTimer = setTimeout(() => {
@@ -211,24 +241,25 @@ export default function SupportPage({
   }, [viewState, matchingIndex, assignInstaller, orderId, selectedTopic, description]);
 
   // Send Message
-  const handleSendMessage = (textToSend?: string, attachedFile?: Message["file"]) => {
+  const handleSendMessage = (textToSend?: string, attachedFile?: Message["file"], forceSender?: "user" | "installer") => {
     const text = textToSend || inputValue;
     if (!text && !attachedFile) return;
 
     if (!textToSend) setInputValue("");
 
+    const activeSender = forceSender || (isInstallerPerspective ? "installer" : "user");
+
     const newMsg: Message = {
-      id: `msg-user-${Date.now()}`,
-      sender: "user",
+      id: `msg-${activeSender}-${Date.now()}`,
+      sender: activeSender,
       text: text,
       timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
       file: attachedFile,
     };
 
     setMessages((prev) => [...prev, newMsg]);
-
-    // Handle automated flow replies
     setIsTyping(true);
+
     const nextStep = chatStep + 1;
     setChatStep(nextStep);
 
@@ -236,11 +267,50 @@ export default function SupportPage({
       setIsTyping(false);
       let replyText = "";
 
-      if (attachedFile) {
-        // Update document status in global project store!
-        updateOrderDocumentStatus(orderId, "vollmacht", "complete");
+      // --- CUSTOMER PERSPECTIVE TYPING SIMULATION ---
+      if (!isInstallerPerspective) {
+        if (attachedFile) {
+          updateOrderDocumentStatus(orderId, "vollmacht", "complete");
+          replyText = "Hervorragend, vielen Dank! Das Dokument 'Vollmacht_unterschrieben.pdf' sieht vollständig aus. Ich übermittle es direkt an das Netzbetreiber-System.";
+          setMessages((prev) => [
+            ...prev,
+            {
+              id: `msg-installer-${Date.now()}`,
+              sender: "installer",
+              text: replyText,
+              timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+            }
+          ]);
 
-        replyText = "Hervorragend, vielen Dank! Das Dokument 'Vollmacht_unterschrieben.pdf' sieht absolut vollständig aus: Name, Adresse und Unterschrift passen.";
+          setTimeout(() => {
+            setIsTyping(true);
+            setTimeout(() => {
+              setIsTyping(false);
+              updateOrderStatus(orderId, "In Prüfung");
+              setMessages((prev) => [
+                ...prev,
+                {
+                  id: `msg-installer-sub-${Date.now()}`,
+                  sender: "installer",
+                  text: "Da nun alle Pflichtdokumente vorliegen, habe ich Ihr Netzanschlussbegehren soeben offiziell an den Netzbetreiber übermittelt! Ihr Status im Portal wurde auf 'In Prüfung' aktualisiert. Sie können den Fortschritt live im Status-Portal mitverfolgen.",
+                  timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+                }
+              ]);
+            }, 1500);
+          }, 1200);
+          return;
+        }
+
+        const userText = text.toLowerCase();
+        if (userText.includes("vollmacht") || userText.includes("dokument") || userText.includes("vorlage")) {
+          replyText = "Sie können die offizielle Vorlage der Betreibervollmacht direkt ausfüllen, unterschreiben und mir hier im Chat hochladen. Verwenden Sie dazu einfach das Büroklammer-Symbol unten links.";
+        } else if (userText.includes("danke") || userText.includes("super") || userText.includes("erledigt")) {
+          replyText = "Sehr gerne! Ich schließe dieses Support-Ticket hiermit. Falls noch etwas sein sollte, können Sie jederzeit einen neuen Support-Request starten.";
+          setTicketStatus("Gelöst");
+        } else {
+          replyText = "Kein Problem, das kriegen wir hin. Haben Sie noch weitere Fragen dazu, oder wollen wir das Thema direkt für Sie einreichen?";
+        }
+
         setMessages((prev) => [
           ...prev,
           {
@@ -250,58 +320,34 @@ export default function SupportPage({
             timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
           }
         ]);
-
-        // Trigger double-response: submission confirmation and status change!
-        setTimeout(() => {
-          setIsTyping(true);
-          setTimeout(() => {
-            setIsTyping(false);
-
-            // Update order status in global project store!
-            updateOrderStatus(orderId, "In Prüfung");
-
-            setMessages((prev) => [
-              ...prev,
-              {
-                id: `msg-installer-sub-${Date.now()}`,
-                sender: "installer",
-                text: "Da nun alle Pflichtdokumente vorliegen, habe ich Ihr Netzanschlussbegehren soeben offiziell an den Netzbetreiber übermittelt! Ihr Status im Portal wurde auf 'In Prüfung' aktualisiert. Sie können den Fortschritt live im Status-Portal mitverfolgen. Kann ich sonst noch etwas für Sie tun?",
-                timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
-              }
-            ]);
-          }, 1500);
-        }, 1200);
-        return;
-      }
-
-      // Text replies based on step/keywords
-      const userText = text.toLowerCase();
-      if (userText.includes("vollmacht") || userText.includes("dokument") || userText.includes("vorlage") || userText.includes("formular")) {
-        replyText = "Sie können die offizielle Vorlage der Betreibervollmacht direkt ausfüllen, unterschreiben und mir hier im Chat hochladen. Ziehen Sie die PDF-Datei einfach in dieses Chatfenster oder klicken Sie auf das Büroklammer-Symbol unten links.";
-      } else if (userText.includes("danke") || userText.includes("super") || userText.includes("perfekt") || userText.includes("erledigt")) {
-        replyText = "Sehr gerne! Ich schließe dieses Support-Ticket hiermit. Falls noch etwas sein sollte, können Sie jederzeit einen neuen Support-Request starten. Viel Erfolg weiterhin und einen schönen Tag! ☀️";
-        setTicketStatus("Gelöst");
-      } else {
-        if (nextStep === 1) {
-          replyText = "Alles klar, verstanden. Laden Sie am besten die entsprechende Datei oder ein Foto hoch, damit ich die Details direkt mit den technischen Anforderungen im Portal abgleichen kann. Ich bin hier, um das für Sie zu regeln.";
+      } 
+      // --- INSTALLER PERSPECTIVE TYPING SIMULATION ---
+      else {
+        // Customer answers the installer
+        const userText = text.toLowerCase();
+        if (userText.includes("hallo") || userText.includes("sieht") || userText.includes("ok")) {
+          replyText = "Super, danke! Ich werde das Dokument gleich unterzeichnen und Ihnen hier hochladen.";
+        } else if (userText.includes("übermittelt") || userText.includes("eingereicht") || userText.includes("prüfung")) {
+          replyText = "Klasse! Vielen Dank für die schnelle Unterstützung. Ich verfolge den Status im Portal.";
+          setTicketStatus("Gelöst");
         } else {
-          replyText = "Kein Problem, das kriegen wir hin. Haben Sie noch weitere Fragen dazu, oder wollen wir das Thema direkt für Sie einreichen?";
+          replyText = "Danke für die Auskunft, Herr Weber. Ich schaue mir das direkt an.";
         }
-      }
 
-      setMessages((prev) => [
-        ...prev,
-        {
-          id: `msg-installer-${Date.now()}`,
-          sender: "installer",
-          text: replyText,
-          timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
-        }
-      ]);
+        setMessages((prev) => [
+          ...prev,
+          {
+            id: `msg-user-ans-${Date.now()}`,
+            sender: "user",
+            text: replyText,
+            timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+          }
+        ]);
+      }
     }, 1500);
   };
 
-  // Simulate file upload
+  // Simulate file upload (Customer view)
   const triggerFileInput = () => {
     fileInputRef.current?.click();
   };
@@ -317,16 +363,16 @@ export default function SupportPage({
     }
   };
 
-  // Helper shortcut to upload document during demo
+  // Mock Upload Shortcuts (For Hackathon Demos)
   const uploadMockVollmacht = () => {
+    // Customer uploads
     handleSendMessage("Ich habe die unterschriebene Vollmacht ausgefüllt.", {
       name: "Vollmacht_Betreiber_signiert.pdf",
       size: "1.2 MB",
       type: "application/pdf",
-    });
+    }, "user");
   };
 
-  // Get assigned installer details
   const activeInstaller = installers.find(i => i.id === order?.assignedInstallerId) || installers[0]!;
 
   return (
@@ -335,14 +381,14 @@ export default function SupportPage({
         
         {/* Context Breadcrumbs */}
         <div className="flex items-center justify-between">
-          <BackButton href={`/orders/${orderId}`} />
+          <BackButton href={isInstallerPerspective ? "/orders" : `/orders/${orderId}`} />
           <span className="rounded bg-slate-100 px-2 py-0.5 font-mono text-xs font-bold text-slate-800">
             Vorgangs-ID: {orderId}
           </span>
         </div>
 
-        {/* --- VIEW 1: INTAKE FORM --- */}
-        {viewState === "intake" && (
+        {/* --- INTAKE FORM (Customer only) --- */}
+        {viewState === "intake" && !isInstallerPerspective && (
           <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-xl sm:p-10 transition-all duration-300">
             <header className="border-b border-slate-200 pb-5 mb-6">
               <span className="text-xs font-bold tracking-wider text-blue-600 uppercase">
@@ -397,7 +443,7 @@ export default function SupportPage({
                 />
               </div>
 
-              {/* Mock Upload Zone */}
+              {/* Upload Zone */}
               <div>
                 <label className="text-sm font-bold text-slate-700 block mb-2">
                   Dokument anhängen (Optional)
@@ -435,10 +481,9 @@ export default function SupportPage({
           </div>
         )}
 
-        {/* --- VIEW 2: MATCHING ANIMATION --- */}
-        {viewState === "matching" && (
+        {/* --- MATCHING ANIMATION (Customer only) --- */}
+        {viewState === "matching" && !isInstallerPerspective && (
           <div className="rounded-2xl border border-slate-200 bg-white p-10 shadow-xl text-center min-h-[450px] flex flex-col justify-center items-center transition-all duration-300">
-            {/* Pulsing loading ring */}
             <div className="relative flex items-center justify-center mb-8">
               <div className="absolute h-24 w-24 rounded-full border-4 border-blue-500/30 animate-ping" />
               <div className="relative h-20 w-20 rounded-full bg-blue-50 flex items-center justify-center text-3xl font-extrabold text-blue-600 shadow-md">
@@ -453,7 +498,6 @@ export default function SupportPage({
               Wir ermitteln einen zertifizierten Elektro-Fachpartner für Ihren Netzanschluss.
             </p>
 
-            {/* Displaying active matching progress */}
             <div className="mt-8 space-y-3 w-full max-w-md">
               {MATCHING_STEPS.map((step, idx) => {
                 const isActive = idx === matchingIndex;
@@ -481,46 +525,49 @@ export default function SupportPage({
           </div>
         )}
 
-        {/* --- VIEW 3: CHAT VIEW --- */}
+        {/* --- CHAT VIEW --- */}
         {viewState === "chat" && (
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 items-start transition-all duration-300">
             
-            {/* Sidebar with Profile & Details */}
+            {/* Sidebar Profile & Details */}
             <div className="space-y-6">
               
-              {/* Profile Card */}
+              {/* Profile Card (Who is the opposite person?) */}
               <div className="rounded-2xl border border-slate-200 bg-white p-5 shadow-lg">
                 <div className="flex items-center gap-4 border-b border-slate-100 pb-4 mb-4">
                   <div className="relative">
-                    <div className="h-14 w-14 rounded-full bg-amber-100 text-2xl flex items-center justify-center border border-amber-200">
-                      👨‍🔧
+                    <div className="h-14 w-14 rounded-full bg-slate-100 text-2xl flex items-center justify-center border border-slate-200">
+                      {isInstallerPerspective ? "👤" : "👨‍🔧"}
                     </div>
-                    {/* Pulsing online status indicator */}
                     <span className="absolute bottom-0 right-0 h-3.5 w-3.5 rounded-full bg-emerald-500 border-2 border-white">
                       <span className="absolute inset-0 rounded-full bg-emerald-500 animate-ping opacity-75" />
                     </span>
                   </div>
                   <div>
-                    <h3 className="text-base font-bold text-slate-800">{activeInstaller.name}</h3>
-                    <p className="text-xs text-slate-400">Zertifizierter Partner</p>
+                    <h3 className="text-base font-bold text-slate-800">
+                      {isInstallerPerspective ? "Kunde Eins" : activeInstaller.name}
+                    </h3>
+                    <p className="text-xs text-slate-400">
+                      {isInstallerPerspective ? "Anlagenbetreiber" : "Zertifizierter Partner"}
+                    </p>
                     <div className="flex items-center gap-1 mt-0.5">
-                      <span className="text-xs text-slate-600">{activeInstaller.company}</span>
+                      <span className="text-xs text-slate-600">
+                        {isInstallerPerspective ? "PLZ: 06108 Halle" : activeInstaller.company}
+                      </span>
                     </div>
                   </div>
                 </div>
 
                 <div className="space-y-3">
                   <div className="flex justify-between items-center text-xs">
-                    <span className="text-slate-400">Bewertung:</span>
-                    <span className="font-bold text-slate-700">{activeInstaller.rating}</span>
+                    <span className="text-slate-400">Status:</span>
+                    <span className="font-bold text-slate-700">Online</span>
                   </div>
                   <div className="flex justify-between items-center text-xs">
-                    <span className="text-slate-400">Erfahrungsgrad:</span>
-                    <span className="font-bold text-slate-700">Senior Elektro-Meister</span>
-                  </div>
-                  <div className="flex justify-between items-center text-xs">
-                    <span className="text-slate-400">Registriert bei VNB:</span>
-                    <span className="font-bold text-slate-700 text-right">Mitnetz, Netze BW, etc.</span>
+                    <span className="text-slate-400">Anschlussleistung:</span>
+                    <span className="font-bold text-slate-700">
+                      {order?.power || "9.8 kWp"}
+                    </span>
                   </div>
                 </div>
               </div>
@@ -545,47 +592,53 @@ export default function SupportPage({
                   <div className="flex justify-between items-center">
                     <span className="text-slate-400">Kategorie:</span>
                     <span className="font-semibold text-slate-800">
-                      {TOPICS.find((t) => t.id === selectedTopic)?.title || "Unterlagen & Vollmachten"}
+                      Unterlagen & Vollmachten
                     </span>
                   </div>
                   <div className="flex justify-between items-center">
-                    <span className="text-slate-400">Vorgangs-Nr.:</span>
+                    <span className="text-slate-400">Projekt-ID:</span>
                     <span className="font-mono font-bold text-slate-700">#{orderId}</span>
                   </div>
                 </div>
 
-                {/* Helper actions box for Hackathon demo */}
+                {/* Helper action box for Hackathon demo */}
                 {ticketStatus === "Aktiv" && (
                   <div className="mt-4 p-3 bg-blue-50/50 rounded-xl border border-blue-100">
                     <span className="text-[11px] font-bold text-blue-700 block mb-1">
-                      💡 Hackathon Demo Helfer
+                      💡 Hackathon Demo Helper
                     </span>
                     <p className="text-[10px] text-blue-600 leading-normal mb-2">
-                      Klicken Sie hier, um das Unterschreiben und Hochladen der Betreibervollmacht direkt zu simulieren.
+                      {isInstallerPerspective 
+                        ? "Simulieren Sie, dass der Kunde Ihnen die ausgefüllte Vollmacht schickt."
+                        : "Laden Sie als Kunde die unterschriebene Vollmacht hoch."
+                      }
                     </p>
                     <button
                       type="button"
                       onClick={uploadMockVollmacht}
                       className="w-full text-center bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-lg text-xs py-2 shadow-sm transition cursor-pointer"
                     >
-                      📄 Vollmacht hochladen
+                      {isInstallerPerspective ? "📄 Kunden-Upload simulieren" : "📄 Vollmacht hochladen"}
                     </button>
                   </div>
                 )}
               </div>
             </div>
 
-            {/* Chat Box */}
+            {/* Chat View Container */}
             <div className="lg:col-span-2 rounded-2xl border border-slate-200 bg-white shadow-xl overflow-hidden flex flex-col h-[550px]">
               
               {/* Chat Header */}
               <div className="bg-slate-50 border-b border-slate-200 px-6 py-4 flex items-center justify-between">
                 <div>
                   <h3 className="text-sm font-bold text-slate-800 flex items-center gap-1.5">
-                    Live-Chat mit {activeInstaller.name}
+                    {isInstallerPerspective 
+                      ? "Live-Chat mit Kunde Eins" 
+                      : `Live-Chat mit ${activeInstaller.name}`
+                    }
                   </h3>
                   <p className="text-[11px] text-slate-500">
-                    Ihr Vorgang wird direkt bearbeitet.
+                    {isInstallerPerspective ? "Support-Anfrage bezüglich Vollmacht." : "Ihr Vorgang wird direkt bearbeitet."}
                   </p>
                 </div>
                 <div className="flex items-center gap-2">
@@ -594,7 +647,7 @@ export default function SupportPage({
                 </div>
               </div>
 
-              {/* Chat Message Logs */}
+              {/* Chat logs */}
               <div className="flex-1 overflow-y-auto p-6 space-y-4 bg-slate-50/30">
                 {messages.map((msg) => {
                   if (msg.sender === "system") {
@@ -607,37 +660,42 @@ export default function SupportPage({
                     );
                   }
 
-                  const isUser = msg.sender === "user";
+                  // Determine if bubble should be on the right (i.e. matches our perspective)
+                  const isRightSide = isInstallerPerspective 
+                    ? msg.sender === "installer" 
+                    : msg.sender === "user";
 
                   return (
                     <div
                       key={msg.id}
                       className={`flex gap-3 max-w-[85%] ${
-                        isUser ? "ml-auto flex-row-reverse" : "mr-auto"
+                        isRightSide ? "ml-auto flex-row-reverse" : "mr-auto"
                       }`}
                     >
                       {/* Avatar */}
                       <div className={`h-8 w-8 rounded-full flex items-center justify-center shrink-0 text-sm border ${
-                        isUser 
+                        isRightSide 
                           ? "bg-blue-100 border-blue-200" 
                           : "bg-amber-100 border-amber-200"
                       }`}>
-                        {isUser ? "👤" : "👨‍🔧"}
+                        {msg.sender === "user" ? "👤" : "👨‍🔧"}
                       </div>
 
                       {/* Bubble content */}
                       <div>
+                        <span className="block text-[10px] text-slate-400 mb-1 ml-1">
+                          {msg.sender === "user" ? "Kunde" : "Installateur"} {isRightSide && "(Ich)"}
+                        </span>
                         <div className={`rounded-2xl p-4 shadow-sm text-sm ${
-                          isUser
+                          isRightSide
                             ? "bg-blue-600 text-white rounded-tr-none"
                             : "bg-white border border-slate-200 text-slate-800 rounded-tl-none"
                         }`}>
                           <p className="leading-relaxed whitespace-pre-wrap">{msg.text}</p>
                           
-                          {/* File preview attachment block if present */}
                           {msg.file && (
                             <div className={`mt-3 p-3 rounded-xl border flex items-center gap-3 ${
-                              isUser 
+                              isRightSide 
                                 ? "bg-blue-700/50 border-blue-500/30 text-white" 
                                 : "bg-slate-50 border-slate-100 text-slate-800"
                             }`}>
@@ -652,7 +710,7 @@ export default function SupportPage({
                             </div>
                           )}
                         </div>
-                        <span className={`text-[10px] text-slate-400 mt-1 block ${isUser ? "text-right" : "text-left"}`}>
+                        <span className={`text-[10px] text-slate-400 mt-1 block ${isRightSide ? "text-right" : "text-left"}`}>
                           {msg.timestamp}
                         </span>
                       </div>
@@ -660,11 +718,11 @@ export default function SupportPage({
                   );
                 })}
 
-                {/* Installer Typing Indicator */}
+                {/* Typing simulation */}
                 {isTyping && (
                   <div className="flex gap-3 max-w-[80%] mr-auto items-center">
                     <div className="h-8 w-8 rounded-full bg-amber-100 border border-amber-200 flex items-center justify-center text-sm">
-                      👨‍🔧
+                      {isInstallerPerspective ? "👤" : "👨‍🔧"}
                     </div>
                     <div className="bg-white border border-slate-200 rounded-2xl rounded-tl-none px-4 py-3 shadow-sm flex items-center gap-1">
                       <span className="h-2 w-2 bg-slate-400 rounded-full animate-bounce" style={{ animationDelay: '0ms' }} />
@@ -677,7 +735,7 @@ export default function SupportPage({
                 <div ref={chatEndRef} />
               </div>
 
-              {/* Chat Input Area */}
+              {/* Chat Input */}
               <div className="border-t border-slate-200 p-4 bg-white">
                 <form
                   onSubmit={(e) => {
@@ -694,7 +752,6 @@ export default function SupportPage({
                     accept="application/pdf,image/*"
                   />
                   
-                  {/* File attach button */}
                   <button
                     type="button"
                     onClick={triggerFileInput}
@@ -736,10 +793,10 @@ export default function SupportPage({
                       Vielen Dank! Die Betreibervollmacht wurde erfolgreich übermittelt.
                     </p>
                     <Link
-                      href={`/orders/${orderId}/status`}
+                      href={isInstallerPerspective ? "/orders" : `/orders/${orderId}/status`}
                       className="inline-flex mt-2 text-xs font-semibold text-blue-600 underline hover:text-blue-700"
                     >
-                      Zum Status-Portal wechseln
+                      {isInstallerPerspective ? "Zurück zur Übersicht" : "Zum Status-Portal wechseln"}
                     </Link>
                   </div>
                 )}

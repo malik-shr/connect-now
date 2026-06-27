@@ -40,12 +40,14 @@ export default function OrdersPage() {
               Alle Netzanschluss-Anträge auf einen Blick.
             </p>
           </div>
-          <Link
-            href="/register-project"
-            className="inline-flex items-center justify-center rounded-lg bg-blue-600 px-5 py-3 text-sm font-semibold text-white shadow transition-all hover:-translate-y-0.5 hover:bg-blue-700 cursor-pointer"
-          >
-            + Neuer Vorgang
-          </Link>
+          {user?.role === "member" && (
+            <Link
+              href="/register-project"
+              className="inline-flex items-center justify-center rounded-lg bg-blue-600 px-5 py-3 text-sm font-semibold text-white shadow transition-all hover:-translate-y-0.5 hover:bg-blue-700 cursor-pointer"
+            >
+              + Neuer Vorgang
+            </Link>
+          )}
         </div>
 
         {/* Order cards */}

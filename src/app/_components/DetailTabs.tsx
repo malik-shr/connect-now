@@ -1,4 +1,7 @@
+"use client";
+
 import Link from "next/link";
+import { useAuth } from "~/app/_context/AuthContext";
 
 export type DetailView = "all" | "customer" | "installer";
 
@@ -10,9 +13,11 @@ export default function DetailTabs({
   orderId: string;
   active: DetailView;
 }) {
-  const tabs: { key: DetailView; label: string; href: string }[] = [
+  const { user } = useAuth();
+
+  const tabs = [
     { key: "all", label: "Vollständig", href: `/orders/${orderId}/details` },
-    {
+    user?.role !== "installer" && {
       key: "customer",
       label: "👤 Kunde",
       href: `/orders/${orderId}/details/customer`,
@@ -22,7 +27,8 @@ export default function DetailTabs({
       label: "🔧 Installateur",
       href: `/orders/${orderId}/details/installer`,
     },
-  ];
+  ].filter(Boolean) as { key: DetailView; label: string; href: string }[];
+
   return (
     <div className="inline-flex rounded-xl border border-slate-200 bg-slate-100 p-1">
       {tabs.map((t) => (

@@ -1,4 +1,8 @@
+"use client";
+
 import Link from "next/link";
+import { use } from "react";
+import { useAuth } from "~/app/_context/AuthContext";
 
 interface MenuItem {
   href: string;
@@ -8,12 +12,25 @@ interface MenuItem {
   disabled?: boolean;
 }
 
-export default async function Page({
+export default function Page({
   params,
 }: {
   params: Promise<{ orderId: string }>;
 }) {
-  const { orderId } = await params;
+  const { orderId } = use(params);
+  const { user } = useAuth();
+
+  // Dynamic support card texts based on logged-in persona role
+  let supportTitle = "Hilfe anfordern";
+  let supportDesc = "Rückfrage an Installateur oder Netzbetreiber stellen.";
+
+  if (user?.role === "installer") {
+    supportTitle = "Kunden-Chat öffnen";
+    supportDesc = "Öffnen Sie den Chatverlauf, um dem Kunden bei Unterlagen zu helfen.";
+  } else if (user?.role === "admin") {
+    supportTitle = "Support-Chat einsehen";
+    supportDesc = "Sehen Sie die Ticketverläufe zwischen Kunde und Installateur ein.";
+  }
 
   const menu: MenuItem[] = [
     {
@@ -40,8 +57,8 @@ export default async function Page({
     {
       href: `/orders/${orderId}/support`,
       icon: "💬",
-      title: "Hilfe anfordern",
-      description: "Rückfrage an Installateur oder Netzbetreiber stellen.",
+      title: supportTitle,
+      description: supportDesc,
     },
   ];
 
