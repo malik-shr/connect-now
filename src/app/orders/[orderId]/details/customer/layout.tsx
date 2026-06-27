@@ -1,9 +1,17 @@
 "use client";
 
-import AuthGuard from "~/app/_components/AuthGuard";
 import { useAuth } from "~/app/_context/AuthContext";
+import { use } from "react";
+import AuthGuard from "~/app/_components/AuthGuard";
 
-export default function RegisterProjectLayout({ children }: { children: React.ReactNode }) {
+export default function CustomerDetailsLayout({
+  children,
+  params,
+}: {
+  children: React.ReactNode;
+  params: Promise<{ orderId: string }>;
+}) {
+  const { orderId } = use(params);
   const { user, isLoggedIn, loading } = useAuth();
 
   if (loading) {
@@ -14,18 +22,20 @@ export default function RegisterProjectLayout({ children }: { children: React.Re
     );
   }
 
-  if (isLoggedIn && user?.role !== "member") {
+  if (isLoggedIn && user?.role === "installer") {
     return (
       <div className="flex min-h-[70vh] flex-col items-center justify-center space-y-4">
         <div className="relative flex items-center justify-center">
           <div className="absolute h-16 w-16 rounded-full border-4 border-red-500/20 animate-ping" />
           <div className="relative h-12 w-12 rounded-full bg-red-50 flex items-center justify-center text-xl text-red-600 shadow-xs">
-            ⚡
+            🛡️
           </div>
         </div>
         <div className="space-y-1 text-center">
           <h2 className="text-sm font-bold text-slate-800 font-sans">Zugriff verweigert</h2>
-          <p className="text-[11px] text-slate-400 font-sans">Nur Anlagenbetreiber können neue Netzanschluss-Projekte anlegen.</p>
+          <p className="text-[11px] text-slate-400 font-sans px-4">
+            Als Installateur haben Sie keinen Zugriff auf die Kunden-Stammdatenformulare dieses Vorgangs (#{orderId}).
+          </p>
         </div>
       </div>
     );

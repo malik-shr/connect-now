@@ -1,39 +1,10 @@
+"use client";
+
 import Link from "next/link";
+import { useProjects } from "~/app/_context/ProjectContext";
+import { useAuth } from "~/app/_context/AuthContext";
 
-// Mock-Daten — später aus der DB (Prisma) laden.
-interface Order {
-  id: string;
-  asset: string;
-  power: string;
-  status: "Eingereicht" | "In Prüfung" | "Genehmigt" | "Entwurf";
-  updated: string;
-}
-
-const ORDERS: Order[] = [
-  {
-    id: "123",
-    asset: "PV-Aufdachanlage",
-    power: "9,8 kWp",
-    status: "In Prüfung",
-    updated: "26.06.2026",
-  },
-  {
-    id: "PV-Solar-2026",
-    asset: "PV mit Speicher",
-    power: "12,4 kWp",
-    status: "Eingereicht",
-    updated: "24.06.2026",
-  },
-  {
-    id: "Hof-Nord-WP",
-    asset: "PV + Wärmepumpe",
-    power: "15,0 kWp",
-    status: "Entwurf",
-    updated: "20.06.2026",
-  },
-];
-
-const STATUS_STYLE: Record<Order["status"], string> = {
+const STATUS_STYLE = {
   Eingereicht: "bg-blue-50 text-blue-700 border-blue-200",
   "In Prüfung": "bg-amber-50 text-amber-700 border-amber-200",
   Genehmigt: "bg-emerald-50 text-emerald-700 border-emerald-200",
@@ -41,6 +12,18 @@ const STATUS_STYLE: Record<Order["status"], string> = {
 };
 
 export default function OrdersPage() {
+  const { orders } = useProjects();
+  const { user } = useAuth();
+
+  const filteredOrders = orders.filter((o) => {
+    if (!user) return false;
+    if (user.role === "admin") return true;
+    if (user.role === "installer") {
+      return o.assignedInstallerId === user.installerId;
+    }
+    return o.ownerEmail === user.email;
+  });
+
   return (
     <div className="min-h-[calc(100vh-4rem)] px-4 py-10">
       <div className="mx-auto max-w-4xl space-y-6">
@@ -57,17 +40,19 @@ export default function OrdersPage() {
               Alle Netzanschluss-Anträge auf einen Blick.
             </p>
           </div>
-          <Link
-            href="/register-project"
-            className="inline-flex items-center justify-center rounded-lg bg-blue-600 px-5 py-3 text-sm font-semibold text-white shadow transition-all hover:-translate-y-0.5 hover:bg-blue-700"
-          >
-            + Neuer Vorgang
-          </Link>
+          {user?.role === "member" && (
+            <Link
+              href="/register-project"
+              className="inline-flex items-center justify-center rounded-lg bg-blue-600 px-5 py-3 text-sm font-semibold text-white shadow transition-all hover:-translate-y-0.5 hover:bg-blue-700 cursor-pointer"
+            >
+              + Neuer Vorgang
+            </Link>
+          )}
         </div>
 
         {/* Order cards */}
         <div className="grid grid-cols-1 gap-4">
-          {ORDERS.map((order) => (
+          {filteredOrders.map((order) => (
             <Link
               key={order.id}
               href={`/orders/${order.id}`}
@@ -108,7 +93,7 @@ export default function OrdersPage() {
 
         {/* Empty-state hint */}
         <p className="pt-2 text-center text-xs text-slate-400">
-          Mock-Daten · Vorgänge werden später aus der Datenbank geladen.
+          Sandbox-Daten · Vorgänge werden im lokalen Browserspeicher (localStorage) gesichert.
         </p>
       </div>
     </div>
