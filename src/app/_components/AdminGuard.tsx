@@ -29,8 +29,8 @@ export default function AdminGuard({ children }: { children: React.ReactNode }) 
           </div>
         </div>
         <div className="space-y-1 text-center">
-          <h2 className="text-sm font-bold text-slate-800">Admin-Sicherheitsprüfung...</h2>
-          <p className="text-[11px] text-slate-400">Verifiziere VNB Netzbetreiber-Berechtigungen für diesen Bereich.</p>
+          <h2 className="text-sm font-bold text-slate-800">Operator Compliance Check...</h2>
+          <p className="text-[11px] text-slate-400">Verifying VNB grid operator clearances for this workspace.</p>
         </div>
       </div>
     );

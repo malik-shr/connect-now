@@ -32,9 +32,9 @@ export default function CustomerDetailsLayout({
           </div>
         </div>
         <div className="space-y-1 text-center">
-          <h2 className="text-sm font-bold text-slate-800 font-sans">Zugriff verweigert</h2>
+          <h2 className="text-sm font-bold text-slate-800 font-sans">Access Denied</h2>
           <p className="text-[11px] text-slate-400 font-sans px-4">
-            Als Installateur haben Sie keinen Zugriff auf die Kunden-Stammdatenformulare dieses Vorgangs (#{orderId}).
+            As an installer, you do not have permission to access the customer profile forms for this project (#{orderId}).
           </p>
         </div>
       </div>

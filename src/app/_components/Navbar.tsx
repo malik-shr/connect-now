@@ -38,7 +38,7 @@ export default function Navbar() {
                 href="/account"
                 className="rounded-lg px-3 py-2 text-sm font-semibold text-slate-600 transition hover:bg-slate-100 hover:text-slate-900"
               >
-                Mein Konto
+                My Account
               </Link>
             </>
           )}
@@ -61,7 +61,7 @@ export default function Navbar() {
           ) : (
             <div className="flex items-center gap-2 border-l border-slate-200 pl-2 sm:pl-4">
               <span className="text-xs font-bold text-slate-500 hidden md:inline">
-                Hallo, {user?.firstName}
+                Hi, {user?.firstName}
               </span>
               <div 
                 className="flex h-8 w-8 items-center justify-center rounded-full bg-blue-100 text-xs font-black text-blue-700 select-none"
@@ -77,7 +77,7 @@ export default function Navbar() {
                 }}
                 className="cursor-pointer rounded-lg px-3 py-1.5 text-xs font-semibold text-slate-600 hover:bg-slate-100 hover:text-slate-900 transition"
               >
-                Abmelden
+                Sign Out
               </button>
             </div>
           )}

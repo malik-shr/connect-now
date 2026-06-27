@@ -8,28 +8,28 @@ import { useRouter, useSearchParams } from "next/navigation";
 const PERSONAS = [
   {
     email: "user1@connect-now.io",
-    name: "Kunde 1 (Betreiber)",
+    name: "Customer 1 (Operator)",
     role: "member",
     desc: "Sees PV-Halle-Nord & Speicher (Süd)",
     icon: "👤",
   },
   {
     email: "user2@connect-now.io",
-    name: "Kunde 2 (Betreiber)",
+    name: "Customer 2 (Operator)",
     role: "member",
     desc: "Sees PV+Wärmepumpe & Grundschule",
     icon: "👤",
   },
   {
     email: "install@connect-now.io",
-    name: "Max Weber (Installateur)",
+    name: "Max Weber (Installer)",
     role: "installer",
     desc: "Sees assigned projects: Halle-Nord & Wärmepumpe",
     icon: "🔧",
   },
   {
     email: "installer2@connect-now.io",
-    name: "Alex Wagner (Installateur)",
+    name: "Alex Wagner (Installer)",
     role: "installer",
     desc: "Sees assigned projects: Speicher (Süd)",
     icon: "🔧",
@@ -62,10 +62,10 @@ function LoginForm() {
         if (success) {
           router.push(redirectUrl);
         } else {
-          setError("Ungültige Anmeldedaten.");
+          setError("Invalid credentials.");
         }
       } catch (err) {
-        setError("Fehler bei der Anmeldung.");
+        setError("An error occurred during sign in.");
       }
     });
   };
@@ -86,10 +86,10 @@ function LoginForm() {
               Hackathon Quick-Select
             </span>
             <h2 className="text-xl font-extrabold text-slate-900 mt-1">
-              Test-Personas & Daten-Isolierung
+              Test Personas & Data Isolation
             </h2>
             <p className="text-xs text-slate-500 mt-1">
-              Klicken Sie auf eine Rolle unten, um sich sofort anzumelden. Jede Persona hat Zugriff auf einen streng isolierten Datenbereich.
+              Click on a persona card to instantly log in. Each role has access to a strictly isolated data scope.
             </p>
           </div>
 
@@ -130,8 +130,8 @@ function LoginForm() {
         {/* Right Column: Standard Form (5 Columns) */}
         <div className="lg:col-span-5 rounded-2xl border border-slate-200 bg-white p-6 shadow-xl">
           <div className="mb-6 text-center border-b border-slate-100 pb-4">
-            <h1 className="text-2xl font-black text-slate-900">Anmelden</h1>
-            <p className="text-xs text-slate-500 mt-1">Manuelle credentials Eingabe</p>
+            <h1 className="text-2xl font-black text-slate-900">Sign In</h1>
+            <p className="text-xs text-slate-500 mt-1">Manual credentials entry</p>
           </div>
 
           {error && (
@@ -143,7 +143,7 @@ function LoginForm() {
           <form onSubmit={handleSubmit} className="space-y-4">
             <div>
               <label htmlFor="email" className="mb-1 block text-xs font-bold text-slate-700 uppercase tracking-wider">
-                E-Mail-Adresse
+                Email Address
               </label>
               <input
                 id="email"
@@ -153,13 +153,13 @@ function LoginForm() {
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 className="w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm shadow-xs focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500/20"
-                placeholder="name@beispiel.de"
+                placeholder="name@example.com"
               />
             </div>
 
             <div>
               <label htmlFor="password" className="mb-1 block text-xs font-bold text-slate-700 uppercase tracking-wider">
-                Passwort
+                Password
               </label>
               <input
                 id="password"
@@ -179,16 +179,16 @@ function LoginForm() {
                 disabled={isPending}
                 className="w-full cursor-pointer flex justify-center items-center gap-2 rounded-lg bg-blue-600 px-4 py-2.5 text-sm font-semibold text-white shadow-xs hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500/50 disabled:opacity-50"
               >
-                {isPending ? "Melde an..." : "Anmelden"}
+                {isPending ? "Signing In..." : "Sign In"}
               </button>
             </div>
           </form>
 
           <div className="mt-6 text-center text-xs">
             <p className="text-slate-500">
-              Noch kein Konto?{" "}
+              Don't have an account?{" "}
               <Link href="/register" className="font-bold text-blue-600 hover:text-blue-500">
-                Jetzt registrieren
+                Register now
               </Link>
             </p>
           </div>
@@ -203,7 +203,7 @@ export default function LoginPage() {
   return (
     <Suspense fallback={
       <div className="flex min-h-screen items-center justify-center">
-        <div className="text-sm font-semibold text-slate-500">Lade...</div>
+        <div className="text-sm font-semibold text-slate-500">Loading...</div>
       </div>
     }>
       <LoginForm />

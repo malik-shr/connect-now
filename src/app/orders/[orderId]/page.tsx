@@ -21,38 +21,38 @@ export default function Page({
   const { user } = useAuth();
 
   // Dynamic support card texts based on logged-in persona role
-  let supportTitle = "Hilfe anfordern";
-  let supportDesc = "Rückfrage an Installateur oder Netzbetreiber stellen.";
+  let supportTitle = "Request Support";
+  let supportDesc = "Connect directly with your certified installer or grid operator.";
 
   if (user?.role === "installer") {
-    supportTitle = "Kunden-Chat öffnen";
-    supportDesc = "Öffnen Sie den Chatverlauf, um dem Kunden bei Unterlagen zu helfen.";
+    supportTitle = "Open Customer Chat";
+    supportDesc = "Review and assist the customer with their document upload packet.";
   } else if (user?.role === "admin") {
-    supportTitle = "Support-Chat einsehen";
-    supportDesc = "Sehen Sie die Ticketverläufe zwischen Kunde und Installateur ein.";
+    supportTitle = "View Support Chat";
+    supportDesc = "Inspect communication logs between customer and installer.";
   }
 
   const menu: MenuItem[] = [
     {
       href: `/orders/${orderId}/details`,
       icon: "📝",
-      title: "Netzanschlussdaten",
+      title: "Grid Connection Data",
       description:
-        "Die 50+ Pflichtfelder des Anschlussbegehrens digital erfassen.",
+        "Digitally complete all VDE Datenset 3.0 registration parameters.",
     },
     {
       href: `/orders/${orderId}/metering`,
       icon: "🔗",
-      title: "Messkonzept-Builder",
+      title: "Metering Concept Builder",
       description:
-        "Per geführtem No-Code-Wizard das passende Messkonzept zusammenstellen.",
+        "Draft the correct grid metering schematic diagram using a guided wizard.",
     },
     {
       href: `/orders/${orderId}/status`,
       icon: "📊",
-      title: "Status-Portal",
+      title: "Status Portal",
       description:
-        "Echtzeit-Bearbeitungsstand, Timeline und fehlende Unterlagen einsehen.",
+        "Monitor progress timelines and track missing operator files in real time.",
     },
     {
       href: `/orders/${orderId}/support`,
@@ -68,13 +68,13 @@ export default function Page({
         {/* Header */}
         <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-xl sm:p-10">
           <span className="text-xs font-bold tracking-wider text-blue-600 uppercase">
-            ConnectNow · Vorgang
+            ConnectNow · Project Workspace
           </span>
           <h1 className="mt-1 text-2xl font-extrabold tracking-tight text-slate-900 sm:text-3xl">
-            Übersicht
+            Project Overview
           </h1>
           <p className="mt-2 text-sm text-slate-500">
-            Vorgangsnummer / Order-ID:{" "}
+            Project Reference / Order-ID:{" "}
             <span className="rounded bg-slate-100 px-2 py-0.5 font-mono font-bold text-slate-800">
               {orderId}
             </span>
@@ -98,7 +98,7 @@ export default function Page({
                   {item.description}
                 </span>
                 <span className="mt-3 text-xs font-semibold tracking-wide text-slate-400 uppercase">
-                  Bald verfügbar
+                  Coming Soon
                 </span>
               </div>
             ) : (
@@ -115,7 +115,7 @@ export default function Page({
                   {item.description}
                 </span>
                 <span className="mt-3 text-sm font-semibold text-blue-600">
-                  Öffnen →
+                  Open →
                 </span>
               </Link>
             ),

@@ -24,8 +24,8 @@ export default function RegisterProjectLayout({ children }: { children: React.Re
           </div>
         </div>
         <div className="space-y-1 text-center">
-          <h2 className="text-sm font-bold text-slate-800 font-sans">Zugriff verweigert</h2>
-          <p className="text-[11px] text-slate-400 font-sans">Nur Anlagenbetreiber können neue Netzanschluss-Projekte anlegen.</p>
+          <h2 className="text-sm font-bold text-slate-800 font-sans">Access Denied</h2>
+          <p className="text-[11px] text-slate-400 font-sans">Only asset operators can initialize new grid connection requests.</p>
         </div>
       </div>
     );

@@ -1,6 +1,6 @@
 "use client";
 
-import { useProjects, Order, Installer } from "~/app/_context/ProjectContext";
+import { useProjects, Order } from "~/app/_context/ProjectContext";
 import { useState } from "react";
 
 export default function AdminPage() {
@@ -19,7 +19,7 @@ export default function AdminPage() {
 
   // Statistics calculation
   const totalProjects = orders.length;
-  const approvedCount = orders.filter((o) => o.status === "Genehmigt").length;
+  const approvedCount = orders.filter((o) => o.status === "Approved").length;
   const successRate = totalProjects > 0 ? Math.round((approvedCount / totalProjects) * 100) : 100;
   
   const totalPowerKwp = orders.reduce((sum, o) => {
@@ -47,13 +47,13 @@ export default function AdminPage() {
         {/* VNB Admin Portal Header */}
         <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-xl sm:p-10">
           <span className="text-xs font-bold tracking-wider text-blue-600 uppercase">
-            Netzbetreiber-Portal · VNB Cockpit
+            Grid Operator Portal · VNB Cockpit
           </span>
           <h1 className="mt-1 text-2xl font-extrabold tracking-tight text-slate-900 sm:text-3xl">
-            Netzanschluss-Freigaben & Partner
+            Grid Connections & Partners
           </h1>
           <p className="mt-2 text-sm text-slate-500">
-            Systemweite Steuerung für Anschlussbegehren (Data Set 3.0), Partnerinstallateure und Netz-Kapazitätsdaten.
+            Utility-wide oversight panel for grid connection compliance (VDE Data Set 3.0) and trade partner credentials.
           </p>
 
           {/* Navigation Tab Bar */}
@@ -66,7 +66,7 @@ export default function AdminPage() {
                   : "bg-slate-100 text-slate-600 hover:bg-slate-200"
               }`}
             >
-              📊 Kennzahlen & Auslastung
+              📊 KPI Metrics & Capacity
             </button>
             <button
               onClick={() => setActiveTab("requests")}
@@ -76,7 +76,7 @@ export default function AdminPage() {
                   : "bg-slate-100 text-slate-600 hover:bg-slate-200"
               }`}
             >
-              📋 Anschlussbegehren ({orders.length})
+              📋 Connection Requests ({orders.length})
             </button>
             <button
               onClick={() => setActiveTab("installers")}
@@ -86,7 +86,7 @@ export default function AdminPage() {
                   : "bg-slate-100 text-slate-600 hover:bg-slate-200"
               }`}
             >
-              🔧 Fachpartner-Zulassungen
+              🔧 Certified Electricians
             </button>
           </div>
         </div>
@@ -97,41 +97,41 @@ export default function AdminPage() {
             {/* KPI Cards Grid */}
             <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
               <div className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
-                <span className="text-[10px] font-bold text-slate-400 uppercase block">Anschlussanträge Gesamt</span>
+                <span className="text-[10px] font-bold text-slate-400 uppercase block">Grid Connection Requests</span>
                 <span className="text-3xl font-black text-slate-800 block mt-1">{totalProjects}</span>
-                <span className="text-[10px] text-slate-500 block mt-2">Auswertungszeitraum: 30 Tage</span>
+                <span className="text-[10px] text-slate-500 block mt-2">Reporting period: 30 days</span>
               </div>
               <div className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
-                <span className="text-[10px] font-bold text-slate-400 uppercase block">Installierte Leistung</span>
+                <span className="text-[10px] font-bold text-slate-400 uppercase block">Total Connected Capacity</span>
                 <span className="text-3xl font-black text-slate-800 block mt-1">{totalPowerKwp.toFixed(1)} kWp</span>
-                <span className="text-[10px] text-emerald-600 block mt-2">▲ +14.8% im Vergleich zum Vormonat</span>
+                <span className="text-[10px] text-emerald-600 block mt-2">▲ +14.8% vs last month</span>
               </div>
               <div className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
-                <span className="text-[10px] font-bold text-slate-400 uppercase block">Freigabequote (Success)</span>
+                <span className="text-[10px] font-bold text-slate-400 uppercase block">Approval Success Rate</span>
                 <span className="text-3xl font-black text-slate-800 block mt-1">{successRate}%</span>
-                <span className="text-[10px] text-slate-500 block mt-2">{approvedCount} von {totalProjects} genehmigt</span>
+                <span className="text-[10px] text-slate-500 block mt-2">{approvedCount} of {totalProjects} approved</span>
               </div>
               <div className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
-                <span className="text-[10px] font-bold text-slate-400 uppercase block">Ø Bearbeitungszeit</span>
-                <span className="text-3xl font-black text-blue-600 block mt-1">4,2 Tage</span>
-                <span className="text-[10px] text-slate-400 block mt-2">Dank Data Set 3.0 Standard</span>
+                <span className="text-[10px] font-bold text-slate-400 uppercase block">Avg. Processing Duration</span>
+                <span className="text-3xl font-black text-blue-600 block mt-1">4.2 Days</span>
+                <span className="text-[10px] text-slate-400 block mt-2">Streamlined by VDE Datenset 3.0</span>
               </div>
             </div>
 
-            {/* Connected Growth Chart (Dynamisch gezeichnet via CSS) */}
+            {/* Connected Growth Chart */}
             <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-md">
               <div className="border-b border-slate-100 pb-3 mb-6">
-                <h3 className="text-sm font-bold text-slate-800">Netzeinspeisungs-Wachstum (letzte 5 Monate)</h3>
-                <p className="text-xs text-slate-400 mt-0.5">Neu genehmigte kWp-Kapazitäten pro Monat.</p>
+                <h3 className="text-sm font-bold text-slate-800">Net Feed-in Capacity Growth (Last 5 Months)</h3>
+                <p className="text-xs text-slate-400 mt-0.5">Newly approved solar capacity per month in kWp.</p>
               </div>
 
               {/* Flex bar graph */}
               <div className="flex items-end justify-between h-48 px-4 border-b border-slate-200 pb-1">
                 {[
                   { month: "Feb", value: 40, label: "22 kWp" },
-                  { month: "Mär", value: 65, label: "38 kWp" },
+                  { month: "Mar", value: 65, label: "38 kWp" },
                   { month: "Apr", value: 50, label: "29 kWp" },
-                  { month: "Mai", value: 85, label: "49 kWp" },
+                  { month: "May", value: 85, label: "49 kWp" },
                   { month: "Jun", value: 100, label: `${totalPowerKwp.toFixed(0)} kWp` }
                 ].map((bar, idx) => (
                   <div key={idx} className="flex flex-col items-center w-12 sm:w-16 group">
@@ -153,10 +153,10 @@ export default function AdminPage() {
         {/* --- TAB 2: PROJECTS/REQUESTS --- */}
         {activeTab === "requests" && (
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 items-start animate-fade-in">
-            {/* Left: Orders List (2 Columns) */}
+            {/* Left: Orders List */}
             <div className="lg:col-span-2 rounded-2xl border border-slate-200 bg-white shadow-md overflow-hidden">
               <div className="bg-slate-50 border-b border-slate-200 p-4">
-                <h3 className="text-xs font-bold uppercase tracking-wider text-slate-400">Offene Netzbegehren</h3>
+                <h3 className="text-xs font-bold uppercase tracking-wider text-slate-400">Pending Connection Requests</h3>
               </div>
 
               <div className="divide-y divide-slate-100">
@@ -179,18 +179,18 @@ export default function AdminPage() {
                           </span>
                         </div>
                         <p className="text-xs text-slate-500 mt-1">
-                          {order.power} · Letztes Update: {order.updated}
+                          {order.power} · Last update: {order.updated}
                         </p>
                         <p className="text-[11px] text-slate-400 mt-1">
-                          Installateur: <span className="font-semibold">{assigned ? `${assigned.name} (${assigned.company})` : "Nicht zugewiesen"}</span>
+                          Installer: <span className="font-semibold">{assigned ? `${assigned.name} (${assigned.company})` : "Not assigned"}</span>
                         </p>
                       </div>
 
                       <div className="flex items-center gap-3">
                         <span className={`text-[10px] font-bold px-2.5 py-1 rounded-full border ${
-                          order.status === "Genehmigt" 
+                          order.status === "Approved" 
                             ? "bg-emerald-50 text-emerald-700 border-emerald-200"
-                            : order.status === "In Prüfung"
+                            : order.status === "In Review"
                               ? "bg-amber-50 text-amber-700 border-amber-200"
                               : "bg-slate-100 text-slate-600 border-slate-200"
                         }`}>
@@ -204,22 +204,22 @@ export default function AdminPage() {
               </div>
             </div>
 
-            {/* Right: Selected Order Detail / Management Console (1 Column) */}
+            {/* Right: Selected Order Detail */}
             <div className="rounded-2xl border border-slate-200 bg-white p-5 shadow-lg space-y-6 min-h-[400px]">
               {selectedOrder ? (
                 <div className="space-y-6">
                   <header className="border-b border-slate-100 pb-3">
                     <h3 className="font-bold text-slate-800 text-base">{selectedOrder.asset}</h3>
-                    <p className="font-mono text-xs text-slate-400 mt-0.5">Antragsnummer: #{selectedOrder.id}</p>
+                    <p className="font-mono text-xs text-slate-400 mt-0.5">Application Ref: #{selectedOrder.id}</p>
                   </header>
 
                   {/* Status update controller */}
                   <div className="space-y-2">
                     <label className="text-[10px] font-bold text-slate-400 uppercase tracking-wider block">
-                      Vorgangsstatus ändern
+                      Modify Status Milestones
                     </label>
                     <div className="grid grid-cols-2 gap-2">
-                      {(["Entwurf", "Eingereicht", "In Prüfung", "Genehmigt"] as Order["status"][]).map((s) => (
+                      {(["Draft", "Submitted", "In Review", "Approved"] as Order["status"][]).map((s) => (
                         <button
                           key={s}
                           onClick={() => updateOrderStatus(selectedOrder.id, s)}
@@ -238,14 +238,14 @@ export default function AdminPage() {
                   {/* Installer regional assignment selector */}
                   <div className="space-y-2">
                     <label className="text-[10px] font-bold text-slate-400 uppercase tracking-wider block">
-                      Zugeordneter Fachbetrieb
+                      Assigned Electrician
                     </label>
                     <select
                       value={selectedOrder.assignedInstallerId || "none"}
                       onChange={(e) => handleAssignInstaller(selectedOrder.id, e.target.value)}
                       className="w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-xs focus:outline-none focus:ring-1 focus:ring-blue-500"
                     >
-                      <option value="none">-- Kein Installateur --</option>
+                      <option value="none">-- No Installer Assigned --</option>
                       {installers.filter(i => i.certified).map((inst) => (
                         <option key={inst.id} value={inst.id}>
                           {inst.name} ({inst.company}) - PLZ: {inst.region}
@@ -257,7 +257,7 @@ export default function AdminPage() {
                   {/* Documents checklist details */}
                   <div className="space-y-3">
                     <label className="text-[10px] font-bold text-slate-400 uppercase tracking-wider block">
-                      Dokumenten-Vollständigkeit (Klicken zum Umschalten)
+                      Document Validation (Click to toggle status)
                     </label>
                     <div className="space-y-2">
                       {selectedOrder.documents.map((doc) => (
@@ -274,7 +274,7 @@ export default function AdminPage() {
                                 ? "bg-blue-100 text-blue-800"
                                 : "bg-red-100 text-red-800"
                           }`}>
-                            {doc.status === "complete" ? "✓ Validiert" : doc.status === "review" ? "⏳ Prüfung" : "! Fehlt"}
+                            {doc.status === "complete" ? "✓ Verified" : doc.status === "review" ? "⏳ Review" : "! Missing"}
                           </span>
                         </div>
                       ))}
@@ -284,9 +284,9 @@ export default function AdminPage() {
               ) : (
                 <div className="flex flex-col items-center justify-center h-full text-center py-12">
                   <span className="text-4xl block mb-2">👈</span>
-                  <p className="text-sm font-bold text-slate-400">Bitte wählen Sie ein Anschlussbegehren aus</p>
+                  <p className="text-sm font-bold text-slate-400">Please select a connection request</p>
                   <p className="text-xs text-slate-400 mt-1">
-                    Klicken Sie in der Liste links auf ein Projekt, um den Vorgang zu bearbeiten.
+                    Select an active request from the left panel to review compliance.
                   </p>
                 </div>
               )}
@@ -298,18 +298,18 @@ export default function AdminPage() {
         {activeTab === "installers" && (
           <div className="rounded-2xl border border-slate-200 bg-white shadow-md overflow-hidden animate-fade-in">
             <div className="bg-slate-50 border-b border-slate-200 p-4">
-              <h3 className="text-xs font-bold uppercase tracking-wider text-slate-400">Zertifizierte Fachbetriebe & Registrierungen</h3>
+              <h3 className="text-xs font-bold uppercase tracking-wider text-slate-400">Electrician Registry & Partner Approvals</h3>
             </div>
 
             <div className="overflow-x-auto">
               <table className="w-full text-left text-sm border-collapse">
                 <thead>
                   <tr className="border-b border-slate-200 text-xs font-bold text-slate-400 bg-slate-50/30">
-                    <th className="p-4">Name / Betrieb</th>
-                    <th className="p-4">Region (PLZ)</th>
+                    <th className="p-4">Electrician Name / Business</th>
+                    <th className="p-4">Region (Zip Code)</th>
                     <th className="p-4">Rating</th>
                     <th className="p-4">Status</th>
-                    <th className="p-4 text-right">Zertifizierung bearbeiten</th>
+                    <th className="p-4 text-right">Approve Credentials</th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-slate-100 text-slate-700">
@@ -327,7 +327,7 @@ export default function AdminPage() {
                             ? "bg-emerald-50 text-emerald-700 border-emerald-200" 
                             : "bg-amber-50 text-amber-700 border-amber-200"
                         }`}>
-                          {inst.certified ? "Zertifiziert" : "Prüfung ausstehend"}
+                          {inst.certified ? "Certified" : "Pending Approval"}
                         </span>
                       </td>
                       <td className="p-4 text-right space-x-2">
@@ -338,14 +338,14 @@ export default function AdminPage() {
                               onClick={() => approveInstaller(inst.id)}
                               className="cursor-pointer bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs px-3 py-1.5 rounded shadow-sm transition"
                             >
-                              ✓ Genehmigen
+                              ✓ Approve
                             </button>
                             <button
                               type="button"
                               onClick={() => rejectInstaller(inst.id)}
                               className="cursor-pointer bg-red-50 text-red-600 hover:bg-red-100 font-bold text-xs px-3 py-1.5 rounded transition"
                             >
-                              Ablehnen
+                              Reject
                             </button>
                           </>
                         ) : (
@@ -354,7 +354,7 @@ export default function AdminPage() {
                             onClick={() => rejectInstaller(inst.id)}
                             className="cursor-pointer bg-slate-100 hover:bg-slate-200 text-slate-600 font-semibold text-xs px-3 py-1.5 rounded transition"
                           >
-                            Zulassung entziehen
+                            Revoke License
                           </button>
                         )}
                       </td>

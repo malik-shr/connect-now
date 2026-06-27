@@ -12,7 +12,7 @@ export interface Order {
   id: string;
   asset: string;
   power: string;
-  status: "Entwurf" | "Eingereicht" | "In Prüfung" | "Genehmigt";
+  status: "Draft" | "Submitted" | "In Review" | "Approved";
   updated: string;
   assignedInstallerId: string | null;
   ownerEmail: string;
@@ -44,62 +44,62 @@ const ProjectContext = createContext<ProjectContextType | undefined>(undefined);
 const INITIAL_ORDERS: Order[] = [
   {
     id: "pv-halle-nord",
-    asset: "PV-Aufdachanlage (Nord)",
-    power: "9,8 kWp",
-    status: "In Prüfung",
+    asset: "PV Rooftop Installation (North)",
+    power: "9.8 kWp",
+    status: "In Review",
     updated: "26.06.2026",
     assignedInstallerId: "inst-1",
     ownerEmail: "user1@connect-now.io",
     documents: [
-      { id: "e8", label: "Datenblatt Wechselrichter (E.8)", status: "complete" },
-      { id: "lageplan", label: "Lageplan / Übersichtsschaltplan", status: "complete" },
-      { id: "messkonzept", label: "Messkonzept", status: "review" },
-      { id: "vollmacht", label: "Vollmacht des Anlagenbetreibers", status: "missing" },
+      { id: "e8", label: "Inverter Datasheet (E.8)", status: "complete" },
+      { id: "lageplan", label: "Site Plan / Schematic Diagram", status: "complete" },
+      { id: "messkonzept", label: "Metering Concept", status: "review" },
+      { id: "vollmacht", label: "Operator Power of Attorney", status: "missing" },
     ],
   },
   {
     id: "solar-speicher-sued",
-    asset: "PV mit Speicher (Süd)",
-    power: "12,4 kWp",
-    status: "Eingereicht",
+    asset: "PV with Storage (South)",
+    power: "12.4 kWp",
+    status: "Submitted",
     updated: "24.06.2026",
     assignedInstallerId: "inst-3",
     ownerEmail: "user1@connect-now.io",
     documents: [
-      { id: "e8", label: "Datenblatt Wechselrichter (E.8)", status: "review" },
-      { id: "lageplan", label: "Lageplan / Übersichtsschaltplan", status: "complete" },
-      { id: "messkonzept", label: "Messkonzept", status: "complete" },
-      { id: "vollmacht", label: "Vollmacht des Anlagenbetreibers", status: "complete" },
+      { id: "e8", label: "Inverter Datasheet (E.8)", status: "review" },
+      { id: "lageplan", label: "Site Plan / Schematic Diagram", status: "complete" },
+      { id: "messkonzept", label: "Metering Concept", status: "complete" },
+      { id: "vollmacht", label: "Operator Power of Attorney", status: "complete" },
     ],
   },
   {
     id: "wp-hof-sued",
-    asset: "PV + Wärmepumpe",
-    power: "15,0 kWp",
-    status: "Entwurf",
+    asset: "PV + Heat Pump",
+    power: "15.0 kWp",
+    status: "Draft",
     updated: "20.06.2026",
     assignedInstallerId: "inst-1",
     ownerEmail: "user2@connect-now.io",
     documents: [
-      { id: "e8", label: "Datenblatt Wechselrichter (E.8)", status: "missing" },
-      { id: "lageplan", label: "Lageplan / Übersichtsschaltplan", status: "missing" },
-      { id: "messkonzept", label: "Messkonzept", status: "complete" },
-      { id: "vollmacht", label: "Vollmacht des Anlagenbetreibers", status: "missing" },
+      { id: "e8", label: "Inverter Datasheet (E.8)", status: "missing" },
+      { id: "lageplan", label: "Site Plan / Schematic Diagram", status: "missing" },
+      { id: "messkonzept", label: "Metering Concept", status: "complete" },
+      { id: "vollmacht", label: "Operator Power of Attorney", status: "missing" },
     ],
   },
   {
     id: "pv-schulstrasse",
-    asset: "Dachanlage Grundschule",
-    power: "29,5 kWp",
-    status: "Entwurf",
+    asset: "Elementary School Rooftop",
+    power: "29.5 kWp",
+    status: "Draft",
     updated: "22.06.2026",
     assignedInstallerId: null,
     ownerEmail: "user2@connect-now.io",
     documents: [
-      { id: "e8", label: "Datenblatt Wechselrichter (E.8)", status: "missing" },
-      { id: "lageplan", label: "Lageplan / Übersichtsschaltplan", status: "complete" },
-      { id: "messkonzept", label: "Messkonzept", status: "missing" },
-      { id: "vollmacht", label: "Vollmacht des Anlagenbetreibers", status: "missing" },
+      { id: "e8", label: "Inverter Datasheet (E.8)", status: "missing" },
+      { id: "lageplan", label: "Site Plan / Schematic Diagram", status: "complete" },
+      { id: "messkonzept", label: "Metering Concept", status: "missing" },
+      { id: "vollmacht", label: "Operator Power of Attorney", status: "missing" },
     ],
   },
 ];
@@ -108,25 +108,25 @@ const INITIAL_INSTALLERS: Installer[] = [
   {
     id: "inst-1",
     name: "Max Weber",
-    company: "Weber Solartechnik GmbH",
+    company: "Weber Solar Technology GmbH",
     certified: true,
     region: "06108 Halle",
     rating: "⭐️ 4.9 (142)",
   },
   {
     id: "inst-2",
-    name: "Solar Ost Support",
-    company: "Solar Ost GmbH",
+    name: "Solar East Support",
+    company: "Solar East GmbH",
     certified: false,
     region: "10115 Berlin",
-    rating: "Neu",
+    rating: "New",
   },
   {
     id: "inst-3",
     name: "Alex Wagner",
-    company: "Wagner Elektro-Dienstleistungen",
+    company: "Wagner Electrical Services",
     certified: true,
-    region: "80331 München",
+    region: "80331 Munich",
     rating: "⭐️ 4.7 (38)",
   },
 ];
@@ -141,12 +141,13 @@ export function ProjectProvider({ children }: { children: React.ReactNode }) {
       const storedInstallers = localStorage.getItem("connectNowInstallers");
 
       if (storedOrders) {
-        // Migration safeguard: check if stored order objects have ownerEmail
+        // Migration safeguard: check if stored order objects have ownerEmail or old German statuses
         const parsed = JSON.parse(storedOrders) as Order[];
-        const needsMigration = parsed.some(o => !o.ownerEmail);
+        const needsMigration = parsed.some(
+          o => !o.ownerEmail || o.status === ("Entwurf" as any) || o.status === ("Eingereicht" as any)
+        );
         
         if (needsMigration) {
-          // Overwrite with initial seeded ones to avoid bugs
           localStorage.setItem("connectNowOrders", JSON.stringify(INITIAL_ORDERS));
           setOrders(INITIAL_ORDERS);
         } else {
@@ -173,15 +174,15 @@ export function ProjectProvider({ children }: { children: React.ReactNode }) {
       id: id,
       asset: asset,
       power: power,
-      status: "Entwurf",
-      updated: new Date().toLocaleDateString("de-DE"),
+      status: "Draft",
+      updated: new Date().toLocaleDateString("en-US"),
       assignedInstallerId: null,
       ownerEmail: ownerEmail,
       documents: [
-        { id: "e8", label: "Datenblatt Wechselrichter (E.8)", status: "missing" },
-        { id: "lageplan", label: "Lageplan / Übersichtsschaltplan", status: "missing" },
-        { id: "messkonzept", label: "Messkonzept", status: "missing" },
-        { id: "vollmacht", label: "Vollmacht des Anlagenbetreibers", status: "missing" },
+        { id: "e8", label: "Inverter Datasheet (E.8)", status: "missing" },
+        { id: "lageplan", label: "Site Plan / Schematic Diagram", status: "missing" },
+        { id: "messkonzept", label: "Metering Concept", status: "missing" },
+        { id: "vollmacht", label: "Operator Power of Attorney", status: "missing" },
       ],
     };
 
@@ -196,7 +197,7 @@ export function ProjectProvider({ children }: { children: React.ReactNode }) {
         return {
           ...o,
           status: status,
-          updated: new Date().toLocaleDateString("de-DE"),
+          updated: new Date().toLocaleDateString("en-US"),
         };
       }
       return o;
@@ -211,7 +212,7 @@ export function ProjectProvider({ children }: { children: React.ReactNode }) {
         return {
           ...o,
           assignedInstallerId: installerId,
-          updated: new Date().toLocaleDateString("de-DE"),
+          updated: new Date().toLocaleDateString("en-US"),
         };
       }
       return o;
@@ -232,7 +233,7 @@ export function ProjectProvider({ children }: { children: React.ReactNode }) {
         return {
           ...o,
           documents: updatedDocs,
-          updated: new Date().toLocaleDateString("de-DE"),
+          updated: new Date().toLocaleDateString("en-US"),
         };
       }
       return o;
