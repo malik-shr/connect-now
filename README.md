@@ -2,7 +2,7 @@
 
 > Digital grid-connection workspace for solar (PV) installations — turning the paper-and-email grid application process into a transparent, real-time, multi-party workflow.
 
-Built as a prototype at the 28h **Startup Elevator Energy Hackathon 2026** by **Team bitroot**.
+Built as a prototype at the 36h **Startup Elevator Energy Hackathon 2026** by **Team bitroot**.
 
 ---
 
